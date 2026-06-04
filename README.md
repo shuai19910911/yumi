@@ -58,9 +58,11 @@ https://ftp.cngb.org/pub/CNSA/data3/CNP0001565/zeamap/05_Epigenetics/Chromatin_I
 
 这些数据有价值，但不建议在可行性验证前下载全量。
 
-- 原始 SRA/FASTQ：体量和处理成本高，第一阶段只用 processed matrix。
-- 全部 genome assembly/pangenome：先下载 B73/SK/HZS/Mo17 的 annotation/FASTA 索引信息即可；除非做序列 tokenizer 或 pan-gene 模型，不需要全量 assembly。
-- 全量 epigenome bigWig/BED：先确认 accession 和组织信息，再按模态抽样。
+- 原始 SRA/FASTQ：暂缓下载。原始 reads 体量大，质控、比对、定量和批次校正成本高；第一阶段的目标是先验证 accession ID 能否跨模态对齐，所以优先使用 ZEAMAP 已处理好的 matrix、trait table 和 VCF。只有当 processed data 缺少关键模态、需要统一重跑 pipeline，或要训练 read/coverage-level 模型时，才进入原始 reads 下载。
+- 全部 genome assembly/pangenome：暂缓全量下载。当前只需要 B73/SK/HZS/Mo17 的 annotation、gene ID、FASTA index 或少量参考序列来做 gene-level 特征对齐；全量 assembly/pangenome 会引入版本映射、pan-gene 聚类和大规模存储问题。只有在做 sequence tokenizer、pan-gene model、SV/presence-absence 建模或跨 assembly liftover 时，才下载全量。
+- 全量 epigenome bigWig/BED：暂缓全量下载。epigenome 文件通常按 accession、组织、时期和实验类型拆分，直接全量下载容易拿到大量无法和 AMP phenotype 配对的样本。第一阶段先确认 accession、tissue、developmental_stage 和 treatment，再按 DNA methylation、open chromatin、chromatin interaction 等模态抽样下载，并优先选择 processed summary、matrix 或可聚合到 gene/promoter/cis-window 的文件。
+
+详细理由见 `docs/2026-06-04-download-scope-rationale.md`。
 
 ## 当前建模思路
 
