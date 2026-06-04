@@ -66,6 +66,15 @@ https://ftp.cngb.org/pub/CNSA/data3/CNP0001565/zeamap/05_Epigenetics/Chromatin_I
 
 样本单位以 `accession_id` 为主，必要时扩展到 `accession_id + tissue + developmental_stage + treatment`。
 
+第一批样本索引检查结果：
+
+- 统一 accession 索引：`data/metadata/zeamap_accession_index.tsv`
+- 表级 ID 摘要：`data/metadata/zeamap_table_id_summary.tsv`
+- expression 列命名表：`data/metadata/zeamap_expression_sample_columns.tsv`
+- 检查报告：`docs/2026-06-04-zeamap-sample-id-check.md`
+- 可作为第一版 phenotype/population 配对集合的 accession 数：461
+- 当前 expression 文件是 B73/SK/HZS/Mo17 reference/tissue expression，不是 AMP accession-level expression。
+
 核心任务：
 
 - masked modality modeling：用 genotype、population、regulatory features 预测 expression、metabolite、phenotype。

@@ -27,11 +27,19 @@
 
 ## 阶段 1：metadata-only 统一索引
 
+状态：已完成第一批数据的样本 ID/列名检查和统一索引输出。
+
 产出：
 
 - `data/metadata/zeamap_file_manifest.tsv`
 - `data/metadata/zeamap_accession_map.tsv`
 - `data/metadata/zeamap_modality_coverage.tsv`
+- 当前实际输出：
+- `data/metadata/zeamap_accession_index.tsv`
+- `data/metadata/zeamap_table_id_summary.tsv`
+- `data/metadata/zeamap_expression_sample_columns.tsv`
+- `data/metadata/phenotype_sheets/*.tsv`
+- `docs/2026-06-04-zeamap-sample-id-check.md`
 
 统一字段：
 
@@ -62,6 +70,13 @@ notes
 - 表型/代谢物表中的材料名是否与表达矩阵一致。
 - `amp_pca.txt`、`amp_str.txt` 的行名是否与 AMP phenotype 和 VCF samples 一致。
 - SNP VCF header 中 sample names 是否覆盖 phenotype/metabolite accessions。
+
+当前结论：
+
+- `amp_pca.txt` 与 `amp_str.txt` 均有 507 个 accession，二者完全交集为 507。
+- metabolite phenotype 有 339 个 accession，agri/AA/Oil phenotype 有 476 个 accession。
+- population + 任一 phenotype/metabolome 的强配对 accession 为 461 个。
+- 第一批 expression 文件是 B73/SK/HZS/Mo17 reference/tissue expression，不是 AMP accession-level expression。
 
 ## 阶段 2：最小可行数据集
 
