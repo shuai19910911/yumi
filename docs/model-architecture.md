@@ -1,10 +1,10 @@
 # Model architecture notes
 
-更新日期：2026-06-04
+更新日期：2026-06-05
 
 ## 建模对象
 
-第一阶段模型不是泛植物大模型，而是 ZEAMAP 玉米 accession-level 多模态预训练模型。
+第一阶段模型不是泛植物大模型，也不是直接上复杂多模态 transformer。当前 461 个强配对 accession 更适合先做 ZEAMAP 玉米 accession-level baseline benchmark，证明 genotype/population 对 phenotype/metabolome 是否有稳定可预测信号。
 
 主要实体：
 
@@ -53,6 +53,22 @@ batch = {
 
 ## 编码器设计
 
+## v0.1 baseline 优先级
+
+当前推荐模型顺序：
+
+1. population-only baseline：只用 PCA/structure 预测 trait，作为群体结构对照。
+2. genotype PCA baseline：从 dosage matrix 提取低维 genotype PCs，再用 ridge/elastic net 预测 trait。
+3. genotype PCA + population：检查 genotype 是否在 population covariates 之外提供增益。
+4. 轻量 MLP：仅在正则化 baseline 有信号后使用，避免样本量不足导致过拟合。
+
+暂不推荐：
+
+- 直接用 199,856 SNP 训练深层模型。
+- 直接做大规模 contrastive pretraining。
+- 把 236 个 methylation-covered accession 作为主训练全集。
+- 把 B73/SK/HZS/Mo17 reference/tissue expression 当成 AMP accession-level expression。
+
 ### Genotype encoder
 
 输入：
@@ -68,7 +84,8 @@ batch = {
 
 模型：
 
-- baseline：MLP 或 linear projection。
+- baseline：PCA/SVD + ridge/elastic net。
+- 小模型：MLP 或 linear projection。
 - 后续：variant set transformer 或 gene-window attention。
 
 ### Expression encoder
@@ -138,7 +155,15 @@ batch = {
 
 ## 融合结构
 
-第一版推荐 late fusion：
+baseline 完成前，第一版不做复杂融合。先比较以下输入组合：
+
+```text
+population_only -> trait heads
+genotype_pca -> trait heads
+genotype_pca + population -> trait heads
+```
+
+baseline 有明确增益后，再进入 late fusion：
 
 ```text
 genotype_embedding   \
@@ -171,13 +196,19 @@ gene token = {
 
 ## 预训练任务
 
-优先顺序：
+当前优先顺序：
 
-1. masked phenotype/metabolite prediction：遮掉部分 phenotype/metabolite，用 genotype、expression、population 预测。
-2. masked expression prediction：遮掉部分 genes，用 genotype/regulatory/population 预测表达。
-3. cross-modal contrastive learning：同一 accession 的不同模态为正样本。
-4. modality dropout reconstruction：随机丢掉 expression 或 phenotype，让模型从剩余模态恢复。
-5. gene-context prediction：预测 gene-level expression/regulatory state。
+1. genotype/population to phenotype/metabolome baseline。
+2. trait 可预测性筛选。
+3. masked phenotype/metabolite prediction。
+4. modality dropout reconstruction。
+5. gene-context prediction。
+6. cross-modal contrastive learning。
+
+暂缓任务：
+
+- masked expression prediction：等待 accession-level expression 或明确的 reference prior 设计。
+- genotype-to-expression prediction：当前没有 AMP accession-level expression 配对。
 
 ## 评估
 

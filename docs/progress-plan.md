@@ -1,10 +1,17 @@
 # Yumi progress plan
 
-更新日期：2026-06-04
+更新日期：2026-06-05
 
 ## 项目定位
 
-本项目第一阶段只做 ZEAMAP/玉米，不扩展到油菜、茶树、大豆或水稻。目标是证明同一批玉米自交系/accessions 可以在 processed data 层面对齐 variation、expression、metabolome/phenotype、population structure 和 epigenome，从而支撑 accession-level 多模态预训练。
+本项目第一阶段只做 ZEAMAP/玉米，不扩展到油菜、茶树、大豆或水稻。当前样本量适合做 accession-level 可行性验证、baseline benchmark 和 trait 可预测性筛选；暂不把目标设为直接训练大规模多模态预训练模型。
+
+阶段性判断：
+
+- `v0.1` 有 461 个强配对 accession，适合训练和评估小模型 baseline。
+- genotype 维度远大于样本数，必须先做降维、正则化或特征筛选。
+- methylation 有 236 个 accession 覆盖，适合后续 missing-modality 或抽样实验，不作为 `v0.1` 主训练输入。
+- 当前第一目标是证明 ZEAMAP processed data 支持 genotype/population 到 phenotype/metabolome 的可预测信号，而不是追求复杂模型结构。
 
 ## 阶段 0：数据下载清单确认
 
@@ -120,7 +127,46 @@ notes
 - genotype dosage matrix、sample order、variant table 一致性检查：已完成。
 - 可以训练一个 baseline：用 genotype + population 预测部分 phenotype/metabolite：下一步。
 
-## 阶段 3：epigenome 接入
+## 阶段 3：v0.1 baseline benchmark
+
+状态：下一步。
+
+目标：用 `v0.1` processed dataset 建立可复现 baseline，回答当前 461 个 accession 是否足以支持 genotype-to-phenotype/metabolome learning。
+
+输入：
+
+- `data/processed/v0_1/genotype_dosage_int8.npz`
+- `data/processed/v0_1/genotype_samples.tsv`
+- `data/processed/v0_1/genotype_variants.tsv`
+- `data/processed/v0_1/phenotype.parquet`
+- `data/processed/v0_1/population.parquet`
+- `data/processed/v0_1/modality_mask.tsv`
+
+训练策略：
+
+- 固定 accession-level train/validation/test split，避免 accession 泄漏。
+- genotype 先做低维表示，不直接把 199,856 SNP 全量喂给复杂模型。
+- 优先 baseline：population-only、genotype PCA + ridge/elastic net、genotype PCA + population、轻量 MLP。
+- 对 phenotype/metabolome 每个 trait 单独评估，保留缺失率、方差、有效样本数。
+- population covariates 同时作为输入和对照，检查模型是否只是学习群体结构。
+
+产出：
+
+- `data/processed/v0_1/splits/`
+- `data/processed/v0_1/genotype_pca.parquet`
+- `results/v0_1_baseline/trait_metrics.tsv`
+- `results/v0_1_baseline/model_comparison.tsv`
+- `docs/2026-06-05-zeamap-v0-1-baseline-plan.md`
+- `docs/2026-06-05-zeamap-v0-1-baseline-report.md`
+
+成功标准：
+
+- 至少完成 population-only 与 genotype+population 两类 baseline。
+- 输出每个 trait 的 R2、Pearson、Spearman、MAE/RMSE、有效样本数和缺失率。
+- 找出一批稳定可预测 trait，用作后续多模态模型的主评估集合。
+- 如果大多数 trait 信号弱，仍保留结果作为样本量和模态覆盖不足的证据。
+
+## 阶段 4：epigenome 接入
 
 目标：在不下载全量原始 reads 的前提下，接入 DNA methylation、open chromatin、chromatin interaction。
 
@@ -137,7 +183,18 @@ notes
 - `data/processed/v0_2/modality_mask.parquet`
 - `docs/epigenome-alignment-report.md`
 
-## 阶段 4：预训练样本构建
+进入条件：
+
+- `v0.1 baseline` 确认至少部分 phenotype/metabolome trait 有可预测信号。
+- 明确 methylation 文件的 accession、组织、时期和区域类型。
+- 优先从 236 个 methylation-covered accession 做小规模 missing-modality 实验。
+
+## 阶段 5：预训练样本构建
+
+进入条件：
+
+- baseline benchmark 已建立，并筛出主评估 trait。
+- 确认 accession-level 样本量不足以支撑大模型后，转向小模型、多任务学习、gene-level token 扩样或跨数据源扩展。
 
 训练样本形态：
 
@@ -147,13 +204,13 @@ notes
 
 任务组合：
 
-- masked expression prediction
 - masked metabolite/phenotype prediction
-- genotype-to-expression prediction
 - modality contrastive learning
 - gene-context reconstruction
+- masked expression prediction：仅在拿到 accession-level expression 或明确使用 reference expression prior 后启用。
+- genotype-to-expression prediction：当前暂缓，因为现有 expression 文件不是 AMP accession-level paired expression。
 
-## 阶段 5：GitHub 更新习惯
+## 阶段 6：GitHub 更新习惯
 
 后续每完成一个小阶段，更新：
 

@@ -2,7 +2,7 @@
 
 玉米 ZEAMAP 多组学预训练项目。
 
-当前目标是完成 `/home/user/zhangzhishuai/data/plantDB/pretraining_dataset_assessment.md` 中第一条“ZEAMAP/玉米”路线：以玉米自交系/accession 为样本单位，构建 variation、expression、epigenome、metabolome、phenotype、population structure 等模态的统一索引和预训练数据集。
+当前目标是完成 `/home/user/zhangzhishuai/data/plantDB/pretraining_dataset_assessment.md` 中第一条“ZEAMAP/玉米”路线：以玉米自交系/accession 为样本单位，先构建 variation、metabolome/phenotype、population structure 和 epigenome coverage 的统一索引与 `v0.1` processed dataset，再做 baseline benchmark 判断是否有足够信号进入多模态建模。
 
 ## 数据源
 
@@ -103,10 +103,11 @@ v0.1 processed dataset：
 
 核心任务：
 
-- masked modality modeling：用 genotype、population、regulatory features 预测 expression、metabolite、phenotype。
-- cross-modal contrastive learning：同一 accession 的不同模态 embedding 拉近，不同 accession 拉远。
-- gene-context prediction：把 gene annotation、cis variants、methylation/open chromatin、expression 聚合到 gene-level token。
-- phenotype-aware pretraining：把农艺性状、油分/氨基酸、已知代谢物作为弱监督目标。
+- v0.1 baseline benchmark：用 genotype PCA/regularized models + population covariates 预测 phenotype/metabolome。
+- trait 可预测性筛选：按 R2、Pearson、Spearman、缺失率和有效样本数筛出稳定 trait。
+- 小模型优先：当前 461 个 accession 适合 ridge/elastic net、population-only 对照、轻量 MLP，不适合直接训练大型多模态 transformer。
+- epigenome 后置：236 个 methylation-covered accession 先作为 missing-modality/coverage mask，baseline 完成后再接入区域聚合特征。
+- phenotype-aware pretraining：仅在 baseline 证明有足够信号后，作为下一阶段弱监督或多任务学习目标。
 
 更多细节见：
 
