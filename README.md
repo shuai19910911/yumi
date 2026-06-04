@@ -18,6 +18,8 @@
 
 先下载小文件和中等体量 processed data，用来做 accession ID 对齐和可行性验证。
 
+状态：已下载到 `/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/`，文件级校验通过。详情见 `docs/2026-06-04-zeamap-first-batch-download-check.md`。
+
 ```text
 https://ftp.cngb.org/pub/CNSA/data3/CNP0001565/zeamap/01_Genomics/Transcriptions/Sample_gene_expression/zmap_expression_ref_b73_exp.tsv
 https://ftp.cngb.org/pub/CNSA/data3/CNP0001565/zeamap/01_Genomics/Transcriptions/Sample_gene_expression/zmap_expression_ref_sk_exp.tsv

@@ -8,19 +8,22 @@
 
 ## 阶段 0：数据下载清单确认
 
-状态：进行中。
+状态：已完成文件级校验；Excel 内容级解析待安装 `.xls` 读取依赖后完成。
 
 已经确认：
 
 - CNGBdb `CNP0001565` 是 ZEAMAP database public download data。
 - FTP 根目录下有 `01_Genomics`、`02_Variants`、`03_Genetics`、`04_Populations`、`05_Epigenetics`、`06_Pangenome`、`99_MaizegoResources`。
 - 表达、表型/代谢物、群体结构和 SNP VCF 均有 processed 文件。
+- 第一批 8 个目标文件已下载到 `/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/`。
+- 表达矩阵和群体结构文本文件可读，行数与下载记录一致。
+- 两个 `.xls` 文件经 `file` 检查为合法 `Composite Document File V2 Document`，不是 HTML 错误页。
 
 待完成：
 
-- 下载第一批小文件。
-- 为所有文件记录 `source_url`、`md5`、`download_time`、`local_path`、`file_size`。
+- 安装或启用 `xlrd`、`libreoffice` 或 `ssconvert` 后解析两个 `.xls` 的 sheet、列名和 accession ID。
 - 检查每个表的样本列名和 accession 命名规则。
+- 输出统一样本索引表。
 
 ## 阶段 1：metadata-only 统一索引
 
