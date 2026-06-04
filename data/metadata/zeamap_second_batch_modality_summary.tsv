@@ -1,0 +1,8 @@
+modality	local_dir	files	nonempty_files	size_bytes	md5_ok	md5_bad
+variation	/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/variation	2	2	208497501		
+mCG_regions	/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/epigenome/dna_methylation/01_regions/AMP_mCG_bed	527	527	45100292	526.0	0.0
+mCHG_regions	/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/epigenome/dna_methylation/01_regions/AMP_mCHG_bed	527	527	48243997	526.0	0.0
+mCHH_regions	/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/epigenome/dna_methylation/01_regions/AMP_mCHH_bed	527	527	26788691	526.0	0.0
+methylC_sites	/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/epigenome/dna_methylation/02_sites/AMP_Methyl_sites	527	527	105429147183	526.0	0.0
+chromatin_accessibility	/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/epigenome/chromatin_accessibility	5	5	792489655	4.0	0.0
+chromatin_interaction	/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/epigenome/chromatin_interaction	11	11	59820899	10.0	0.0

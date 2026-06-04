@@ -41,6 +41,8 @@ https://ftp.cngb.org/pub/CNSA/data3/CNP0001565/zeamap/04_Populations/amp_str.txt
 
 第一批 ID 对齐成功后再下载较大文件。
 
+状态：已下载到 `/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/`，完整性检查通过。详情见 `docs/2026-06-04-zeamap-second-batch-check.md`。
+
 ```text
 https://ftp.cngb.org/pub/CNSA/data3/CNP0001565/zeamap/02_Variants/SNPs/AMP_SNP_anno.vcf.gz
 https://ftp.cngb.org/pub/CNSA/data3/CNP0001565/zeamap/02_Variants/SNPs/AMP_SNP_anno.vcf.gz.tbi
@@ -76,6 +78,16 @@ https://ftp.cngb.org/pub/CNSA/data3/CNP0001565/zeamap/05_Epigenetics/Chromatin_I
 - 检查报告：`docs/2026-06-04-zeamap-sample-id-check.md`
 - 可作为第一版 phenotype/population 配对集合的 accession 数：461
 - 当前 expression 文件是 B73/SK/HZS/Mo17 reference/tissue expression，不是 AMP accession-level expression。
+
+第二批 genotype/epigenome 检查结果：
+
+- VCF 样本数：507
+- VCF variants：1,186,632
+- `genotype + population + 任一 phenotype/metabolome` 强配对 accession 数：461
+- 任一 DNA methylation 文件覆盖 accession 数：263
+- `genotype + population + phenotype/metabolome + 任一 methylation` 强配对 accession 数：236
+- Chromatin accessibility 和 chromatin interaction 当前更适合作为 B73/reference regulatory prior。
+- 检查报告：`docs/2026-06-04-zeamap-second-batch-check.md`
 
 核心任务：
 

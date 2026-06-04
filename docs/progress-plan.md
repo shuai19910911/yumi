@@ -81,10 +81,15 @@ notes
 - metabolite phenotype 有 339 个 accession，agri/AA/Oil phenotype 有 476 个 accession。
 - population + 任一 phenotype/metabolome 的强配对 accession 为 461 个。
 - 第一批 expression 文件是 B73/SK/HZS/Mo17 reference/tissue expression，不是 AMP accession-level expression。
+- 第二批 VCF 有 507 个 samples、1,186,632 个 variants。
+- VCF 与 accession index 交集为 507。
+- genotype + population + 任一 phenotype/metabolome 的强配对 accession 为 461。
+- genotype + population + phenotype/metabolome + 任一 DNA methylation 的强配对 accession 为 236。
+- Chromatin accessibility 和 chromatin interaction 当前更适合作为 B73/reference regulatory prior。
 
 ## 阶段 2：最小可行数据集
 
-状态：待开始。依赖第二批 genotype VCF 下载和 VCF sample header 检查。
+状态：第二批 genotype/epigenome 下载检查已完成；v0.1 processed dataset 构建待开始。
 
 目标：生成一个只包含强配对样本的 `v0.1` 数据集。
 
