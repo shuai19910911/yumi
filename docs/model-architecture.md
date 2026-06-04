@@ -69,6 +69,13 @@ batch = {
 - 把 236 个 methylation-covered accession 作为主训练全集。
 - 把 B73/SK/HZS/Mo17 reference/tissue expression 当成 AMP accession-level expression。
 
+当前 baseline 结果：
+
+- `genotype_pca_population_ridge` 是第一版最优 baseline，test median Pearson 为 0.331，test median R2 为 0.034。
+- `genotype_pca_ridge` 优于 `population_ridge`，说明 genotype PCs 提供了 population covariates 之外的信号。
+- 最强可预测 trait 主要是 oil 相关性状，适合作为下一阶段主评估 trait 集合的候选。
+- 大量 trait 的 R2 仍然较低或不稳定，下一步应做 trait subset selection，而不是直接扩大模型复杂度。
+
 ### Genotype encoder
 
 输入：

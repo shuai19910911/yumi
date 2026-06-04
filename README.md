@@ -101,6 +101,18 @@ v0.1 processed dataset：
 - DNA methylation：当前作为 coverage/missing-modality 标记，v0.1 中有 236 个 accession 覆盖任一 methylation 文件
 - `data/processed/` 已加入 `.gitignore`，大矩阵只保留在本地，不提交到 GitHub。
 
+v0.1 baseline benchmark：
+
+- 运行环境：mamba `yumi`，Slurm `q07` CPU 作业
+- 运行脚本：`scripts/run_zeamap_v0_1_baseline.py`
+- Slurm 脚本：`scripts/slurm/run_zeamap_v0_1_baseline.sh`
+- 结果目录：`results/v0_1_baseline/`
+- 报告：`docs/2026-06-05-zeamap-v0-1-baseline-report.md`
+- split：train 322、validation 69、test 70
+- genotype PCA：100 PCs，累计解释方差 0.504527
+- 最佳 baseline：`genotype_pca_population_ridge`，test median Pearson 0.331，test median R2 0.034
+- 结论：当前样本量可以继续做 trait 筛选和小模型 baseline；复杂多模态预训练仍需谨慎。
+
 核心任务：
 
 - v0.1 baseline benchmark：用 genotype PCA/regularized models + population covariates 预测 phenotype/metabolome。

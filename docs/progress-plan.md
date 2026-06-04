@@ -129,7 +129,7 @@ notes
 
 ## 阶段 3：v0.1 baseline benchmark
 
-状态：下一步。
+状态：已完成第一版 baseline benchmark。
 
 目标：用 `v0.1` processed dataset 建立可复现 baseline，回答当前 461 个 accession 是否足以支持 genotype-to-phenotype/metabolome learning。
 
@@ -153,9 +153,12 @@ notes
 产出：
 
 - `data/processed/v0_1/splits/`
-- `data/processed/v0_1/genotype_pca.parquet`
+- `data/processed/v0_1/genotype_pca.tsv`
+- `data/processed/v0_1/genotype_pca_variance.tsv`
+- `results/v0_1_baseline/trait_qc.tsv`
 - `results/v0_1_baseline/trait_metrics.tsv`
 - `results/v0_1_baseline/model_comparison.tsv`
+- `results/v0_1_baseline/top_predictable_traits.tsv`
 - `docs/2026-06-05-zeamap-v0-1-baseline-plan.md`
 - `docs/2026-06-05-zeamap-v0-1-baseline-report.md`
 
@@ -165,6 +168,15 @@ notes
 - 输出每个 trait 的 R2、Pearson、Spearman、MAE/RMSE、有效样本数和缺失率。
 - 找出一批稳定可预测 trait，用作后续多模态模型的主评估集合。
 - 如果大多数 trait 信号弱，仍保留结果作为样本量和模态覆盖不足的证据。
+
+当前结果：
+
+- split：train 322、validation 69、test 70。
+- genotype PCA：100 PCs，累计解释方差 0.504527。
+- 318 个 trait 中 317 个通过 baseline 过滤。
+- test median Pearson：`genotype_pca_population_ridge` 0.331，`genotype_pca_ridge` 0.298，`population_ridge` 0.237。
+- `genotype_pca_population_ridge` 有 204 个 trait 的 test R2 为正，226 个 trait 的 test Pearson 大于 0.2。
+- 最强可预测 trait 主要是 oil 相关性状，最高 test Pearson 约 0.92。
 
 ## 阶段 4：epigenome 接入
 

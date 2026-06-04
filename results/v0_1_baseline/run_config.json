@@ -1,0 +1,13 @@
+{
+  "n_pcs": 100,
+  "random_state": 20260605,
+  "min_total_n": 80,
+  "min_train_n": 30,
+  "min_eval_n": 10,
+  "feature_sets": [
+    "mean_baseline",
+    "population_ridge",
+    "genotype_pca_ridge",
+    "genotype_pca_population_ridge"
+  ]
+}
