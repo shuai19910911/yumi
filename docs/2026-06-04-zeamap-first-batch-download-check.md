@@ -17,10 +17,27 @@
 - 当前 SHA256 与本地 `download_manifest_first_batch.md` 记录一致。
 - 表达矩阵和群体结构文本文件可读。
 - 两个 `.xls` 文件是合法旧版 Excel 文件，不是 HTML 错误页。
+- 已在 `bio3` 环境安装 `xlrd/openpyxl`，两个 `.xls` 文件可用 pandas 读取。
 
-当前限制：
+## Excel 内容级解析
 
-- 当前 base Python 环境和 `bio3` 环境均缺少 `xlrd/openpyxl`，系统也没有 `libreoffice/ssconvert`，所以两个 `.xls` 暂未做内容级 sheet/列名解析。
+`ZEAMAP_phenotype_AMP_183_known_Metabolites.xls`：
+
+- sheets: `cv`, `dataset`, `contact`, `site`, `stock`, `descriptor`, `phenotype`
+- `stock`: 508 x 13
+- `descriptor`: 388 x 7
+- `phenotype`: 339 x 254
+- phenotype key columns: `*dataset_name`, `*stock_name`, `genus`, `species`, `*sample_id`, `site_name`, `data_year`
+- first phenotype traits include `#L_Tyrosine_E1`, `#Vanillin_E1`, `#N_Acetyl_L_glutamic_acid_E1`
+
+`ZEAMAP_phenotype_AMP_agri_AA_Oil.xls`：
+
+- sheets: `cv`, `dataset`, `contact`, `site`, `stock`, `descriptor`, `phenotype`
+- `stock`: 508 x 13
+- `descriptor`: 71 x 7
+- `phenotype`: 476 x 78
+- phenotype key columns: `*dataset_name`, `*stock_name`, `genus`, `species`, `*sample_id`, `site_name`, `data_year`
+- first phenotype traits include `#AA_Asp`, `#AA_Thr`, `#AA_Ser`, `#AA_Glu`, `#AA_Gly`
 
 ## 文件清单
 
@@ -63,7 +80,6 @@ GeneID SK_15_DAP_Kernel SK_Immature_Ear ...
 
 ## 下一步
 
-1. 安装或使用带 `.xls` 支持的环境读取 phenotype/metabolome Excel。
-2. 导出两个 Excel 为 TSV。
-3. 从 population、phenotype/metabolome、VCF header 里抽取 accession ID。
-4. 判断 expression 文件是 accession-level expression 还是 reference/tissue expression；如果是 reference/tissue expression，需要作为 gene annotation/expression prior，而不是 accession-level 强配对模态。
+1. 导出两个 Excel 的 `stock`、`descriptor`、`phenotype` sheet 为 TSV。
+2. 从 population、phenotype/metabolome、VCF header 里抽取 accession ID。
+3. 判断 expression 文件是 accession-level expression 还是 reference/tissue expression；如果是 reference/tissue expression，需要作为 gene annotation/expression prior，而不是 accession-level 强配对模态。

@@ -8,7 +8,7 @@
 
 ## 阶段 0：数据下载清单确认
 
-状态：已完成文件级校验；Excel 内容级解析待安装 `.xls` 读取依赖后完成。
+状态：已完成。
 
 已经确认：
 
@@ -18,10 +18,10 @@
 - 第一批 8 个目标文件已下载到 `/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/`。
 - 表达矩阵和群体结构文本文件可读，行数与下载记录一致。
 - 两个 `.xls` 文件经 `file` 检查为合法 `Composite Document File V2 Document`，不是 HTML 错误页。
+- 已在 `bio3` 环境安装 `xlrd/openpyxl`，两个 `.xls` 文件内容级解析通过。
 
 待完成：
 
-- 安装或启用 `xlrd`、`libreoffice` 或 `ssconvert` 后解析两个 `.xls` 的 sheet、列名和 accession ID。
 - 检查每个表的样本列名和 accession 命名规则。
 - 输出统一样本索引表。
 
