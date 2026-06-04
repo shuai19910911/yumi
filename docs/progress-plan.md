@@ -20,10 +20,14 @@
 - 两个 `.xls` 文件经 `file` 检查为合法 `Composite Document File V2 Document`，不是 HTML 错误页。
 - 已在 `bio3` 环境安装 `xlrd/openpyxl`，两个 `.xls` 文件内容级解析通过。
 
-待完成：
+已完成产物：
 
-- 检查每个表的样本列名和 accession 命名规则。
-- 输出统一样本索引表。
+- `docs/2026-06-04-zeamap-first-batch-download-check.md`
+- `docs/2026-06-04-zeamap-sample-id-check.md`
+- `data/metadata/zeamap_accession_index.tsv`
+- `data/metadata/zeamap_table_id_summary.tsv`
+- `data/metadata/zeamap_expression_sample_columns.tsv`
+- `data/metadata/phenotype_sheets/*.tsv`
 
 ## 阶段 1：metadata-only 统一索引
 
@@ -79,6 +83,8 @@ notes
 - 第一批 expression 文件是 B73/SK/HZS/Mo17 reference/tissue expression，不是 AMP accession-level expression。
 
 ## 阶段 2：最小可行数据集
+
+状态：待开始。依赖第二批 genotype VCF 下载和 VCF sample header 检查。
 
 目标：生成一个只包含强配对样本的 `v0.1` 数据集。
 
