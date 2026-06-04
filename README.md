@@ -89,6 +89,18 @@ https://ftp.cngb.org/pub/CNSA/data3/CNP0001565/zeamap/05_Epigenetics/Chromatin_I
 - Chromatin accessibility 和 chromatin interaction 当前更适合作为 B73/reference regulatory prior。
 - 检查报告：`docs/2026-06-04-zeamap-second-batch-check.md`
 
+v0.1 processed dataset：
+
+- 构建脚本：`scripts/build_zeamap_v0_1_dataset.py`
+- 本地输出目录：`data/processed/v0_1/`
+- 构建报告：`docs/2026-06-04-zeamap-v0-1-build-report.md`
+- accession 数：461
+- genotype：199,856 个常见、高样本数 biallelic SNP，dosage 矩阵 shape 为 `[199856, 461]`
+- phenotype/metabolome：318 个数值 trait columns
+- population：PCA + structure covariates
+- DNA methylation：当前作为 coverage/missing-modality 标记，v0.1 中有 236 个 accession 覆盖任一 methylation 文件
+- `data/processed/` 已加入 `.gitignore`，大矩阵只保留在本地，不提交到 GitHub。
+
 核心任务：
 
 - masked modality modeling：用 genotype、population、regulatory features 预测 expression、metabolite、phenotype。

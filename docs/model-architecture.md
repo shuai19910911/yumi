@@ -16,14 +16,27 @@
 
 ## 数据接口
 
-建议先把所有模态变成统一 batch：
+v0.1 已把强配对 accession 写成本地 processed dataset：
+
+```text
+data/processed/v0_1/accessions.tsv
+data/processed/v0_1/modality_mask.tsv
+data/processed/v0_1/population.parquet
+data/processed/v0_1/phenotype.parquet
+data/processed/v0_1/genotype_samples.tsv
+data/processed/v0_1/genotype_variants.tsv
+data/processed/v0_1/genotype_dosage_int8.npz
+```
+
+当前 batch 先使用 genotype、phenotype/metabolome、population 和 methylation coverage mask。第一批 expression 文件是 B73/SK/HZS/Mo17 reference/tissue expression，不是 AMP accession-level paired expression，因此暂不作为 v0.1 accession-level 输入。
+
+建议先把可配对模态变成统一 batch：
 
 ```text
 batch = {
   accession_id,
   modality_mask,
   genotype_features,
-  expression_features,
   regulatory_features,
   metabolite_features,
   phenotype_targets,
@@ -34,6 +47,7 @@ batch = {
 其中：
 
 - `modality_mask` 表示该 accession 哪些模态可用。
+- `genotype_features` 在 v0.1 中来自 `genotype_dosage_int8.npz`，矩阵 shape 为 `[variants, samples]`，sample 顺序以 `genotype_samples.tsv` 为准。
 - `population_covariates` 默认不作为预测目标，而作为协变量或 adversarial/confounder control。
 - `phenotype_targets` 和 `metabolite_features` 在不同任务中可以互换为输入或目标。
 

@@ -89,31 +89,36 @@ notes
 
 ## 阶段 2：最小可行数据集
 
-状态：第二批 genotype/epigenome 下载检查已完成；v0.1 processed dataset 构建待开始。
+状态：v0.1 processed dataset 已完成构建和一致性检查。
 
-目标：生成一个只包含强配对样本的 `v0.1` 数据集。
+目标：生成一个只包含强配对样本的 `v0.1` 数据集。当前 v0.1 以 `genotype + population + 任一 phenotype/metabolome` 为强配对标准，共 461 个 accession。
 
 纳入模态：
 
-- genotype：`AMP_SNP_anno.vcf.gz`，先抽样或按 LD/MAF 过滤。
-- expression：B73/SK 参考表达矩阵，先选一个 reference 作为主版本。
+- genotype：`AMP_SNP_anno.vcf.gz`，保留 biallelic SNP、`MAF >= 0.05`、`NS >= 450`，再抽稀到 199,856 个 variants。
 - phenotype/metabolome：两个 AMP phenotype xls。
 - population：PCA 和 structure。
+- methylation：先作为 accession coverage/missing-modality mask，不在 v0.1 中展开区域特征。
+- expression：当前 B73/SK/HZS/Mo17 文件是 reference/tissue expression，不是 AMP accession-level paired expression，因此不纳入 v0.1 paired matrix。
 
 产出：
 
 - `data/processed/v0_1/accessions.tsv`
-- `data/processed/v0_1/expression.parquet`
 - `data/processed/v0_1/phenotype.parquet`
 - `data/processed/v0_1/population.parquet`
-- `data/processed/v0_1/genotype.zarr` 或 `genotype.parquet`
-- `data/processed/v0_1/coverage_report.md`
+- `data/processed/v0_1/modality_mask.tsv`
+- `data/processed/v0_1/genotype_samples.tsv`
+- `data/processed/v0_1/genotype_variants.tsv`
+- `data/processed/v0_1/genotype_dosage_int8.npz`
+- `data/processed/v0_1/manifest.tsv`
+- `docs/2026-06-04-zeamap-v0-1-build-report.md`
 
 成功标准：
 
-- 至少得到一批同时具有 genotype、expression、phenotype/metabolome、population 的 accessions。
-- 每个模态都有缺失率统计。
-- 可以训练一个 baseline：用 genotype + population 预测部分 phenotype/metabolite。
+- 至少得到一批同时具有 genotype、phenotype/metabolome、population 的 accessions：已完成，461 个。
+- 每个 accession 有 modality mask：已完成。
+- genotype dosage matrix、sample order、variant table 一致性检查：已完成。
+- 可以训练一个 baseline：用 genotype + population 预测部分 phenotype/metabolite：下一步。
 
 ## 阶段 3：epigenome 接入
 
