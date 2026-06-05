@@ -1074,3 +1074,9 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 通俗解读：这一阶段没有假装已经知道作者信息，而是把作者信息、单位、Funding、致谢和 COI 拆成可填写的 TSV 模板，并写了一个验证/填稿脚本。作者把真实信息填进去后，脚本可以自动检查每个作者是否确认投稿、是否确认 COI、是否有通讯作者、单位和声明是否完整，然后生成填好作者信息的稿件预览。
 
 阶段结论：作者信息 blocker 还没有关闭，因为真实作者信息仍未提供；但关闭这个 blocker 的机器流程已经准备好。下一步只需要填模板并重跑脚本。
+
+### Stage 5.31 - Figure approval and release readiness pipeline
+
+通俗解读：这一阶段继续处理剩余人工关卡。机器已经确认 Figure 1-3 文件存在且分辨率足够，但最终投稿前还需要作者逐张打开 PDF/SVG/PNG，确认标签、文字、重叠、legend 和颜色。Stage 5.31 把这些确认项做成可填写模板。同时生成 GitHub release notes 和 Zenodo metadata 草稿，但不创建 tag、不发布 release、不申请 DOI。
+
+阶段结论：图件批准和 release DOI/PID 的执行流程已经准备好；但这两个 blocker 仍不能关闭，因为还缺作者最终批准、最终提交版本和真实 creator 信息。
