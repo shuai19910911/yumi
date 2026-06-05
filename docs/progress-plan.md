@@ -45,8 +45,9 @@
 | 阶段 5.19 result-to-script reproducibility crosswalk | 已完成初版 | 已输出主结果到脚本/输入/输出/参数的 crosswalk、文件 inventory、Methods 插入段和 ARS 可复现性审查 |
 | 阶段 5.20 GWAS diagnostic appendix | 已完成初版 | 已输出每个 oil trait 的 lambda、样本数、SNP 数、阈值、hit 数、top lead 和图件路径 |
 | 阶段 5.21 targeted fatty-acid literature support | 已完成初版 | 已输出 chr6/chr9 文献证据表、source ledger、claim audit、manuscript insert 和 ARS domain review |
-| 阶段 5.22 manuscript claim-language audit and expansion | 下一步 | 把 Stage 5.19-5.21 插入段整合进稿件，并审计 Abstract/Results/Discussion/captions 是否过度声称 |
-| 阶段 5.23 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
+| 阶段 5.22 manuscript claim-language audit and expansion | 已完成初版 | 已输出整合稿、change log、claim-language audit、section word counts 和 ARS integrated review |
+| 阶段 5.23 final bibliography/gene-model verification | 下一步 | 核对参考文献最终格式、DOI、chr6/chr9 gene-model mapping 和 target-journal reference style |
+| 阶段 5.24 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
 
 ## 当前最重要的数字
 
@@ -146,6 +147,11 @@ Region literature support: 1 file
 Targeted claim audit: 1 file
 Targeted manuscript insert: 1 file
 ARS domain review: 1 file
+Integrated manuscript: 1 file
+Claim-language audit: 1 file
+Integrated manuscript change log: 1 file
+Section word counts: 1 file
+ARS integrated review: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -984,3 +990,24 @@ chr6 和 chr9 是论文最核心的生物学故事。统计结果已经足够强
 当前判断：
 
 chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可以作为 high-priority C16:0/FatB-like candidate interval。两个区域都不能写成 causal variant、validated gene 或 confirmed mechanism。
+
+
+## 阶段 5.22：manuscript claim-language audit and expansion
+
+状态：已完成初版。
+
+为什么做这一步：
+
+前面 Stage 5.19-5.21 生成了可复现性、GWAS 诊断和 chr6/chr9 文献支持材料。Stage 5.22 把这些材料真正整合进一个新的投稿稿件草案，并检查是否出现 causal/validated/fine-mapped 等过度声称。
+
+主要产出：
+
+- `docs/2026-06-06-zeamap-v0-1-stage5-22-integrated-manuscript.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-22-change-log.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-22-claim-language-audit.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-22-section-word-counts.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-22-ars-integrated-review.md`
+
+当前判断：
+
+整合稿更接近投稿状态，claim-language audit 没有发现 blocking overclaim。但最终投稿仍需作者元数据、图件人工检查、文献/gene-model 最终核验和 release/DOI。
