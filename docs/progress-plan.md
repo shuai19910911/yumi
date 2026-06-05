@@ -431,6 +431,40 @@ notes
 
 ## 阶段 5：预训练样本构建
 
+### 阶段 5.1：genotype attribution screen
+
+状态：已完成。
+
+目标：在不训练复杂模型的前提下，对 final benchmark 中最稳定的 top traits 做 genotype 侧候选解释性分析，输出稳定 SNP 和附近基因候选列表。
+
+方法：
+
+- 目标 traits：final benchmark 中 `ridge_median_pearson` 最高的 15 个 traits。
+- 每个 seed 使用 accession-level train split，不使用 test split 计算 SNP-trait correlation。
+- 每个 trait/seed 取绝对相关最高的 200 个 SNP。
+- 跨 5 个 seeds 聚合，输出每个 trait top 50 稳定 SNP。
+- 用 B73 RefGen_v4 gene body、promoter、10kb cis-window 映射最近基因。
+
+产出：
+
+- `scripts/run_zeamap_v0_1_genotype_attribution.py`
+- `scripts/slurm/run_zeamap_v0_1_genotype_attribution.sh`
+- `results/v0_1_baseline/genotype_attribution_snp_summary.tsv`
+- `results/v0_1_baseline/genotype_attribution_gene_summary.tsv`
+- `docs/2026-06-05-zeamap-v0-1-genotype-attribution-report.md`
+
+结果：
+
+- SNP summary：750 行，覆盖 15 个 traits。
+- 674 个 SNP 在 5 个 seeds 都进入该 trait 的 top-correlation 候选，745 个 SNP 至少 4 个 seeds 入选。
+- gene relation 分布：gene body 488、cis-window 147、promoter 59、nearest 56。
+- gene summary：587 行，其中 519 个 gene-level candidates 对应至少一个 5-seed stable SNP。
+
+结论：
+
+- 该结果是候选解释性 screen，不是正式 GWAS。
+- 后续如果继续解释性，应加入 LD clumping、population covariate residualization/permutation、候选基因功能注释和 trait family-specific validation。
+
 进入条件：
 
 - baseline benchmark 已建立，并筛出主评估 trait。

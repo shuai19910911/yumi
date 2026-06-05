@@ -189,6 +189,15 @@ v0.1 final benchmark：
 - trait family 表现：oil 最稳定，median Pearson/R2 为 0.596/0.321；agronomic 次之，为 0.498/0.190；metabolite 和 amino acid 较弱但仍有可预测信号。
 - 下一步主线：genotype 侧可解释性，优先对 high/medium traits 做 SNP/gene-window attribution。
 
+v0.1 genotype attribution screen：
+
+- 运行脚本：`scripts/run_zeamap_v0_1_genotype_attribution.py`
+- 报告：`docs/2026-06-05-zeamap-v0-1-genotype-attribution-report.md`
+- 输入：final benchmark 中 ridge median Pearson 最高的 15 个 traits
+- 方法：每个 seed 只在 train split 内计算 SNP-trait correlation，每个 trait/seed 取 top 200 SNP，再跨 seed 聚合并映射到 B73 RefGen_v4 gene/promoter/cis-window
+- 输出：每个 trait top 50 SNP 候选，共 750 行；其中 674 个 SNP 在 5 个 seeds 都被选中，488 个候选落在 gene body
+- 结论：这是候选解释性 screen，不是正式 GWAS；下一步如果继续解释性，应做更严格的 association model、LD clumping 和候选基因注释。
+
 核心任务：
 
 - v0.1 baseline benchmark：用 genotype PCA/regularized models + population covariates 预测 phenotype/metabolome。
