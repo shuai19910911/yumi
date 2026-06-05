@@ -39,7 +39,8 @@
 | 阶段 5.13 final submission gate | 已完成初版 | 已输出 DOI/reference audit、cover letter、reviewer profiles、release plan 和 final gate audit |
 | 阶段 5.14 human metadata and release finalization templates | 已完成模板包 | 已输出作者/单位/基金/COI、命名审稿人、图件人工检查和 release 命令模板 |
 | 阶段 5.15 preflight validation | 已完成校验器 | 已输出文件 manifest、placeholder audit、gate status 和 action items；真实 release 仍需作者填表后执行 |
-| 阶段 5.16 author-confirmed release execution | 下一步 | 填入真实元数据后重跑 preflight，通过后创建 tag/release/DOI 并写回最终稿 |
+| 阶段 5.16 metadata ingestion dry-run | 已完成 dry-run | 已输出 metadata ingestion audit、title-page preview 和 contribution preview；真实元数据仍未填 |
+| 阶段 5.17 final metadata insertion and release | 下一步 | 真实元数据填完后写回最终稿、重跑 preflight、创建 release/tag/DOI |
 
 ## 当前最重要的数字
 
@@ -115,6 +116,9 @@ Preflight manifest: 1 file
 Placeholder audit: 1 file
 Gate status table: 1 file
 Action-item table: 1 file
+Metadata ingestion dry-run: 1 file
+Title-page preview: 1 file
+Contribution preview: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -833,3 +837,18 @@ Stage 5.9-5.10 打磨后：55-75%
 - final figure manual checklist 全部 pass。
 - reviewer worksheet 有命名审稿人并完成 conflict check。
 - repository visibility 已确认。
+
+
+## 阶段 5.17：final metadata insertion and release
+
+状态：下一步，需要真实作者元数据。
+
+目标：
+
+在 author/reviewer/figure 模板全部填完后，将真实元数据写回目标期刊稿件，并执行 release/tag/DOI。
+
+执行条件：
+
+- Stage 5.15 preflight 为 `READY_FOR_RELEASE_EXECUTION`。
+- Stage 5.16 metadata ingestion dry-run 为 `READY_TO_INSERT_METADATA`。
+- 通讯作者确认 final upload package。
