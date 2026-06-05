@@ -1044,3 +1044,9 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 通俗解读：这一阶段不是新增科学结果，而是把论文从“内部编号引用草稿”推进到“更接近投稿系统可接受的格式”。The Plant Genome 所属 ASA/CSSA/SSSA 期刊体系要求 APA 风格的作者-年份引用，不使用编号参考文献。因此本阶段做了三件事：第一，把正文中 Zhou and Stephens、Benjamini and Hochberg 这类两作者括号引用改成目标期刊常用的 `&` 形式；第二，把 18 条参考文献改成不编号、按第一作者姓氏排序、带作者首字母和 DOI/URL 的格式；第三，输出投稿包检查表，明确哪些问题仍然必须由作者人工补齐。
 
 阶段结论：参考文献格式、引用方式、旧错误 DOI 回归检查、候选基因表述边界均通过自动检查；但这还不是最终可投版本，因为作者姓名/单位/基金/致谢、最终图件人工检查、GitHub release DOI/PID、chr6/chr9 外部数据库基因名确认仍是硬性人工关卡。
+
+### Stage 5.26 - Final figure technical QA and submission gate
+
+通俗解读：这一阶段检查的不是“图好不好看”，而是投稿前机器能判断的图件硬条件：Figure 1/2/3 是否都有 PNG/PDF/SVG，PNG 是否真是可读 PNG，分辨率是否足够，PDF/SVG 是否不是空文件。结果显示 3 张主图都通过机器技术检查，可以进入最终人工看图。
+
+阶段结论：机器侧图件技术 QA 通过；但最终投稿仍需要人工在期刊页面尺寸下确认文字是否清楚、标签是否重叠、配色是否合适。作者姓名/单位/基金/致谢/COI、GitHub release DOI/PID、chr6/chr9 外部数据库基因名确认仍未能由机器代替。
