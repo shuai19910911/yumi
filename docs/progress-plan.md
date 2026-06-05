@@ -46,7 +46,7 @@
 | 阶段 5.20 GWAS diagnostic appendix | 已完成初版 | 已输出每个 oil trait 的 lambda、样本数、SNP 数、阈值、hit 数、top lead 和图件路径 |
 | 阶段 5.21 targeted fatty-acid literature support | 已完成初版 | 已输出 chr6/chr9 文献证据表、source ledger、claim audit、manuscript insert 和 ARS domain review |
 | 阶段 5.22 manuscript claim-language audit and expansion | 已完成初版 | 已输出整合稿、change log、claim-language audit、section word counts 和 ARS integrated review |
-| 阶段 5.23 final bibliography/gene-model verification | 下一步 | 核对参考文献最终格式、DOI、chr6/chr9 gene-model mapping 和 target-journal reference style |
+| 阶段 5.23 final bibliography/gene-model verification | 已完成初版 | 已输出 Crossref DOI audit、stale reference corrections、chr6/chr9 gene-model mapping audit 和 ARS integrity review |
 | 阶段 5.24 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
 
 ## 当前最重要的数字
@@ -1011,3 +1011,16 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 当前判断：
 
 整合稿更接近投稿状态，claim-language audit 没有发现 blocking overclaim。但最终投稿仍需作者元数据、图件人工检查、文献/gene-model 最终核验和 release/DOI。
+
+## 阶段 5.23：final bibliography/gene-model verification
+
+这一步做的是投稿前的“参考文献和基因名核验”。它不是再扩大结果，而是防止审稿人一查 DOI 就发现引用不对。
+
+主要结论：
+
+- `10.1139/g95-108` 不能用于 maize fatty-acid QTL；Crossref 显示它是 Brassica erratum。已经改为 `10.1139/g95-118`。
+- 旧的 Khan/FatB draft DOI `10.3389/fnut.2022.906530` 未能在 Crossref 解析。chr9 FatB 支持改为 Stage 5.21 已使用的 Katral et al. 2022：`10.3389/fnut.2022.845255`。
+- `10.3389/fpls.2023.1174985` 的第一作者应按 DOI 元数据写 Zhang，不应写 Liu。
+- 本地 RefGen_v4 坐标支持 chr6 `Zm00001d036982` 和 chr9 `Zm00001d045383`/nearby `Zm00001d045387` 的候选区间表述。
+
+这一步完成后，当前稿件的参考文献风险明显降低，但仍不能宣布最终投稿完成。剩余问题是 target-journal reference style、作者/单位/基金/COI、最终图件人工确认、GitHub release/DOI。
