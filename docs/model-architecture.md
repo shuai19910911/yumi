@@ -1,6 +1,6 @@
 # Model architecture notes
 
-更新日期：2026-06-05
+更新日期：2026-06-06
 
 ## 当前模型定位
 
@@ -386,3 +386,23 @@ v0.1 dataset
 ```
 
 这个图更符合当前真实进展，也更适合论文方法部分。
+
+
+## Stage 5.10 之后的论文模型边界
+
+当前稿件不把模型包装成 foundation model。论文中的模型结构应写成：
+
+```text
+regularized genotype-to-phenotype benchmark
++ calibrated mixed-model GWAS
++ candidate-locus prioritization
+```
+
+这意味着：
+
+- prediction 模型负责筛选最稳定的 trait family。
+- GEMMA LMM 负责正式 association testing。
+- ridge attribution 只作为辅助交叉证据。
+- candidate-locus priority score 只用于 manuscript triage，不是新的显著性检验。
+
+这个边界对投稿很重要，因为它避免把小样本高维数据过度解释成深度学习或因果发现论文。

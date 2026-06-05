@@ -1,6 +1,6 @@
 # ZEAMAP 当前进展评估
 
-日期：2026-06-05
+日期：2026-06-06
 
 ## 总评
 
@@ -85,7 +85,7 @@ large-scale plant multi-omics foundation model
 | manuscript figures | 中高 | Nature 风格 GWAS summary figure 和 8 个 regional locus/LD 图已有初版 |
 | manuscript tables/results | 中高 | 已输出 top regional evidence table、tier1 主表、184 loci 补充表和 Results draft |
 | manuscript methods/figures | 中高 | 已输出 Methods draft、Figure 1、Figure 3、figure plan 和 captions draft |
-| manuscript skeleton | 中 | 已输出完整骨架，但还需要文献扩展、citation audit 和正式润色 |
+| manuscript skeleton | 中高 | 已输出完整骨架、polished manuscript draft、reference list draft、Methods supplement 和 ARS self-review；仍需期刊格式化 |
 | submission strategy | 中 | 已输出投稿策略和中稿率估计，但需按最终稿质量更新 |
 
 ## 当前最大优势
@@ -414,24 +414,24 @@ Stage 5.9-5.10 打磨后：55-75%
 
 ## 下一阶段目标
 
-下一阶段建议命名为：
+下一阶段已完成，命名为：
 
 ```text
 Stage 5.10: manuscript polish round 2
 ```
 
-目标：
+完成内容：
 
-把 skeleton 进一步改成接近投稿前草稿，并补齐正式引用和外部注释。
+- 把 skeleton 改成 polished manuscript draft。
+- 补齐 reference list draft。
+- 补 Methods parameter supplement。
+- 用 academic-research-suite 思路做了一轮自评。
 
-具体任务：
+下一阶段建议命名为：
 
-1. 扩展 Introduction 文献定位。
-2. 把 Discussion outline 写成完整 Discussion。
-3. 把软件版本和关键参数并入 Methods。
-4. 添加 ZEAMAP、GEMMA、B73 RefGen_v4/Gramene/Ensembl 等正式引用。
-5. 继续补 top loci 外部注释。
-6. 检查 Figure 1-3 字体、尺寸和 caption 一致性。
+```text
+Stage 5.11: external annotation hardening and final figure/table polish
+```
 
 成功标准：
 
@@ -442,4 +442,24 @@ Stage 5.10: manuscript polish round 2
 
 ## 当前一句话判断
 
-项目已经有论文级雏形，并且 GWAS 主结果已经进入候选位点写作前夜。下一步不是再堆模型，而是把 8 个 top regional loci 的外部注释、文献证据、论文主表和 Results 段落补齐。
+项目已经从“论文级雏形”推进到“预投稿稿件包”。下一步不是再堆模型，而是把 8 个 top regional loci 的外部注释、文献证据、补充表字段和最终图件 polish 补齐。
+
+
+## Stage 5.10 评估更新
+
+当前项目已经达到“预投稿稿件包”层级：
+
+- 结果链完整。
+- 方法边界清楚。
+- GEMMA LMM 控制 inflation 的证据强。
+- candidate loci 有主表、补充表和区域图。
+- 论文草稿已经能从 Introduction 读到 Discussion。
+
+仍未达到最终投稿层级的原因：
+
+- top loci 外部注释还不够硬。
+- reference list 还没有最终 DOI/期刊格式。
+- 图件还需要最终字体和版面检查。
+- 没有独立群体验证或实验验证，所以高影响力植物期刊风险仍高。
+
+下一步 Stage 5.11 应该集中补这几个短板，而不是重新发明模型。

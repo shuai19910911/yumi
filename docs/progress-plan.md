@@ -1,6 +1,6 @@
 # Yumi progress plan
 
-更新日期：2026-06-05
+更新日期：2026-06-06
 
 ## 项目现在要做什么
 
@@ -33,7 +33,8 @@
 | 阶段 5.7 Methods 草稿和主图整合 | 已完成初版 | 已输出 Methods draft、Figure 1、Figure 3、figure plan 和 captions draft |
 | 阶段 5.8 manuscript skeleton | 已完成初版 | 已输出完整论文骨架、table captions、readiness checklist |
 | 阶段 5.9 manuscript polish and citation audit | 已完成初版 | 已输出投稿策略/中稿率、citation audit 和软件版本文件 |
-| 阶段 5.10 manuscript polish round 2 | 下一步 | 扩展 Introduction/Discussion，补外部注释和正式 reference list |
+| 阶段 5.10 manuscript polish round 2 | 已完成初版 | 已输出 polished manuscript、reference list、Methods parameter supplement 和 ARS self-review |
+| 阶段 5.11 external annotation hardening | 下一步 | 补 top loci 外部数据库注释、DOI audit、最终图件/补充表 polish |
 
 ## 当前最重要的数字
 
@@ -85,6 +86,10 @@ Manuscript skeleton: 1 file
 Readiness checklist: 1 file
 Journal strategy: 1 file
 Citation audit: 1 file
+Polished manuscript draft: 1 file
+Reference list draft: 1 file
+Methods parameter supplement: 1 file
+Academic-research-suite self-review: 1 file
 Methods software versions: 1 file
 ```
 
@@ -672,19 +677,38 @@ Stage 5.9-5.10 打磨后：55-75%
 
 ## 阶段 5.10：manuscript polish round 2
 
+状态：已完成初版。
+
+做了什么：
+
+- 把 manuscript skeleton 扩展成 polished manuscript draft。
+- 把 Introduction、Results、Discussion 和 Methods 串成一条完整论文逻辑。
+- 添加 ZEAMAP、GEMMA、B73 RefGen_v4、maize oil GWAS 和软件 reference list draft。
+- 输出 Methods parameter supplement，记录 dataset、prediction、methylation、GEMMA 和 candidate-locus 关键参数。
+- 按 academic-research-suite 思路输出自评，明确审稿风险、claim boundary 和投稿定位。
+
+产出：
+
+- `docs/2026-06-06-zeamap-v0-1-polished-manuscript-draft.md`
+- `docs/2026-06-06-zeamap-v0-1-reference-list-draft.md`
+- `docs/2026-06-06-zeamap-v0-1-methods-parameter-supplement.md`
+- `docs/2026-06-06-zeamap-v0-1-ars-self-review.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-10-report.md`
+
+## 阶段 5.11：external annotation hardening
+
 状态：下一步。
 
 目标：
 
-把 manuscript skeleton 进一步改成更完整论文草稿。
+把 top regional loci 的生物学解释从 local GFF description 提升到投稿级外部数据库注释。
 
 需要做：
 
-- 扩展 Introduction 文献定位。
-- 把 Discussion outline 写成完整 Discussion。
-- 把软件版本和关键参数并入 Methods。
-- 添加 ZEAMAP、GEMMA、B73 RefGen_v4/Gramene/Ensembl 等正式引用。
-- 继续补 top loci 外部注释。
+- 补 MaizeGDB/Gramene/UniProt/GO 等外部注释。
+- 核查 chr6 `Zm00001d036982` 和 chr9 `Zm00001d045387` 的 gene symbol、description 和文献支持。
+- 给 8 个 regional loci 增加可放入 Supplementary Table 的注释字段。
+- 做 reference DOI/author audit。
 - 检查 Figure 1-3 字体、尺寸和 caption 一致性。
 
 ## GitHub 更新规则

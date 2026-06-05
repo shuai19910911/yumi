@@ -1,6 +1,6 @@
 # ZEAMAP 当前进展白话解读
 
-日期：2026-06-05
+日期：2026-06-06
 
 这份文件只回答四个问题：
 
@@ -782,3 +782,28 @@ Stage 5.9-5.10 打磨后：
 3. 把 Introduction 和 Discussion 写完整。
 4. 把 Methods 软件版本和参数写全。
 5. 保持 candidate locus/gene 口径，不夸大 causal claim。
+
+
+## 13. Stage 5.10 用白话说做了什么
+
+之前我们已经有结果，但很多内容还是“材料堆在一起”。Stage 5.10 做的是把它整理成审稿人能顺着读的论文逻辑：
+
+```text
+为什么从 ZEAMAP 数据开始
+为什么只保留 accession-level 强配对数据
+为什么先做 prediction benchmark
+为什么 oil traits 是主线
+为什么 covariate-only GWAS 不够
+为什么 GEMMA LMM 才是主 GWAS
+为什么 chr6/chr9 是优先候选
+哪些话能说，哪些话不能说
+```
+
+现在新增了四类关键文档：
+
+- polished manuscript draft：一篇更完整的论文草稿。
+- reference list draft：该引用哪些核心文献。
+- Methods parameter supplement：别人怎么复现。
+- ARS self-review：按审稿人角度指出还会被卡在哪里。
+
+一句话判断：现在已经像“可打磨投稿的论文包”，不是单纯分析记录；但还需要 top loci 外部注释和参考文献/图件终审。
