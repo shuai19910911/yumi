@@ -38,7 +38,8 @@
 | 阶段 5.12 final manuscript assembly | 已完成初版 | 已输出目标期刊稿件组装、supplement column dictionary、figure audit 和 data/code availability |
 | 阶段 5.13 final submission gate | 已完成初版 | 已输出 DOI/reference audit、cover letter、reviewer profiles、release plan 和 final gate audit |
 | 阶段 5.14 human metadata and release finalization templates | 已完成模板包 | 已输出作者/单位/基金/COI、命名审稿人、图件人工检查和 release 命令模板 |
-| 阶段 5.15 author-confirmed release execution | 下一步 | 填入真实作者信息、命名审稿人、人工图件确认、GitHub release/DOI 并写回最终稿 |
+| 阶段 5.15 preflight validation | 已完成校验器 | 已输出文件 manifest、placeholder audit、gate status 和 action items；真实 release 仍需作者填表后执行 |
+| 阶段 5.16 author-confirmed release execution | 下一步 | 填入真实元数据后重跑 preflight，通过后创建 tag/release/DOI 并写回最终稿 |
 
 ## 当前最重要的数字
 
@@ -110,6 +111,10 @@ Affiliation template: 1 file
 Reviewer worksheet: 1 file
 Figure manual checklist: 1 file
 Release command draft: 1 file
+Preflight manifest: 1 file
+Placeholder audit: 1 file
+Gate status table: 1 file
+Action-item table: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -811,3 +816,20 @@ Stage 5.9-5.10 打磨后：55-75%
 - 命名推荐审稿人和回避审稿人。
 - Figure 1-3 人工视觉确认。
 - 是否创建 GitHub release 和 Zenodo/Figshare DOI。
+
+
+## 阶段 5.16：author-confirmed release execution
+
+状态：下一步，需要真实作者元数据。
+
+目标：
+
+在 Stage 5.15 preflight 通过后，执行真正的 release/tag/DOI，并把 release DOI 写回最终稿件。
+
+执行条件：
+
+- author metadata template 无 `TO_COMPLETE`。
+- 所有 yes/no 字段已确认。
+- final figure manual checklist 全部 pass。
+- reviewer worksheet 有命名审稿人并完成 conflict check。
+- repository visibility 已确认。

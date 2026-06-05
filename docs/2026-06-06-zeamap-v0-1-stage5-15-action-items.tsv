@@ -1,0 +1,7 @@
+priority	task	file	owner	done_when
+1	Fill author metadata template	docs/2026-06-06-zeamap-v0-1-author-metadata-template.tsv	authors	No TO_COMPLETE or yes/no fields remain; author approvals and COI confirmations are yes.
+2	Fill affiliation template	docs/2026-06-06-zeamap-v0-1-affiliation-template.tsv	authors	Exact institution, department, city, country and postal code are final.
+3	Complete funding/COI/acknowledgement form	docs/2026-06-06-zeamap-v0-1-author-contribution-funding-coi-form.md	corresponding author	Funding, acknowledgements and competing-interest statements are final.
+4	Replace reviewer profiles with named reviewers	docs/2026-06-06-zeamap-v0-1-named-reviewer-worksheet.tsv	corresponding author	3-5 suggested reviewers and optional opposed reviewers have names, emails and conflict checks.
+5	Manually inspect Figure 1-3	docs/2026-06-06-zeamap-v0-1-final-figure-manual-checklist.tsv	analyst/corresponding author	All figure rows are marked pass after PDF/SVG/PNG visual inspection.
+6	Execute repository release/tag and optional archive DOI	docs/2026-06-06-zeamap-v0-1-release-execution-commands.md	repository owner	GitHub release/tag exists and DOI is inserted into Data/Code Availability if required.
