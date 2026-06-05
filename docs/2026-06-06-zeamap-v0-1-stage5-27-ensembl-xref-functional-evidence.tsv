@@ -1,0 +1,52 @@
+v4_gene_id	maizegdb_v5_gene_id	db_display_name	display_id	primary_id	description	info_type	info_text
+Zm00001d036982	Zm00001eb277490	NCBI gene (formerly Entrezgene)	LOC103629820	103629820	uncharacterized LOC103629820	DEPENDENT	NA
+Zm00001d036982	Zm00001eb277490	UniProtKB/TrEMBL	A0A1D6LT13.35	A0A1D6LT13	diacylglycerol O-acyltransferase	SEQUENCE_MATCH	Generated via sequence_mapped
+Zm00001d036982	Zm00001eb277490	GO	GO:0008374	GO:0008374	O-acyltransferase activity	DIRECT	UniProt
+Zm00001d036982	Zm00001eb277490	GO	GO:0008374	GO:0008374	O-acyltransferase activity	DIRECT	InterPro
+Zm00001d036982	Zm00001eb277490	GO	GO:0016020	GO:0016020	membrane	DIRECT	UniProt
+Zm00001d036982	Zm00001eb277490	GO	GO:0016746	GO:0016746	transferase activity, transferring acyl groups	DIRECT	UniProt
+Zm00001d036982	Zm00001eb277490	RefSeq peptide	NP_001384471.1	NP_001384471	Diacylglycerol O-acyltransferase 1-2	SEQUENCE_MATCH	NA
+Zm00001d036982	Zm00001eb277490	UniProtKB/TrEMBL	A0A1D6LT12.39	A0A1D6LT12	O-acyltransferase	SEQUENCE_MATCH	Generated via sequence_mapped
+Zm00001d036982	Zm00001eb277490	GO	GO:0004144	GO:0004144	diacylglycerol O-acyltransferase activity	DIRECT	UniProt
+Zm00001d036982	Zm00001eb277490	GO	GO:0004144	GO:0004144	diacylglycerol O-acyltransferase activity	DIRECT	GO_Central
+Zm00001d036982	Zm00001eb277490	GO	GO:0004144	GO:0004144	diacylglycerol O-acyltransferase activity	DIRECT	InterPro
+Zm00001d036982	Zm00001eb277490	GO	GO:0005783	GO:0005783	endoplasmic reticulum	DIRECT	UniProt
+Zm00001d036982	Zm00001eb277490	GO	GO:0005789	GO:0005789	endoplasmic reticulum membrane	DIRECT	UniProt
+Zm00001d036982	Zm00001eb277490	GO	GO:0005789	GO:0005789	endoplasmic reticulum membrane	DIRECT	GO_Central
+Zm00001d036982	Zm00001eb277490	GO	GO:0006071	GO:0006071	glycerol metabolic process	DIRECT	UniProt
+Zm00001d036982	Zm00001eb277490	GO	GO:0006629	GO:0006629	lipid metabolic process	DIRECT	UniProt
+Zm00001d036982	Zm00001eb277490	GO	GO:0009941	GO:0009941	chloroplast envelope	DIRECT	GO_Central
+Zm00001d036982	Zm00001eb277490	GO	GO:0016020	GO:0016020	membrane	DIRECT	UniProt
+Zm00001d036982	Zm00001eb277490	GO	GO:0016746	GO:0016746	transferase activity, transferring acyl groups	DIRECT	UniProt
+Zm00001d036982	Zm00001eb277490	GO	GO:0019432	GO:0019432	triglyceride biosynthetic process	DIRECT	UniProt
+Zm00001d036982	Zm00001eb277490	GO	GO:0019432	GO:0019432	triglyceride biosynthetic process	DIRECT	GO_Central
+Zm00001d036982	Zm00001eb277490	GO	GO:0019432	GO:0019432	triglyceride biosynthetic process	DIRECT	InterPro
+Zm00001d036982	Zm00001eb277490	UniProtKB/TrEMBL	A0A804PVK2.13	A0A804PVK2	diacylglycerol O-acyltransferase	SEQUENCE_MATCH	Generated via sequence_mapped
+Zm00001d045383	Zm00001eb377300	NCBI gene (formerly Entrezgene)	LOC100384006	100384006	uncharacterized LOC100384006	DEPENDENT	NA
+Zm00001d045383	Zm00001eb377300	RefSeq peptide	NP_001170088.2	NP_001170088	Probable 1-deoxy-D-xylulose-5-phosphate synthase, chloroplastic	SEQUENCE_MATCH	NA
+Zm00001d045383	Zm00001eb377300	UniProtKB/TrEMBL	A0A1D6NVN1.38	A0A1D6NVN1	1-deoxy-D-xylulose-5-phosphate synthase	SEQUENCE_MATCH	Generated via sequence_mapped
+Zm00001d045383	Zm00001eb377300	GO	GO:0008299	GO:0008299	isoprenoid biosynthetic process	DIRECT	UniProt
+Zm00001d045383	Zm00001eb377300	GO	GO:0008661	GO:0008661	1-deoxy-D-xylulose-5-phosphate synthase activity	DIRECT	UniProt
+Zm00001d045383	Zm00001eb377300	GO	GO:0008661	GO:0008661	1-deoxy-D-xylulose-5-phosphate synthase activity	DIRECT	InterPro
+Zm00001d045383	Zm00001eb377300	GO	GO:0009228	GO:0009228	thiamine biosynthetic process	DIRECT	UniProt
+Zm00001d045383	Zm00001eb377300	GO	GO:0016114	GO:0016114	terpenoid biosynthetic process	DIRECT	InterPro
+Zm00001d045383	Zm00001eb377300	GO	GO:0016744	GO:0016744	transferase activity, transferring aldehyde or ketonic groups	DIRECT	GO_Central
+Zm00001d045383	Zm00001eb377300	GO	GO:0046872	GO:0046872	metal ion binding	DIRECT	UniProt
+Zm00001d045383	Zm00001eb377300	GO	GO:0052865	GO:0052865	1-deoxy-D-xylulose 5-phosphate biosynthetic process	DIRECT	UniProt
+Zm00001d045387	Zm00001eb377350	NCBI gene (formerly Entrezgene)	LOC103638097	103638097	uncharacterized LOC103638097	DEPENDENT	NA
+Zm00001d045387	Zm00001eb377350	UniProtKB/TrEMBL	A0A1D6NVQ4.29	A0A1D6NVQ4	Acyl-[acyl-carrier-protein] hydrolase	SEQUENCE_MATCH	Generated via sequence_mapped
+Zm00001d045387	Zm00001eb377350	GO	GO:0006633	GO:0006633	fatty acid biosynthetic process	DIRECT	UniProt
+Zm00001d045387	Zm00001eb377350	GO	GO:0006633	GO:0006633	fatty acid biosynthetic process	DIRECT	InterPro
+Zm00001d045387	Zm00001eb377350	GO	GO:0009507	GO:0009507	chloroplast	DIRECT	UniProt
+Zm00001d045387	Zm00001eb377350	GO	GO:0016297	GO:0016297	acyl-[acyl-carrier-protein] hydrolase activity	DIRECT	InterPro
+Zm00001d045387	Zm00001eb377350	GO	GO:0016787	GO:0016787	hydrolase activity	DIRECT	UniProt
+Zm00001d045387	Zm00001eb377350	RefSeq peptide	NP_001357940.1	NP_001357940	Palmitoyl-acyl carrier protein thioesterase, chloroplastic	SEQUENCE_MATCH	NA
+Zm00001d045387	Zm00001eb377350	RefSeq mRNA	NM_001371011.1	NM_001371011	Zea mays uncharacterized LOC103638097 (LOC103638097), mRNA; nuclear gene for chloroplast product.	SEQUENCE_MATCH	Generated via refseq
+Zm00001d045387	Zm00001eb377350	UniProtKB/TrEMBL	K7V747.67	K7V747	Acyl-[acyl-carrier-protein] hydrolase	SEQUENCE_MATCH	Generated via sequence_mapped
+Zm00001d045387	Zm00001eb377350	GO	GO:0000036	GO:0000036	acyl carrier activity	DIRECT	GO_Central
+Zm00001d045387	Zm00001eb377350	GO	GO:0006633	GO:0006633	fatty acid biosynthetic process	DIRECT	UniProt
+Zm00001d045387	Zm00001eb377350	GO	GO:0006633	GO:0006633	fatty acid biosynthetic process	DIRECT	InterPro
+Zm00001d045387	Zm00001eb377350	GO	GO:0009507	GO:0009507	chloroplast	DIRECT	UniProt
+Zm00001d045387	Zm00001eb377350	GO	GO:0016297	GO:0016297	acyl-[acyl-carrier-protein] hydrolase activity	DIRECT	GO_Central
+Zm00001d045387	Zm00001eb377350	GO	GO:0016297	GO:0016297	acyl-[acyl-carrier-protein] hydrolase activity	DIRECT	InterPro
+Zm00001d045387	Zm00001eb377350	GO	GO:0016787	GO:0016787	hydrolase activity	DIRECT	UniProt

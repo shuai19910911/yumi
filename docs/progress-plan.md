@@ -1050,3 +1050,9 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 通俗解读：这一阶段检查的不是“图好不好看”，而是投稿前机器能判断的图件硬条件：Figure 1/2/3 是否都有 PNG/PDF/SVG，PNG 是否真是可读 PNG，分辨率是否足够，PDF/SVG 是否不是空文件。结果显示 3 张主图都通过机器技术检查，可以进入最终人工看图。
 
 阶段结论：机器侧图件技术 QA 通过；但最终投稿仍需要人工在期刊页面尺寸下确认文字是否清楚、标签是否重叠、配色是否合适。作者姓名/单位/基金/致谢/COI、GitHub release DOI/PID、chr6/chr9 外部数据库基因名确认仍未能由机器代替。
+
+### Stage 5.27 - External gene-name confirmation
+
+通俗解读：这一阶段把之前的“chr6/chr9 外部数据库基因名还要确认”往前推进了一步。我们下载并使用 MaizeGDB 官方 B73v4-to-B73v5 cross-reference，确认 `Zm00001d036982 -> Zm00001eb277490`、`Zm00001d045383 -> Zm00001eb377300`、`Zm00001d045387 -> Zm00001eb377350`。随后用 Ensembl/Gramene 侧 REST xrefs 检查这些 current IDs 的功能证据。
+
+阶段结论：外部证据支持 chr6 candidate 与 lipid/acyltransferase/DGAT-like biology 相关；chr9 需要继续谨慎写法，lead-host gene 是 `Zm00001d045383/Zm00001eb377300`，附近更有 fatty-acid pathway 注释的是 `Zm00001d045387/Zm00001eb377350`。因此最终稿应继续写 candidate interval，不写 causal gene、causal allele 或 validated gene。
