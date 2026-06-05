@@ -6,7 +6,7 @@
 
 ## 一句话总结
 
-我们已经把 ZEAMAP 玉米数据整理成一个可以建模的 `v0.1` accession-level 数据集，并完成了 baseline、trait 筛选、methylation 消融和 genotype 候选解释性分析。当前最可靠的主线不是大模型预训练，而是：
+我们已经把 ZEAMAP 玉米数据整理成一个可以建模的 `v0.1` accession-level 数据集，并完成了 baseline、trait 筛选、methylation 消融、genotype 候选解释性分析和 GEMMA mixed-linear-model GWAS。当前最可靠的主线不是大模型预训练，而是论文导向的 genotype-to-phenotype benchmark + oil-trait GWAS：
 
 ```text
 461 个 accession
@@ -15,7 +15,8 @@
 + phenotype/metabolome labels
 -> 用 ridge/ElasticNet 做 trait prediction benchmark
 -> 选出 66 个稳定可预测 traits
--> 后续做 genotype 侧解释和更严格 association
+-> 对 high-priority oil traits 做 GEMMA LMM GWAS
+-> 形成 lead SNP / candidate gene / figure / report
 ```
 
 ## 当前数据到底是什么
@@ -287,6 +288,88 @@ amino acid median Pearson/R2 = 0.367 / 0.131
 - 加 gene function annotation。
 - 对 oil traits 优先做 trait family-specific validation。
 
+## covariate-adjusted GWAS baseline 说明
+
+根据“所有工作都冲着论文做”的要求，我们又补了一版更正式的 GWAS baseline。
+
+这一步和前面的 attribution screen 不一样：
+
+- attribution screen 只是在 train split 里找稳定相关 SNP。
+- GWAS baseline 使用每个 trait 所有非缺失 accession。
+- phenotype 和 SNP dosage 都用 PC1-PC3、K1-K3 做 residualization。
+- 对 199,856 个 SNP 逐位点计算 association p-value。
+- 输出 Bonferroni、BH-FDR、LD clumped lead SNP、mapped gene、Manhattan 图和 QQ 图。
+
+结果：
+
+```text
+traits: 10 个 high-priority oil traits
+n per trait: 440
+SNPs: 199,856
+lambda GC: 2.41-3.97
+```
+
+怎么理解：
+
+- 这一步已经比“候选 screen”更接近论文 GWAS。
+- 但 lambda GC 很高，说明统计量膨胀明显。
+- 大量显著 SNP 不能直接理解为大量真实独立 loci。
+- 这通常来自亲缘关系、LD、群体结构残留或表型强分层。
+
+所以当前结论必须写成：
+
+```text
+covariate-adjusted GWAS baseline 已完成；
+但正式论文级 GWAS 需要 mixed linear model + kinship correction。
+```
+
+这一步现在只作为 diagnostic baseline 保留，用来说明为什么必须做 mixed model。
+
+## GEMMA LMM GWAS 说明
+
+我们已经把 GWAS 升级到 GEMMA mixed linear model。
+
+这一步比 covariate-only GWAS 更接近正式论文标准：
+
+- 用同一套 199,856 SNP 构建 genotype-derived kinship matrix。
+- 每个 oil trait 使用 440 个非缺失 accession。
+- 模型中同时加入 kinship 和 PC1-PC3、K1-K3 covariates。
+- 使用 GEMMA `p_lrt` 作为主 p-value。
+- 输出 Bonferroni、BH-FDR、LD clumped lead SNP、mapped gene、Manhattan 图和 QQ 图。
+
+核心结果：
+
+```text
+traits: 10 个 high-priority oil traits
+n per trait: 440
+SNPs: 199,856
+GEMMA LMM lambda GC: 0.984-1.018
+GEMMA LMM median lambda GC: 0.998
+```
+
+和 covariate-only GWAS 对比：
+
+```text
+covariate-only lambda GC: 2.41-3.97
+GEMMA LMM lambda GC:     0.984-1.018
+```
+
+这说明：
+
+- 之前 covariate-only 的大量显著位点主要包含很强的 inflation。
+- GEMMA kinship correction 后 QQ/lambda 明显更健康。
+- GEMMA LMM 才是当前能面向论文的 GWAS baseline。
+- lead SNP 数量从 covariate-only 的每 trait 数百到数千个，收敛到 GEMMA 的每 trait 1-21 个 Bonferroni hits，更符合真实 GWAS 的预期。
+
+现在可以写成：
+
+```text
+ZEAMAP v0.1 oil-trait GEMMA LMM GWAS 已完成；
+lambda GC 接近 1；
+lead loci 可进入 candidate-gene table 初稿；
+但 causal claim 仍需要功能注释、文献支持和最好独立/分层复现。
+```
+
 ## 当前可以相信的结论
 
 可以较放心使用：
@@ -296,11 +379,15 @@ amino acid median Pearson/R2 = 0.367 / 0.131
 - `genotype_population_ridge` 是当前最稳主模型。
 - oil traits 是当前最适合深入分析的 trait family。
 - methylation 不应作为 v0.1 主输入。
+- covariate-adjusted GWAS baseline 已跑通，并暴露出明显 inflation。
+- GEMMA LMM GWAS 已完成，lambda GC 接近 1，是当前论文主 GWAS baseline。
 
 需要谨慎使用：
 
 - methylation sparse selected features 只能作为候选解释表。
 - genotype attribution SNP/gene candidates 不是正式 GWAS 结果。
+- covariate-adjusted GWAS 的显著 SNP 数量不能直接当作真实独立位点数量。
+- GEMMA lead SNP 仍是 candidate locus，不是 causal variant。
 - metabolite/amino acid family 的结论弱于 oil family。
 
 不应该现在做：
@@ -309,13 +396,16 @@ amino acid median Pearson/R2 = 0.367 / 0.131
 - 把 B73/SK/HZS/Mo17 reference expression 当成 AMP accession expression。
 - 把 raw methylation gene-window features 加进主模型。
 - 宣称 genotype attribution candidates 是 causal genes。
+- 把 GEMMA lead SNP 直接写成 causal locus，而不做功能注释、LD/locus 解释和复现。
 
 ## 建议下一步
 
 优先级 1：
 
-- 做 oil traits 的严格 genotype association/attribution。
-- 加 population covariate correction、LD clumping 和候选基因注释。
+- 对 GEMMA LMM lead loci 做候选基因功能注释。
+- 做 oil/fatty-acid pathway 文献核查。
+- 画重点 loci 的局部 LD/locus 图。
+- 检查 GEMMA lead SNP 与 ridge attribution/gene-window signal 是否重叠。
 
 优先级 2：
 

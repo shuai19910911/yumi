@@ -1,0 +1,9 @@
+{
+  "raw_dir": "results/v0_1_baseline/gemma_v0_1",
+  "out_dir": "results/v0_1_baseline/gemma_lmm_v0_1",
+  "p_column": "",
+  "clump_window_bp": 250000,
+  "clump_r2": 0.2,
+  "max_leads_per_trait": 100,
+  "cis_bp": 10000
+}

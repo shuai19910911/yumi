@@ -4,7 +4,7 @@
 
 ## 建模对象
 
-第一阶段模型不是泛植物大模型，也不是直接上复杂多模态 transformer。当前 461 个强配对 accession 更适合先做 ZEAMAP 玉米 accession-level baseline benchmark，证明 genotype/population 对 phenotype/metabolome 是否有稳定可预测信号。
+第一阶段模型不是泛植物大模型，也不是直接上复杂多模态 transformer。当前 461 个强配对 accession 更适合先做 ZEAMAP 玉米 accession-level baseline benchmark，并把 high-priority oil traits 的 GEMMA mixed-linear-model GWAS 做到论文级候选位点/候选基因输出。
 
 主要实体：
 
@@ -82,7 +82,9 @@ batch = {
 - Gene/promoter/cis-window methylation PCA 带来小幅 R2 增益，但整体仍有限；下一步应做 trait-specific sparse gene/window feature selection，而不是增加模型复杂度。
 - Trait-specific sparse gene-window methylation ElasticNet 没有超过 gene methylation PCA，整体还低于 genotype+population baseline。当前 v0.1 不应把 raw methylation gene-window features 作为主输入；methylation 只保留为 auxiliary PCA、coverage mask、ablation 和候选解释表。
 - Final v0.1 benchmark 固化 `genotype_population_ridge` 为主模型：66 个 robust traits 的 median Pearson/R2 为 0.498/0.204，oil family 最强。下一步模型工作应转向 genotype attribution，而不是扩大 encoder/fusion 复杂度。
-- Genotype attribution screen 已输出 top 15 traits 的稳定 SNP/gene candidates；这些候选只能作为解释性假设，不能替代带 population covariate、LD clumping 和多重检验控制的正式 association analysis。
+- Genotype attribution screen 已输出 top 15 traits 的稳定 SNP/gene candidates；这些候选只能作为解释性假设。
+- Covariate-adjusted GWAS baseline 已证明 simple PC/K residualization 会产生明显 inflation，lambda GC 为 2.41-3.97。
+- GEMMA LMM GWAS 已完成 10 个 high-priority oil traits，使用 kinship + PC1-PC3/K1-K3 covariates，lambda GC 为 0.984-1.018，median 0.998。当前解释性主线应以 GEMMA lead SNP/gene table 为论文候选结果，ridge attribution 作为交叉支持。
 
 ### Genotype encoder
 
@@ -102,7 +104,7 @@ batch = {
 - baseline：PCA/SVD + ridge/elastic net。
 - 小模型：MLP 或 linear projection。
 - 后续：variant set transformer 或 gene-window attention。
-- 解释性路线：先用 train-split SNP-trait correlation 做候选筛选，再加入 population residualization、LD clumping、gene-window aggregation 和 permutation/FDR 控制。
+- 解释性路线：以 GEMMA LMM GWAS 作为主 association 层，输出 Bonferroni/FDR、LD-clumped lead SNP、B73 RefGen_v4 candidate genes、Manhattan/QQ 图；train-split SNP-trait correlation 和 ridge attribution 只作为辅助交叉证据。
 
 ### Expression encoder
 

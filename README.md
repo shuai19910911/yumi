@@ -2,7 +2,7 @@
 
 玉米 ZEAMAP 多组学预训练项目。
 
-当前目标是完成 `/home/user/zhangzhishuai/data/plantDB/pretraining_dataset_assessment.md` 中第一条“ZEAMAP/玉米”路线：以玉米自交系/accession 为样本单位，先构建 variation、metabolome/phenotype、population structure 和 epigenome coverage 的统一索引与 `v0.1` processed dataset，再做 baseline benchmark 判断是否有足够信号进入多模态建模。
+当前目标是完成 `/home/user/zhangzhishuai/data/plantDB/pretraining_dataset_assessment.md` 中第一条“ZEAMAP/玉米”路线：以玉米自交系/accession 为样本单位，构建 variation、metabolome/phenotype、population structure 和 epigenome coverage 的统一索引与 `v0.1` processed dataset，并按正式论文标准推进 oil-trait prediction benchmark、GEMMA mixed-linear-model GWAS、LD clumping 和 candidate-gene annotation。
 
 ## 数据源
 
@@ -198,10 +198,31 @@ v0.1 genotype attribution screen：
 - 输出：每个 trait top 50 SNP 候选，共 750 行；其中 674 个 SNP 在 5 个 seeds 都被选中，488 个候选落在 gene body
 - 结论：这是候选解释性 screen，不是正式 GWAS；下一步如果继续解释性，应做更严格的 association model、LD clumping 和候选基因注释。
 
+v0.1 covariate-adjusted GWAS baseline：
+
+- 运行脚本：`scripts/run_zeamap_v0_1_population_corrected_association.py`
+- 报告：`docs/2026-06-05-zeamap-v0-1-gwas-baseline-report.md`
+- 输入：10 个 high-priority oil traits，440 个有 oil phenotype 的 accessions，199,856 个 SNP
+- 方法：phenotype 和 SNP dosage 同时 residualize PC1-PC3 + K1-K3，逐 SNP association，Bonferroni/FDR，LD clumping，B73 gene mapping，Manhattan/QQ 图
+- 结果：所有 oil traits 都有大量 nominal/genome-wide hits，但 lambda GC 很高（2.41-3.97）
+- 论文判断：这一步是可复现 GWAS baseline，但还不是最终论文级 GWAS；必须升级到 GEMMA/EMMAX/GAPIT 等 mixed-linear-model + kinship 校正后，才能把 lead loci 写成 manuscript candidate loci。
+
+v0.1 GEMMA LMM GWAS：
+
+- 运行脚本：`scripts/prepare_zeamap_v0_1_gemma_inputs.py`
+- Slurm 脚本：`scripts/slurm/run_zeamap_v0_1_gemma_lmm.sh`、`scripts/slurm/run_zeamap_v0_1_gemma_lmm_missing_array.sh`
+- 汇总脚本：`scripts/summarize_zeamap_v0_1_gemma_lmm.py`
+- 报告：`docs/2026-06-05-zeamap-v0-1-gemma-lmm-report.md`
+- 输入：10 个 high-priority oil traits，440 个有 oil phenotype 的 accessions，199,856 个 SNP
+- 方法：GEMMA LMM + genotype-derived kinship + PC1-PC3/K1-K3 covariates，使用 `p_lrt`，Bonferroni/FDR，LD clumping，B73 RefGen_v4 gene mapping，Manhattan/QQ 图
+- 结果：lambda GC 0.984-1.018，median 0.998；相比 covariate-only GWAS 的 lambda GC 2.41-3.97，inflation 基本消除。
+- 论文判断：GEMMA LMM 是当前 manuscript-facing GWAS baseline；lead loci 可以进入候选表，但仍需功能注释、文献核查和最好独立/分层复现后再写强 causal claim。
+
 核心任务：
 
 - v0.1 baseline benchmark：用 genotype PCA/regularized models + population covariates 预测 phenotype/metabolome。
 - trait 可预测性筛选：按 R2、Pearson、Spearman、缺失率和有效样本数筛出稳定 trait。
+- 论文级 oil-trait GWAS：以 GEMMA LMM 结果作为主 GWAS，covariate-only GWAS 只作为 inflation diagnostic baseline。
 - 小模型优先：当前 461 个 accession 适合 ridge/elastic net、population-only 对照、轻量 MLP，不适合直接训练大型多模态 transformer。
 - epigenome 后置：236 个 methylation-covered accession 适合做 missing-modality/coverage mask、PCA 辅助特征和消融实验，暂不作为 v0.1 主训练输入。
 - phenotype-aware pretraining：仅在 baseline 证明有足够信号后，作为下一阶段弱监督或多任务学习目标。

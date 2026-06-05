@@ -4,14 +4,14 @@
 
 ## 项目定位
 
-本项目第一阶段只做 ZEAMAP/玉米，不扩展到油菜、茶树、大豆或水稻。当前样本量适合做 accession-level 可行性验证、baseline benchmark 和 trait 可预测性筛选；暂不把目标设为直接训练大规模多模态预训练模型。
+本项目第一阶段只做 ZEAMAP/玉米，不扩展到油菜、茶树、大豆或水稻。当前目标不是停留在探索性分析，而是把 ZEAMAP oil-trait prediction benchmark 和 GWAS 按正式论文标准推进：可复现数据集、严格 population/kinship correction、LD clumping、candidate-gene annotation、图表和报告同步产出。当前样本量不适合直接训练大规模多模态 transformer，但足够支撑论文导向的 genotype-to-phenotype benchmark 和 high-priority oil-trait MLM GWAS。
 
 阶段性判断：
 
 - `v0.1` 有 461 个强配对 accession，适合训练和评估小模型 baseline。
 - genotype 维度远大于样本数，必须先做降维、正则化或特征筛选。
 - methylation 有 236 个 accession 覆盖，适合后续 missing-modality 或抽样实验，不作为 `v0.1` 主训练输入。
-- 当前第一目标是证明 ZEAMAP processed data 支持 genotype/population 到 phenotype/metabolome 的可预测信号，而不是追求复杂模型结构。
+- 当前第一目标是形成可写入论文方法和结果的 v0.1 benchmark + GEMMA LMM GWAS 主线，而不是追求复杂模型结构。
 
 ## 阶段 0：数据下载清单确认
 
@@ -464,6 +464,84 @@ notes
 
 - 该结果是候选解释性 screen，不是正式 GWAS。
 - 后续如果继续解释性，应加入 LD clumping、population covariate residualization/permutation、候选基因功能注释和 trait family-specific validation。
+
+### 阶段 5.2：covariate-adjusted GWAS baseline
+
+状态：已完成，作为 inflation diagnostic baseline 保留。
+
+目标：把 genotype 解释性分析从 train-split correlation screen 推进到可复现 GWAS baseline：使用所有有 phenotype 的 accession，控制 population covariates，输出 genome-wide p-value、Bonferroni/FDR、LD clumped lead SNP、gene mapping、Manhattan/QQ 图。
+
+输入：
+
+- 10 个 high-priority oil traits。
+- 每个 trait 有 440 个非缺失 accession。
+- 199,856 个 SNP。
+- covariates：PC1、PC2、PC3、K1、K2、K3。
+
+产出：
+
+- `scripts/run_zeamap_v0_1_population_corrected_association.py`
+- `scripts/slurm/run_zeamap_v0_1_population_corrected_association.sh`
+- `results/v0_1_baseline/gwas_v0_1/gwas_summary.tsv`
+- `results/v0_1_baseline/gwas_v0_1/gwas_lead_snps.tsv`
+- `results/v0_1_baseline/gwas_v0_1/gwas_gene_summary.tsv`
+- `results/v0_1_baseline/gwas_v0_1/figures/*.png`
+- `docs/2026-06-05-zeamap-v0-1-gwas-baseline-report.md`
+
+结果：
+
+- 所有 10 个 oil traits 都有 Bonferroni-level hits。
+- 最小 p-value 达到 `2.76e-54` 到 `6.30e-21`。
+- 但 lambda GC 为 2.41-3.97，明显偏高。
+- 这说明 PC/K covariate correction 不足以完全控制亲缘关系、LD 或残余群体结构。
+
+结论：
+
+- 该结果可以作为论文导向的 v0.1 GWAS baseline 和工具链验证。
+- 不能直接作为最终论文 GWAS 结论。
+- 下一步已升级到 mixed-linear-model/kinship GWAS。
+- 只有在 MLM 后仍稳定的 loci 才能进入 manuscript candidate-gene table。
+
+### 阶段 5.3：GEMMA mixed-linear-model GWAS
+
+状态：已完成 v0.1 oil-trait manuscript-facing GWAS baseline。
+
+目标：用 genotype-derived kinship matrix 和 population covariates 控制亲缘关系/群体结构，替代 covariate-only GWAS 作为当前论文主 GWAS 结果。
+
+输入：
+
+- 10 个 high-priority oil traits。
+- 每个 trait 有 440 个非缺失 accession。
+- 199,856 个 SNP。
+- covariates：intercept、PC1、PC2、PC3、K1、K2、K3。
+- kinship：GEMMA centered relatedness matrix，由同一套 filtered SNP 构建。
+
+产出：
+
+- `scripts/prepare_zeamap_v0_1_gemma_inputs.py`
+- `scripts/slurm/run_zeamap_v0_1_gemma_lmm.sh`
+- `scripts/slurm/run_zeamap_v0_1_gemma_lmm_missing_array.sh`
+- `scripts/summarize_zeamap_v0_1_gemma_lmm.py`
+- `results/v0_1_baseline/gemma_lmm_v0_1/gemma_lmm_summary.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/gemma_lmm_lead_snps.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/gemma_lmm_gene_summary.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/figures/*.png`
+- `docs/2026-06-05-zeamap-v0-1-gemma-lmm-report.md`
+
+结果：
+
+- GEMMA p-value 使用 `p_lrt`。
+- lambda GC range：0.984-1.018，median：0.998。
+- covariate-only GWAS lambda GC range：2.41-3.97。
+- GEMMA LMM 后 Bonferroni hits 明显收敛：每 trait 1-21 个，而 covariate-only baseline 为 635-4316 个。
+- 最强 trait-locus 例子：`agri_aa_oil__Oil_C200_C220` min p-value `2.35e-25`；`agri_aa_oil__Oil_C18_1` min p-value `4.55e-19`。
+
+结论：
+
+- GEMMA LMM 有效消除了 covariate-only GWAS 的统计膨胀，是当前可作为论文主线的 GWAS baseline。
+- lead SNP/gene 表可以作为 manuscript candidate loci 初稿。
+- 还不能直接写 causal claim；下一步需要候选基因功能注释、已知 oil/fatty-acid pathway 文献核查、局部 LD/locus 图，以及尽可能做外部或分层复现。
+- 计算执行经验：不要再用单作业串行跑多个 trait；后续 GWAS 使用 SLURM array，并直接调用 `yumi` 环境中的 `python/gemma`，避免并行 `mamba run` lock。
 
 进入条件：
 

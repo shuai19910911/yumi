@@ -1,0 +1,11 @@
+{
+  "trait_family": "oil",
+  "priority_tier": "high",
+  "max_traits": 10,
+  "covariates": "PC1,PC2,PC3,K1,K2,K3",
+  "clump_window_bp": 250000,
+  "clump_r2": 0.2,
+  "max_leads_per_trait": 100,
+  "cis_bp": 10000,
+  "reuse_per_trait": true
+}
