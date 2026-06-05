@@ -47,7 +47,8 @@
 | 阶段 5.21 targeted fatty-acid literature support | 已完成初版 | 已输出 chr6/chr9 文献证据表、source ledger、claim audit、manuscript insert 和 ARS domain review |
 | 阶段 5.22 manuscript claim-language audit and expansion | 已完成初版 | 已输出整合稿、change log、claim-language audit、section word counts 和 ARS integrated review |
 | 阶段 5.23 final bibliography/gene-model verification | 已完成初版 | 已输出 Crossref DOI audit、stale reference corrections、chr6/chr9 gene-model mapping audit 和 ARS integrity review |
-| 阶段 5.24 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
+| 阶段 5.24 citation-integrated manuscript | 已完成初版 | 已输出带正文引用和 References 实体列表的新整合稿、citation coverage audit 和 ARS citation review |
+| 阶段 5.25 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
 
 ## 当前最重要的数字
 
@@ -1024,3 +1025,16 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 - 本地 RefGen_v4 坐标支持 chr6 `Zm00001d036982` 和 chr9 `Zm00001d045383`/nearby `Zm00001d045387` 的候选区间表述。
 
 这一步完成后，当前稿件的参考文献风险明显降低，但仍不能宣布最终投稿完成。剩余问题是 target-journal reference style、作者/单位/基金/COI、最终图件人工确认、GitHub release/DOI。
+
+## 阶段 5.24：citation-integrated manuscript
+
+这一步解决一个投稿格式硬伤：Stage 5.22 的稿件虽然内容完整，但 References 部分只是指向 reference-list draft，正文也缺少正式 citation marker。Stage 5.24 生成了一个新的 citation-integrated manuscript，把 Stage 5.23 修正后的参考文献真正嵌入稿件，并在正文补上资源、方法、候选基因解释和软件引用。
+
+主要结论：
+
+- 18 条 reference 现在都在正文有对应引用。
+- Alrefai、Katral、Zhang 的修正被继承到新稿件。
+- claim-language audit 没有 blocking overclaim。
+- chr6/chr9 仍按 candidate interval 表述，不写 causal gene/allele。
+
+这一步后，稿件已经更接近投稿形态。剩余硬门槛仍是作者信息、最终图件人工确认、target-journal reference style、MaizeGDB/Gramene gene-name 最终核验和 release/DOI。
