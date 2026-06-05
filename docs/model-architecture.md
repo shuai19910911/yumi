@@ -180,6 +180,25 @@ GEMMA lead SNP
 -> manuscript figure/table
 ```
 
+Stage 5.4 已完成第一版 manuscript candidate locus layer：
+
+```text
+GEMMA lead SNPs
+-> 1 Mb physical locus merge
+-> B73 RefGen_v4 gene description
+-> Bonferroni/FDR/suggestive class
+-> ridge attribution overlap
+-> functional keyword class
+-> Nature-style summary figure
+```
+
+当前输出：
+
+- manuscript candidate loci：184。
+- manuscript candidate genes：147。
+- lipid/fatty-acid keyword loci：11。
+- ridge-supported manuscript loci：63。
+
 注意：
 
 - GEMMA lead SNP 是 candidate locus，不是 causal variant。

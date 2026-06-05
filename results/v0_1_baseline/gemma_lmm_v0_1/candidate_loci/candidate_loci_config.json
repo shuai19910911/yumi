@@ -1,0 +1,9 @@
+{
+  "gemma_dir": "/home/user/zhangzhishuai/myhermes/yumi/results/v0_1_baseline/gemma_lmm_v0_1",
+  "covariate_gwas_dir": "/home/user/zhangzhishuai/myhermes/yumi/results/v0_1_baseline/gwas_v0_1",
+  "gff": "/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/reference/B73_RefGen_v4/Zea_mays.B73_RefGen_v4.47.chr.gff3.gz",
+  "out_dir": "/home/user/zhangzhishuai/myhermes/yumi/results/v0_1_baseline/gemma_lmm_v0_1/candidate_loci",
+  "fig_dir": "/home/user/zhangzhishuai/myhermes/yumi/results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures",
+  "locus_window_bp": 1000000,
+  "suggestive_p": 1e-05
+}

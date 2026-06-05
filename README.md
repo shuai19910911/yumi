@@ -138,6 +138,27 @@ amino acid median Pearson/R2 = 0.367 / 0.131
 - GEMMA LMM 是当前可面向论文的 GWAS 主结果。
 - lead SNP/gene 可以进入 candidate table 初稿，但还不能直接写成 causal variant。
 
+### 4. GEMMA candidate loci 注释
+
+已把 GEMMA lead SNP 整理成论文候选 locus/gene 表：
+
+- manuscript candidate loci：184 个，不含 nominal-only loci。
+- manuscript candidate genes：147 个。
+- Bonferroni loci：38 个。
+- FDR loci：131 个。
+- suggestive loci：15 个。
+- 有 ridge attribution 交叉支持的 manuscript loci：63 个。
+- 有 lipid/fatty-acid keyword 的 manuscript loci：11 个。
+- 功能注释来源：B73 RefGen_v4 Ensembl/Gramene GFF3 gene description。
+- 图：已生成 Nature 风格 PDF/SVG/PNG summary figure。
+
+输出目录：
+
+```text
+results/v0_1_baseline/gemma_lmm_v0_1/candidate_loci/
+results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures/
+```
+
 ## 重要文件入口
 
 适合先读：
@@ -152,18 +173,18 @@ amino acid median Pearson/R2 = 0.367 / 0.131
 - `docs/2026-06-04-zeamap-v0-1-build-report.md`
 - `docs/2026-06-05-zeamap-v0-1-final-benchmark.md`
 - `docs/2026-06-05-zeamap-v0-1-gemma-lmm-report.md`
+- `docs/2026-06-05-zeamap-v0-1-gemma-candidate-loci-report.md`
 - `docs/2026-06-05-zeamap-v0-1-epigenome-decision.md`
 
 ## 下一步
 
 下一步不应该继续加模型复杂度，而应该把 GWAS 结果整理成论文可用结果：
 
-1. 整理 GEMMA lead loci。
-2. 给 lead SNP 匹配 candidate gene。
-3. 补充 gene function annotation。
-4. 查 oil/fatty-acid pathway 和已知 maize QTL/GWAS 文献。
-5. 画 Manhattan、QQ、局部 locus/LD 图。
-6. 检查 GEMMA lead loci 和 ridge attribution 候选是否重叠。
+1. 对 top Bonferroni lipid/fatty-acid loci 做文献核查。
+2. 查 oil/fatty-acid pathway 和已知 maize QTL/GWAS 文献。
+3. 画重点 locus 的局部 locus/LD 图。
+4. 形成论文主表和补充表。
+5. 对缺少 GFF description 的 candidate genes 补 MaizeGDB/UniProt/Gramene 注释。
 
 ## 暂不做的事
 

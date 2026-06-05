@@ -360,3 +360,45 @@ lead SNP
 6. 检查 GEMMA lead loci 和 ridge attribution candidates 是否重叠。
 
 这样才能从“我们跑了 GWAS”变成“我们有论文候选位点和候选基因”。
+
+## 13. lead loci 注释现在完成了什么
+
+Stage 5.4 已经完成第一版。
+
+做法：
+
+- 把 GEMMA lead SNP 按 trait、染色体和物理距离合并成 locus。
+- 从 B73 RefGen_v4 GFF3 里提取 gene description 和 biotype。
+- 标注 Bonferroni、FDR、suggestive 和 nominal 等级。
+- 输出完整 candidate loci 表，也输出排除 nominal-only 的 manuscript candidate loci 表。
+- 检查 GEMMA candidate genes 是否和 ridge attribution screen 重叠。
+- 自动标注 lipid/fatty-acid、seed、transport/membrane、hormone/regulatory 等功能关键词。
+- 生成 Nature 风格 summary figure，包含 PDF、SVG、PNG。
+
+结果：
+
+```text
+manuscript candidate loci = 184
+manuscript candidate genes = 147
+Bonferroni loci = 38
+FDR loci = 131
+suggestive loci = 15
+ridge-supported manuscript loci = 63
+lipid/fatty-acid keyword loci = 11
+```
+
+怎么理解：
+
+- 这 184 个 loci 是下一步论文候选表的基础。
+- 其中 11 个带 lipid/fatty-acid 关键词的 loci 应该优先查文献。
+- 63 个同时有 ridge attribution 支持，说明它们不只是 GWAS 统计信号，也和预测模型解释性结果有交叉。
+- 仍然不能写 causal claim，只能写 candidate locus/candidate gene。
+
+下一步变成：
+
+```text
+从 184 个 manuscript candidate loci 中筛重点
+-> 查文献
+-> 画局部 locus/LD 图
+-> 形成论文主表和补充表
+```

@@ -27,7 +27,8 @@
 | 阶段 5.1 genotype attribution screen | 已完成 | 得到候选 SNP/gene，但不是正式 GWAS |
 | 阶段 5.2 covariate-only GWAS | 已完成 | lambda GC 过高，只作诊断 |
 | 阶段 5.3 GEMMA LMM GWAS | 已完成 | lambda GC 接近 1，可作为论文主 GWAS baseline |
-| 阶段 5.4 GEMMA lead loci 注释 | 下一步 | 需要做 candidate gene、功能注释、locus 图和文献核查 |
+| 阶段 5.4 GEMMA lead loci 注释 | 已完成初版 | 已输出 manuscript candidate loci/gene 表和 Nature 风格 summary figure |
+| 阶段 5.5 重点 locus 文献核查和局部图 | 下一步 | 对 lipid/fatty-acid top loci 做文献注释、locus/LD 图和论文主表 |
 
 ## 当前最重要的数字
 
@@ -59,6 +60,10 @@ covariate-only GWAS lambda GC: 2.41-3.97
 GEMMA LMM GWAS lambda GC: 0.984-1.018
 GEMMA LMM median lambda GC: 0.998
 GEMMA Bonferroni hits per oil trait: 1-21
+manuscript candidate loci: 184
+manuscript candidate genes: 147
+lipid/fatty-acid keyword loci: 11
+ridge-supported manuscript loci: 63
 ```
 
 ## 阶段 0：数据下载与检查
@@ -397,23 +402,50 @@ GEMMA LMM lambda GC       = 0.984-1.018
 
 - `docs/2026-06-05-zeamap-v0-1-gemma-lmm-report.md`
 
-## 阶段 5.4：下一步任务
+## 阶段 5.4：GEMMA lead loci 注释
 
-状态：待开始。
+状态：已完成初版。
 
 目标：
 
 把 GEMMA lead SNP 变成论文能用的 candidate locus/candidate gene 结果。
 
-需要做：
+已完成：
 
-1. 整理每个 oil trait 的 lead SNP。
-2. 合并相近 lead SNP 为 locus。
-3. 给每个 locus 匹配 candidate gene。
-4. 补 gene function annotation。
-5. 查 oil/fatty-acid pathway、maize oil QTL/GWAS 文献。
-6. 画重点 locus 的局部 LD/locus 图。
-7. 检查 GEMMA lead loci 和 ridge attribution candidates 是否重叠。
+1. 整理每个 oil trait 的 GEMMA lead SNP。
+2. 按同一 trait、同一染色体、相邻 lead SNP 距离 1 Mb 合并为 locus。
+3. 给 locus 匹配 candidate gene。
+4. 从 B73 RefGen_v4 Ensembl/Gramene GFF3 提取 gene description 和 biotype。
+5. 标注 Bonferroni、FDR、suggestive、nominal 等显著等级。
+6. 输出 manuscript-facing 表，排除 nominal-only loci。
+7. 标注和 ridge attribution screen 的 gene/SNP overlap。
+8. 自动标注 lipid/fatty-acid、seed、transport/membrane、hormone/regulatory 等功能关键词。
+9. 生成 Nature 风格 summary figure，输出 PDF/SVG/PNG。
+
+结果：
+
+- 完整 candidate loci：795 个。
+- manuscript candidate loci：184 个。
+- manuscript candidate genes：147 个。
+- Bonferroni loci：38 个。
+- FDR loci：131 个。
+- suggestive loci：15 个。
+- 有 ridge attribution 支持的 manuscript loci：63 个。
+- 有 lipid/fatty-acid keyword 的 manuscript loci：11 个。
+- manuscript candidate gene rows 缺少 GFF description：22 行。
+
+产出：
+
+- `scripts/build_zeamap_v0_1_gemma_candidate_loci.py`
+- `results/v0_1_baseline/gemma_lmm_v0_1/candidate_loci/gemma_candidate_loci.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/candidate_loci/gemma_manuscript_candidate_loci.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/candidate_loci/gemma_candidate_genes.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/candidate_loci/gemma_manuscript_candidate_genes.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/candidate_loci/gemma_candidate_lead_snps_annotated.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures/figure_gemma_lmm_summary_nature.pdf`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures/figure_gemma_lmm_summary_nature.svg`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures/figure_gemma_lmm_summary_nature.png`
+- `docs/2026-06-05-zeamap-v0-1-gemma-candidate-loci-report.md`
 
 成功标准：
 
@@ -421,6 +453,29 @@ GEMMA LMM lambda GC       = 0.984-1.018
 - 表中区分 genome-wide significant、FDR significant 和 suggestive loci。
 - 图表可以进入论文结果草稿。
 - 所有结论都保持 candidate locus 口径，不写成 causal variant。
+
+## 阶段 5.5：重点 locus 文献核查和局部图
+
+状态：下一步。
+
+目标：
+
+从 184 个 manuscript candidate loci 中优先挑出最适合写论文主结果的 top loci。
+
+优先级：
+
+1. Bonferroni significant。
+2. 有 lipid/fatty-acid keyword。
+3. 有 ridge attribution overlap。
+4. 多个 oil traits 共定位。
+5. gene description 可解释。
+
+需要做：
+
+- 对 top loci 查 maize oil/fatty-acid/QTL/GWAS 文献。
+- 对缺少 GFF description 的候选基因补 MaizeGDB、UniProt、Gramene 或 Ensembl BioMart 注释。
+- 画重点 locus 的 regional association/locus/LD 图。
+- 输出论文主候选表和补充候选表。
 
 ## GitHub 更新规则
 

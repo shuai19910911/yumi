@@ -81,8 +81,8 @@ large-scale plant multi-omics foundation model
 | genotype attribution screen | 中 | 可作为候选解释，不能作为正式 GWAS |
 | covariate-only GWAS | 中 | 工具链完成，但 inflation 高 |
 | GEMMA LMM GWAS | 中高 | 当前论文主 GWAS baseline 已完成 |
-| candidate gene annotation | 低 | 下一步要做 |
-| manuscript figures | 低到中 | Manhattan/QQ 有了，locus 图和汇总图还缺 |
+| candidate gene annotation | 中 | 已完成 GFF description 初版，文献注释还缺 |
+| manuscript figures | 中 | Nature 风格 GWAS summary figure 已有，重点 locus/LD 图还缺 |
 
 ## 当前最大优势
 
@@ -145,9 +145,8 @@ ridge/ElasticNet 优于 small MLP，这和样本量、特征维度关系一致�
 
 ### 风险 3：candidate locus 还没有生物学解释
 
-GEMMA 已经给出 lead SNP，但还缺：
+GEMMA 已经给出 lead SNP，Stage 5.4 也已整理出 manuscript candidate loci 和 GFF description。但还缺更强的生物学解释：
 
-- candidate gene function
 - oil/fatty-acid pathway support
 - 已知 maize QTL/GWAS 文献对照
 - locus/LD 图
@@ -196,8 +195,8 @@ expression 不是 AMP accession-level，methylation 只有 236 个 accession。
 
 适合继续做：
 
-- GEMMA lead loci 注释。
-- candidate gene 功能解释。
+- top GEMMA candidate loci 文献注释。
+- 缺失/泛化 gene description 的外部注释补充。
 - oil/fatty-acid pathway 文献核查。
 - locus/LD 图。
 - final benchmark 图表整理。
@@ -211,27 +210,52 @@ expression 不是 AMP accession-level，methylation 只有 236 个 accession。
 - 把 methylation raw features 强行加进主模型。
 - 把 expression 文件强行配到 AMP accession。
 
+## 已完成的新阶段：Stage 5.4
+
+Stage 5.4 已完成第一版 GEMMA lead loci annotation。
+
+结果：
+
+```text
+manuscript candidate loci = 184
+manuscript candidate genes = 147
+Bonferroni loci = 38
+FDR loci = 131
+suggestive loci = 15
+ridge-supported manuscript loci = 63
+lipid/fatty-acid keyword loci = 11
+```
+
+产出：
+
+- `results/v0_1_baseline/gemma_lmm_v0_1/candidate_loci/gemma_manuscript_candidate_loci.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/candidate_loci/gemma_manuscript_candidate_genes.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures/figure_gemma_lmm_summary_nature.pdf`
+- `docs/2026-06-05-zeamap-v0-1-gemma-candidate-loci-report.md`
+
+评估：
+
+这一步把 GEMMA 统计结果推进到了论文候选表初稿。功能注释现在来自 B73 RefGen_v4 GFF3，已经足够做第一轮筛选，但还需要对重点 locus 做 MaizeGDB/UniProt/Gramene/文献层面的增强注释。
+
 ## 下一阶段目标
 
 下一阶段建议命名为：
 
 ```text
-Stage 5.4: GEMMA lead loci annotation and paper figure preparation
+Stage 5.5: top locus literature annotation and regional figure preparation
 ```
 
 目标：
 
-把 GEMMA GWAS 的统计结果整理成论文可用的候选基因和图表。
+把 184 个 manuscript candidate loci 缩小成论文主结果中的重点 locus，并补足文献证据和局部图。
 
 具体任务：
 
-1. 从 `gemma_lmm_lead_snps.tsv` 提取每个 trait 的 lead SNP。
-2. 按 LD 或物理距离合并成 locus。
-3. 给每个 locus 匹配 candidate gene。
-4. 补充 gene annotation、GO/pathway、known maize ortholog/function。
-5. 查 oil/fatty-acid/seed metabolism 文献。
-6. 画每个重点 trait 的 Manhattan/QQ/locus panel。
-7. 输出 manuscript-facing candidate loci table。
+1. 优先挑 Bonferroni + lipid/fatty-acid keyword + ridge-supported loci。
+2. 对这些 genes 查 MaizeGDB、UniProt、Gramene、Ensembl 和论文。
+3. 标注是否与已知 oil/fatty-acid/seed metabolism/QTL/GWAS 证据重叠。
+4. 画重点 locus 的 regional association/locus/LD panel。
+5. 输出论文主 candidate loci table 和补充全量 table。
 
 成功标准：
 
