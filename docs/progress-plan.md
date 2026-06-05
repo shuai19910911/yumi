@@ -36,7 +36,8 @@
 | 阶段 5.10 manuscript polish round 2 | 已完成初版 | 已输出 polished manuscript、reference list、Methods parameter supplement 和 ARS self-review |
 | 阶段 5.11 external annotation hardening | 已完成初版 | 已输出 top regional loci 外部注释硬化表和投稿就绪度评估 |
 | 阶段 5.12 final manuscript assembly | 已完成初版 | 已输出目标期刊稿件组装、supplement column dictionary、figure audit 和 data/code availability |
-| 阶段 5.13 final submission gate | 下一步 | DOI/reference audit、cover letter、最终图件人工检查、仓库 release/DOI 策略 |
+| 阶段 5.13 final submission gate | 已完成初版 | 已输出 DOI/reference audit、cover letter、reviewer profiles、release plan 和 final gate audit |
+| 阶段 5.14 human metadata and release finalization | 下一步 | 作者/单位/基金/利益冲突、命名审稿人、GitHub release/DOI、最终人工图件检查 |
 
 ## 当前最重要的数字
 
@@ -98,6 +99,11 @@ Target-journal manuscript assembly: 1 file
 Supplementary column dictionary: 1 file
 Figure quality audit: 1 file
 Data/code availability draft: 1 file
+Reference DOI audit: 1 file
+Cover letter draft: 1 file
+Reviewer suggestion draft: 1 file
+Repository release plan: 1 file
+Final submission gate audit: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -763,3 +769,20 @@ Stage 5.9-5.10 打磨后：55-75%
 - 完成 reviewer suggestion / opposed reviewer 草稿。
 - 检查 Figure 1-3 最终版视觉质量。
 - 明确 GitHub release、Zenodo/Figshare DOI 或 data availability 方案。
+
+
+## 阶段 5.14：human metadata and release finalization
+
+状态：下一步。
+
+目标：
+
+把已经完成的 near-submission package 转成可由作者确认并实际上传的最终投稿文件。
+
+需要人工信息：
+
+- 作者名单、单位和通讯作者。
+- 基金、致谢和利益冲突。
+- 命名审稿人和回避审稿人。
+- GitHub release/Zenodo DOI 是否执行。
+- Figure 1-3 最终人工视觉确认。
