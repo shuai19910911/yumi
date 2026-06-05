@@ -613,3 +613,69 @@ Results draft 已经写出四段主逻辑：
 4. candidate-claim boundaries 明确不写 causal variant。
 
 这已经是论文结果段落的雏形。下一步是把它扩展成完整 manuscript Results，并配 Figure 1-3。
+
+## 23. Stage 5.7 又完成了什么
+
+Stage 5.7 已经把论文骨架往前推进了一步。
+
+现在不只是有 Results 初稿，还有：
+
+```text
+Methods 草稿
+Figure 1 主图初版
+Figure 2 主图计划
+Figure 3 主图初版
+Figure 1-3 captions 初稿
+```
+
+Figure 1 讲的是：
+
+```text
+数据怎么整理成 v0.1
+样本/trait/SNP 规模
+为什么 ridge 比 small MLP 更适合
+为什么 oil traits 是主线
+```
+
+Figure 2 讲的是：
+
+```text
+covariate-only GWAS inflation 高
+GEMMA LMM 把 lambda GC 控制到接近 1
+GEMMA candidate loci 可以作为论文主 GWAS 结果
+```
+
+Figure 3 讲的是：
+
+```text
+chr6 Zm00001d036982 / linoleic acid1 是最强多 trait candidate interval
+chr9 C16:0 区域包含 fatty acyl-ACP thioesterase2 候选
+```
+
+## 24. 下一步为什么是 manuscript skeleton
+
+现在材料已经分散在几个文件里：
+
+- Results draft
+- Methods draft
+- figure captions draft
+- main/supp tables
+- Figure 1-3
+
+下一步 Stage 5.8 应该把这些合并成一个 manuscript skeleton。
+
+也就是：
+
+```text
+Title
+Abstract placeholder
+Introduction draft
+Results
+Methods
+Figure captions
+Table captions
+Discussion outline
+Limitations
+```
+
+这样项目就从“分析结果”进入“论文草稿”阶段。

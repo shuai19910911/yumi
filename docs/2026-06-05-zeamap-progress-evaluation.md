@@ -84,6 +84,7 @@ large-scale plant multi-omics foundation model
 | candidate gene annotation | 中高 | 已完成 GFF description、top loci priority 和 Stage 5.6 evidence table；逐基因外部数据库注释还需补强 |
 | manuscript figures | 中高 | Nature 风格 GWAS summary figure 和 8 个 regional locus/LD 图已有初版 |
 | manuscript tables/results | 中高 | 已输出 top regional evidence table、tier1 主表、184 loci 补充表和 Results draft |
+| manuscript methods/figures | 中高 | 已输出 Methods draft、Figure 1、Figure 3、figure plan 和 captions draft |
 
 ## 当前最大优势
 
@@ -320,26 +321,50 @@ D statistical candidate = 1 region
 - A 级表示强候选证据，不代表 causal gene 已被本研究证明。
 - 仍需补 MaizeGDB/UniProt/Gramene 的逐基因注释。
 
+## 已完成的新阶段：Stage 5.7
+
+Stage 5.7 已完成 Methods 草稿和主图整合初版。
+
+结果：
+
+```text
+Methods draft = 1 file
+Figure 1 = PDF/SVG/PNG
+Figure 3 = PDF/SVG/PNG
+Figure plan = 1 file
+Figure captions draft = 1 file
+```
+
+评估：
+
+这一步把项目从“有结果和表格”推进到“能组装论文骨架”。Figure 1 负责讲数据和预测 benchmark，Figure 2 负责讲 GEMMA GWAS calibration 和 candidate loci，Figure 3 负责讲 chr6/chr9 两个重点区域。
+
+风险：
+
+- Figure 1/3 是主图初版，投稿前还要继续视觉微调。
+- Figure 2 暂时沿用 Stage 5.4 summary figure，后续可能需要按最终叙事重新排版。
+- Methods draft 还需要和最终 manuscript skeleton 统一格式和术语。
+
 ## 下一阶段目标
 
 下一阶段建议命名为：
 
 ```text
-Stage 5.7: Methods drafting and main-figure assembly
+Stage 5.8: manuscript skeleton assembly
 ```
 
 目标：
 
-把当前结果组织成正式论文骨架：Methods 草稿、Figure 1-3 多面板图和更完整 Results。
+把 Results draft、Methods draft、figures、tables 和 captions 合并成正式论文骨架。
 
 具体任务：
 
-1. 写 dataset construction Methods。
-2. 写 prediction benchmark Methods。
-3. 写 GEMMA LMM GWAS Methods。
-4. 写 candidate-locus annotation 和 evidence-level Methods。
-5. 组织 Figure 1-3。
-6. 把 Results draft 扩展成正式 Results。
+1. 写 Introduction 草稿。
+2. 合并 Results draft 和 Methods draft。
+3. 加入 Figure 1-3 captions。
+4. 加入 Table 1 和 Supplementary Table captions。
+5. 写 Discussion outline。
+6. 明确 limitations 和 candidate-locus claim boundary。
 
 成功标准：
 

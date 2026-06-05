@@ -30,7 +30,8 @@
 | 阶段 5.4 GEMMA lead loci 注释 | 已完成初版 | 已输出 manuscript candidate loci/gene 表和 Nature 风格 summary figure |
 | 阶段 5.5 top locus 优先级和局部图 | 已完成初版 | 已输出 top loci 排序、seed literature evidence 和 8 个 regional locus/LD/gene-track figures |
 | 阶段 5.6 论文主表和 Results 初稿 | 已完成初版 | 已输出 top regional evidence table、tier1 主表、184 loci 补充表和 Results draft |
-| 阶段 5.7 Methods 草稿和主图整合 | 下一步 | 组织 Figure 1-3，多面板图和 dataset/GWAS 方法文字 |
+| 阶段 5.7 Methods 草稿和主图整合 | 已完成初版 | 已输出 Methods draft、Figure 1、Figure 3、figure plan 和 captions draft |
+| 阶段 5.8 manuscript skeleton | 下一步 | 合并 Results/Methods，补 Introduction、captions、supplementary table captions |
 
 ## 当前最重要的数字
 
@@ -75,6 +76,9 @@ top regional evidence table: 8 rows
 main tier1 locus table: 18 rows
 supplementary manuscript candidate loci: 184 rows
 literature/source records: 6
+Figure 1/3 main figures: PDF/SVG/PNG generated
+Methods draft: 1 file
+Figure captions draft: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -547,19 +551,56 @@ GEMMA LMM lambda GC       = 0.984-1.018
 
 ## 阶段 5.7：Methods 草稿和主图整合
 
-状态：下一步。
+状态：已完成初版。
 
 目标：
 
 把当前结果组织成正式论文骨架。
 
-需要做：
+已完成：
 
 - 整合 Figure 1：v0.1 dataset construction + prediction benchmark。
-- 整合 Figure 2：GEMMA LMM calibration + candidate-locus summary。
+- 整合 Figure 2：沿用 GEMMA LMM calibration + candidate-locus summary。
 - 整合 Figure 3：chr6 和 chr9 regional candidate intervals。
-- 写 Methods 草稿：dataset construction、prediction benchmark、GEMMA LMM、candidate-locus annotation、regional figure generation。
-- 把 Results draft 扩展成更完整的 manuscript Results。
+- 写 Methods 草稿：dataset construction、prediction benchmark、methylation ablation、GEMMA LMM、candidate-locus annotation、regional figure generation。
+- 写 Figure 1-3 captions draft。
+- 输出 main figure plan。
+
+产出：
+
+- `scripts/build_zeamap_v0_1_stage5_7_methods_and_figures.py`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures_stage5_7/figure1_dataset_prediction_nature.pdf`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures_stage5_7/figure1_dataset_prediction_nature.svg`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures_stage5_7/figure1_dataset_prediction_nature.png`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures_stage5_7/figure3_chr6_chr9_regional_loci_nature.pdf`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures_stage5_7/figure3_chr6_chr9_regional_loci_nature.svg`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures_stage5_7/figure3_chr6_chr9_regional_loci_nature.png`
+- `docs/2026-06-05-zeamap-v0-1-methods-draft.md`
+- `docs/2026-06-05-zeamap-v0-1-main-figure-plan.md`
+- `docs/2026-06-05-zeamap-v0-1-figure-captions-draft.md`
+- `docs/2026-06-05-zeamap-v0-1-stage5-7-methods-figures-report.md`
+
+限制：
+
+- Figure 1/3 是论文主图初版，投稿前还要做最后视觉微调。
+- Figure 2 暂用 Stage 5.4 的 GEMMA summary figure。
+- Methods draft 还不是完整投稿格式，需要和 Results/Introduction 合并后再统一润色。
+
+## 阶段 5.8：manuscript skeleton
+
+状态：下一步。
+
+目标：
+
+把已有 Results、Methods、Figures、Tables 合并成完整论文骨架。
+
+需要做：
+
+- 写 Introduction 草稿。
+- 合并 Methods draft 和 Results draft。
+- 添加 Figure 1-3 captions。
+- 添加 Table 1 和 Supplementary Table captions。
+- 写 Discussion 结构提纲，明确 limitations 和 candidate-locus claim boundary。
 
 ## GitHub 更新规则
 

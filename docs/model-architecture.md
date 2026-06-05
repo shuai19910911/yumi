@@ -249,6 +249,27 @@ top regional targets
 
 这一层不是模型训练层，而是论文解释层。它的核心作用是把统计结果转换成可写、可审稿、不过度声称的 manuscript material。
 
+Stage 5.7 已完成第一版 manuscript assembly layer：
+
+```text
+Results draft + manuscript tables
+-> Methods draft
+-> Figure 1 dataset/prediction figure
+-> Figure 2 GEMMA summary figure
+-> Figure 3 top regional loci figure
+-> figure captions draft
+```
+
+当前输出：
+
+- Methods draft：1 份。
+- Figure 1：PDF/SVG/PNG。
+- Figure 3：PDF/SVG/PNG。
+- Figure plan：1 份。
+- Figure captions draft：1 份。
+
+这一层仍然不是模型升级，而是把已经完成的 benchmark/GWAS/candidate-locus 结果组织成论文骨架。
+
 ## 以后如果扩展模型，怎么做
 
 只有在当前论文级 benchmark/GWAS 主线稳定后，才考虑扩展模型。
@@ -319,6 +340,8 @@ v0.1 dataset
   |-- manuscript triage: top loci + regional figures + literature evidence
   |
   |-- manuscript writing layer: evidence table + main/supp tables + Results draft
+  |
+  |-- manuscript assembly: Methods draft + Figure 1-3 plan/captions
 ```
 
 这个图更符合当前真实进展，也更适合论文方法部分。

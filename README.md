@@ -11,7 +11,7 @@ ZEAMAP 玉米 oil-trait prediction + GWAS 项目。
 
 ## 当前一句话结论
 
-我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释、top loci 优先级排序、区域图初版，以及 Stage 5.6 的论文主表/补充表和 Results 初稿。
+我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释、top loci 优先级排序、区域图初版、论文主表/补充表和 Results 初稿，以及 Stage 5.7 的 Methods 草稿和 Figure 1/3 主图初版。
 
 最可靠的主线是：
 
@@ -195,6 +195,25 @@ results/v0_1_baseline/gemma_lmm_v0_1/manuscript_tables/
 docs/2026-06-05-zeamap-v0-1-results-draft.md
 ```
 
+### 7. Methods 和主图初版
+
+Stage 5.7 已完成论文骨架初版：
+
+- Methods draft：dataset harmonization、prediction benchmark、methylation ablation、GEMMA LMM GWAS、candidate-locus annotation、top-locus prioritization、regional figures。
+- Figure 1：dataset construction + prediction benchmark，Nature double-column PDF/SVG/PNG。
+- Figure 2：沿用 GEMMA LMM summary figure。
+- Figure 3：chr6 linoleic acid1 candidate interval + chr9 C16:0 fatty acyl-ACP thioesterase interval，Nature double-column PDF/SVG/PNG。
+- Figure captions draft：Figure 1-3 captions 初版。
+
+输出目录：
+
+```text
+results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures_stage5_7/
+docs/2026-06-05-zeamap-v0-1-methods-draft.md
+docs/2026-06-05-zeamap-v0-1-main-figure-plan.md
+docs/2026-06-05-zeamap-v0-1-figure-captions-draft.md
+```
+
 ## 重要文件入口
 
 适合先读：
@@ -213,17 +232,20 @@ docs/2026-06-05-zeamap-v0-1-results-draft.md
 - `docs/2026-06-05-zeamap-v0-1-top-locus-priority-report.md`
 - `docs/2026-06-05-zeamap-v0-1-stage5-6-manuscript-tables-report.md`
 - `docs/2026-06-05-zeamap-v0-1-results-draft.md`
+- `docs/2026-06-05-zeamap-v0-1-methods-draft.md`
+- `docs/2026-06-05-zeamap-v0-1-main-figure-plan.md`
+- `docs/2026-06-05-zeamap-v0-1-figure-captions-draft.md`
 - `docs/2026-06-05-zeamap-v0-1-epigenome-decision.md`
 
 ## 下一步
 
-下一步不应该继续加模型复杂度，而应该把 Stage 5.6 的论文材料继续打磨：
+下一步不应该继续加模型复杂度，而应该把 manuscript draft 继续补全：
 
-1. 把 Results draft 扩展成完整 manuscript Results。
-2. 继续补 8 个 top regional loci 的 MaizeGDB/UniProt/Gramene 注释。
-3. 把 Figure 1-3 的图件组织成正式多面板图。
-4. 写 Methods 草稿，包括 dataset construction、prediction benchmark、GEMMA LMM 和 candidate-locus annotation。
-5. 对缺少 GFF description 的 candidate genes 补外部注释。
+1. 把 Results draft 和 Methods draft 合并成 manuscript skeleton。
+2. 写 Introduction 草稿，突出 maize oil traits、prediction-guided GWAS 和 ZEAMAP resource。
+3. 打磨 Figure 1-3 captions 和 Supplementary Table captions。
+4. 继续补 8 个 top regional loci 的 MaizeGDB/UniProt/Gramene 注释。
+5. 对 Figure 1/3 做最终视觉微调。
 
 ## 暂不做的事
 
