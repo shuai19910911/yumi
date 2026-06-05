@@ -349,9 +349,58 @@ notes
 
 ### 阶段 4.3：trait-specific methylation feature selection
 
-状态：下一步。
+状态：已完成。
 
 目标：对阶段 4.2 中 methylation gain 较高的 traits，直接在 gene/promoter/cis-window methylation features 上做稀疏筛选，寻找可能有解释价值的 gene/window，而不是只用全局 PCA。
+
+输入：
+
+- 10 个 methylation PCA gain 较高且 R2 gain 为正的 traits。
+- 236 个 methylation-covered v0.1 accessions。
+- mCG/mCHG/mCHH x gene/promoter/cis-window，每个 context-region 组合取方差 top 500，共 4500 个候选 gene-window features。
+- 每个 trait/seed 只在 train split 上按相关性预筛 top 200 methylation features，再用 genotype+population+sparse methylation ElasticNetCV 评估 test split。
+
+产出：
+
+- `scripts/run_zeamap_v0_1_sparse_methylation_selection.py`
+- `scripts/slurm/run_zeamap_v0_1_sparse_methylation_selection.sh`
+- `data/processed/v0_1/methylation_gene_window_sparse_candidates.tsv`
+- `data/processed/v0_1/methylation_gene_window_sparse_candidate_metadata.tsv`
+- `results/v0_1_baseline/sparse_methylation_selection_metrics.tsv`
+- `results/v0_1_baseline/sparse_methylation_selection_model_summary.tsv`
+- `results/v0_1_baseline/sparse_methylation_selection_trait_summary.tsv`
+- `results/v0_1_baseline/sparse_methylation_selected_features.tsv`
+- `docs/2026-06-05-zeamap-v0-1-sparse-methylation-selection-report.md`
+
+结果：
+
+- `genotype_population_gene_methylation_pca_ridge` median Pearson/R2：0.449 / 0.160。
+- `genotype_population_ridge` median Pearson/R2：0.414 / 0.106。
+- `genotype_population_sparse_methylation_elasticnet` median Pearson/R2：0.338 / 0.025。
+- 稀疏模型共选出 2,281 个不同 methylation features，其中 69 个在 5 个 seeds 都被选中，229 个在至少 4 个 seeds 被选中。
+- 只有 `agri_aa_oil__Oil_C180_C200` 的 sparse methylation 相比 genotype+population 有较稳定正增益，但仍低于 gene methylation PCA。
+
+结论：
+
+- 当前 236 个 methylation-covered accession 不足以支持 raw gene-window methylation 稀疏模型成为主模型输入。
+- methylation 可保留为低优先级辅助模态、消融分析和候选 gene/window 解释表，但 v0.1 主线应继续以 `genotype+population ridge` 和 66 个 robust traits 为核心。
+- 下一步不建议继续加深 methylation 模型；应转向 genotype 侧的可解释特征、trait family 多任务建模，或补充更大 accession-level paired expression/epigenome 数据。
+
+### 阶段 4.4：当前 epigenome 决策
+
+状态：已完成。
+
+目标：把阶段 4.1-4.3 的结果固化为 v0.1 数据策略：methylation 不进入主训练矩阵，只保留 PCA 辅助特征、coverage mask 和 selected feature report；open chromatin/chromatin interaction 暂作为 B73/reference regulatory prior，不做 accession-level 主模型输入。
+
+产出：
+
+- `docs/2026-06-05-zeamap-v0-1-epigenome-decision.md`
+
+决策：
+
+- v0.1 主模型不接入 raw gene-window methylation features。
+- methylation PCA 可以保留为 auxiliary ablation，但不作为默认训练输入。
+- 下一步转向固化 v0.1 final benchmark 和 genotype 侧可解释性。
 
 ## 阶段 5：预训练样本构建
 

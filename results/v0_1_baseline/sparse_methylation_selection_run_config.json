@@ -1,0 +1,11 @@
+{
+  "top_traits": 10,
+  "top_features_per_combo": 500,
+  "max_correlation_features": 200,
+  "promoter_bp": 2000,
+  "cis_bp": 10000,
+  "seeds": "20260605,20260606,20260607,20260608,20260609",
+  "min_train_n": 25,
+  "min_eval_n": 8,
+  "force_rebuild_features": false
+}

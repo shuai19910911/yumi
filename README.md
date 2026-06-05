@@ -163,12 +163,28 @@ v0.1 gene/promoter/cis-window methylation PCA：
 - 结果：genotype+population+gene methylation PCA median Pearson/R2 为 0.496/0.199，genotype+population 为 0.490/0.173
 - 结论：gene-level methylation PCA 比全局 summary 稍好，但整体增益仍小；下一步应做 trait-specific sparse gene/window feature selection。
 
+v0.1 sparse methylation feature selection：
+
+- 运行脚本：`scripts/run_zeamap_v0_1_sparse_methylation_selection.py`
+- 报告：`docs/2026-06-05-zeamap-v0-1-sparse-methylation-selection-report.md`
+- 输入：4.2 中 methylation PCA 增益较高且 R2 增益为正的 10 个 traits
+- 候选 methylation features：mCG/mCHG/mCHH x gene/promoter/cis 每组按方差取 top 500，共 4500 个 gene-window features
+- 结果：gene methylation PCA 仍最佳，median Pearson/R2 为 0.449/0.160；sparse methylation ElasticNet 为 0.338/0.025，低于 genotype+population baseline 的 0.414/0.106
+- 结论：raw gene-window methylation 稀疏选择在当前 236 个 methylation-covered accession 上不稳定；v0.1 主线应保留 `genotype+population ridge`，methylation 仅作为辅助/消融分析，不作为主输入。
+
+v0.1 epigenome decision：
+
+- 决策报告：`docs/2026-06-05-zeamap-v0-1-epigenome-decision.md`
+- v0.1 主模型不接入 raw gene-window methylation features。
+- methylation PCA 仅保留为辅助消融；open chromatin/chromatin interaction 暂作为 B73/reference regulatory prior。
+- 下一步主线：固化 v0.1 final benchmark，并做 genotype 侧可解释性。
+
 核心任务：
 
 - v0.1 baseline benchmark：用 genotype PCA/regularized models + population covariates 预测 phenotype/metabolome。
 - trait 可预测性筛选：按 R2、Pearson、Spearman、缺失率和有效样本数筛出稳定 trait。
 - 小模型优先：当前 461 个 accession 适合 ridge/elastic net、population-only 对照、轻量 MLP，不适合直接训练大型多模态 transformer。
-- epigenome 后置：236 个 methylation-covered accession 先作为 missing-modality/coverage mask，baseline 完成后再接入区域聚合特征。
+- epigenome 后置：236 个 methylation-covered accession 适合做 missing-modality/coverage mask、PCA 辅助特征和消融实验，暂不作为 v0.1 主训练输入。
 - phenotype-aware pretraining：仅在 baseline 证明有足够信号后，作为下一阶段弱监督或多任务学习目标。
 
 更多细节见：
