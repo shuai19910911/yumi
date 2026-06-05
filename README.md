@@ -124,6 +124,16 @@ v0.1 selected traits：
 - family 分布：metabolite 76、oil 29、agronomic 16、amino acid 9
 - 下一步：对 selected traits 做 multi-seed robustness，避免单次 split 偶然性。
 
+v0.1 multi-seed robustness：
+
+- 运行脚本：`scripts/run_zeamap_v0_1_robustness.py`
+- Slurm 脚本：`scripts/slurm/run_zeamap_v0_1_robustness.sh`
+- 报告：`docs/2026-06-05-zeamap-v0-1-robustness-report.md`
+- seeds：20260605, 20260606, 20260607, 20260608, 20260609
+- robust selected traits：66 / 130 selected traits
+- robust family 分布：oil 29、metabolite 16、agronomic 15、amino acid 6
+- 结论：后续 lightweight MLP、ElasticNet comparison 和 methylation subset experiment 应优先使用这 66 个 robust traits。
+
 核心任务：
 
 - v0.1 baseline benchmark：用 genotype PCA/regularized models + population covariates 预测 phenotype/metabolome。

@@ -76,6 +76,7 @@ batch = {
 - 最强可预测 trait 主要是 oil 相关性状，适合作为下一阶段主评估 trait 集合的候选。
 - 大量 trait 的 R2 仍然较低或不稳定，下一步应做 trait subset selection，而不是直接扩大模型复杂度。
 - 第一版 selected traits 共 130 个：oil 29、agronomic 16、amino acid 9、metabolite 76。后续小模型和多模态实验应优先在这个 trait 集合上做，再用 multi-seed robustness 收紧。
+- Multi-seed robustness 后保留 66 个 robust traits：oil 29、metabolite 16、agronomic 15、amino acid 6。后续模型主目标应优先使用这 66 个 traits。
 
 ### Genotype encoder
 

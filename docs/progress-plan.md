@@ -208,15 +208,44 @@ notes
 
 ### 阶段 3.2：multi-seed robustness
 
-状态：下一步。
+状态：已完成。
 
 目标：只对 130 个 selected traits 重复多个 random seed 的 split 和 baseline，评估 trait ranking 与 test performance 是否稳定。
 
-建议产出：
+产出：
 
 - `results/v0_1_baseline/robustness_metrics.tsv`
+- `results/v0_1_baseline/robustness_model_summary.tsv`
+- `results/v0_1_baseline/robustness_trait_summary.tsv`
 - `results/v0_1_baseline/robust_selected_traits.tsv`
 - `docs/2026-06-05-zeamap-v0-1-robustness-report.md`
+
+结果：
+
+- seeds：20260605、20260606、20260607、20260608、20260609。
+- `genotype_pca_population_ridge` 在 selected traits 上的 5-seed test median Pearson 为 0.396，median R2 为 0.109。
+- robust selected traits：66 / 130。
+- robust family 分布：oil 29、metabolite 16、agronomic 15、amino acid 6。
+- oil traits 全部通过 robust 规则，是当前最稳定目标集合。
+- 这 66 个 robust traits 是后续 lightweight MLP、ElasticNet comparison 和 methylation subset experiment 的优先目标。
+
+### 阶段 3.3：lightweight model comparison
+
+状态：下一步。
+
+目标：在 66 个 robust traits 上比较 ridge、ElasticNet 和轻量 MLP，确认是否值得引入非线性模型。
+
+建议约束：
+
+- 仍然使用 accession-level split，避免泄漏。
+- 只在 robust traits 上做，不再使用全部 318 个 traits。
+- MLP 只做小模型和强正则，不上 GPU，不做大 transformer。
+
+建议产出：
+
+- `results/v0_1_baseline/lightweight_model_metrics.tsv`
+- `results/v0_1_baseline/lightweight_model_summary.tsv`
+- `docs/2026-06-05-zeamap-v0-1-lightweight-model-report.md`
 
 ## 阶段 4：epigenome 接入
 
