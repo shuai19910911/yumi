@@ -1038,3 +1038,9 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 - chr6/chr9 仍按 candidate interval 表述，不写 causal gene/allele。
 
 这一步后，稿件已经更接近投稿形态。剩余硬门槛仍是作者信息、最终图件人工确认、target-journal reference style、MaizeGDB/Gramene gene-name 最终核验和 release/DOI。
+
+### Stage 5.25 - Target-journal reference style and submission gate
+
+通俗解读：这一阶段不是新增科学结果，而是把论文从“内部编号引用草稿”推进到“更接近投稿系统可接受的格式”。The Plant Genome 所属 ASA/CSSA/SSSA 期刊体系要求 APA 风格的作者-年份引用，不使用编号参考文献。因此本阶段做了三件事：第一，把正文中 Zhou and Stephens、Benjamini and Hochberg 这类两作者括号引用改成目标期刊常用的 `&` 形式；第二，把 18 条参考文献改成不编号、按第一作者姓氏排序、带作者首字母和 DOI/URL 的格式；第三，输出投稿包检查表，明确哪些问题仍然必须由作者人工补齐。
+
+阶段结论：参考文献格式、引用方式、旧错误 DOI 回归检查、候选基因表述边界均通过自动检查；但这还不是最终可投版本，因为作者姓名/单位/基金/致谢、最终图件人工检查、GitHub release DOI/PID、chr6/chr9 外部数据库基因名确认仍是硬性人工关卡。
