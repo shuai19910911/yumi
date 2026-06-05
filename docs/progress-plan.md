@@ -31,7 +31,8 @@
 | 阶段 5.5 top locus 优先级和局部图 | 已完成初版 | 已输出 top loci 排序、seed literature evidence 和 8 个 regional locus/LD/gene-track figures |
 | 阶段 5.6 论文主表和 Results 初稿 | 已完成初版 | 已输出 top regional evidence table、tier1 主表、184 loci 补充表和 Results draft |
 | 阶段 5.7 Methods 草稿和主图整合 | 已完成初版 | 已输出 Methods draft、Figure 1、Figure 3、figure plan 和 captions draft |
-| 阶段 5.8 manuscript skeleton | 下一步 | 合并 Results/Methods，补 Introduction、captions、supplementary table captions |
+| 阶段 5.8 manuscript skeleton | 已完成初版 | 已输出完整论文骨架、table captions、readiness checklist |
+| 阶段 5.9 manuscript polish and citation audit | 下一步 | 扩展 Introduction/Discussion，补软件版本、外部注释和引用核查 |
 
 ## 当前最重要的数字
 
@@ -79,6 +80,8 @@ literature/source records: 6
 Figure 1/3 main figures: PDF/SVG/PNG generated
 Methods draft: 1 file
 Figure captions draft: 1 file
+Manuscript skeleton: 1 file
+Readiness checklist: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -588,19 +591,57 @@ GEMMA LMM lambda GC       = 0.984-1.018
 
 ## 阶段 5.8：manuscript skeleton
 
-状态：下一步。
+状态：已完成初版。
 
 目标：
 
 把已有 Results、Methods、Figures、Tables 合并成完整论文骨架。
 
-需要做：
+已完成：
 
-- 写 Introduction 草稿。
-- 合并 Methods draft 和 Results draft。
+- 写 working title。
+- 写 Abstract draft。
+- 写 Keywords。
+- 写 Introduction draft。
+- 合并 Results draft。
+- 合并 Methods draft。
 - 添加 Figure 1-3 captions。
 - 添加 Table 1 和 Supplementary Table captions。
-- 写 Discussion 结构提纲，明确 limitations 和 candidate-locus claim boundary。
+- 写 Discussion outline。
+- 添加 Data Availability、Code Availability、Acknowledgements、Author Contributions、Competing Interests 和 References placeholders。
+- 输出 manuscript readiness checklist。
+
+产出：
+
+- `scripts/build_zeamap_v0_1_stage5_8_manuscript_skeleton.py`
+- `docs/2026-06-05-zeamap-v0-1-manuscript-skeleton.md`
+- `docs/2026-06-05-zeamap-v0-1-table-captions-draft.md`
+- `docs/2026-06-05-zeamap-v0-1-manuscript-readiness-checklist.md`
+- `docs/2026-06-05-zeamap-v0-1-stage5-8-manuscript-skeleton-report.md`
+
+限制：
+
+- manuscript skeleton 不是投稿稿。
+- Introduction 和 Discussion 还需要扩展文献和更完整论证。
+- Methods 还需要补 exact software versions、参数和命令细节。
+- 引用还没有转换成正式 reference list。
+
+## 阶段 5.9：manuscript polish and citation audit
+
+状态：下一步。
+
+目标：
+
+把 skeleton 打磨成更接近投稿前草稿。
+
+需要做：
+
+- 扩展 Introduction 文献定位。
+- 把 Discussion outline 写成完整 Discussion。
+- 补 Methods 软件版本和参数。
+- 做 citation audit。
+- 继续补 top loci 外部注释。
+- 最终检查 Figure 1-3 字体、尺寸和 caption 一致性。
 
 ## GitHub 更新规则
 

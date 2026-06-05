@@ -679,3 +679,45 @@ Limitations
 ```
 
 这样项目就从“分析结果”进入“论文草稿”阶段。
+
+## 25. Stage 5.8 已经把 skeleton 做出来了
+
+Stage 5.8 已完成初版 manuscript skeleton。
+
+现在已有一个单独文件，把论文核心材料放在一起：
+
+```text
+docs/2026-06-05-zeamap-v0-1-manuscript-skeleton.md
+```
+
+里面包含：
+
+- working title
+- abstract draft
+- keywords
+- introduction draft
+- results
+- discussion outline
+- methods
+- figure captions
+- table captions
+- data/code availability draft
+- references placeholder
+
+这意味着项目已经从“分析报告很多”进入“论文骨架已成型”阶段。
+
+## 26. 现在离投稿还差什么
+
+还不能说已经是投稿稿。
+
+主要差：
+
+1. Introduction 还要补完整文献定位。
+2. Results 要从结果报告风格改成正式论文叙事。
+3. Discussion outline 要扩展成完整 Discussion。
+4. Methods 要补软件版本、参数和命令细节。
+5. 8 个 top loci 还要补 MaizeGDB、UniProt、Gramene 外部注释。
+6. 所有引用要做 citation audit，并转成正式 reference list。
+7. Figure 1-3 还要做最终字体、尺寸和 caption 一致性检查。
+
+下一阶段 Stage 5.9 应该做 manuscript polish and citation audit。

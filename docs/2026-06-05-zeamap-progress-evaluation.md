@@ -85,6 +85,7 @@ large-scale plant multi-omics foundation model
 | manuscript figures | 中高 | Nature 风格 GWAS summary figure 和 8 个 regional locus/LD 图已有初版 |
 | manuscript tables/results | 中高 | 已输出 top regional evidence table、tier1 主表、184 loci 补充表和 Results draft |
 | manuscript methods/figures | 中高 | 已输出 Methods draft、Figure 1、Figure 3、figure plan 和 captions draft |
+| manuscript skeleton | 中 | 已输出完整骨架，但还需要文献扩展、citation audit 和正式润色 |
 
 ## 当前最大优势
 
@@ -345,26 +346,51 @@ Figure captions draft = 1 file
 - Figure 2 暂时沿用 Stage 5.4 summary figure，后续可能需要按最终叙事重新排版。
 - Methods draft 还需要和最终 manuscript skeleton 统一格式和术语。
 
+## 已完成的新阶段：Stage 5.8
+
+Stage 5.8 已完成 manuscript skeleton 初版。
+
+结果：
+
+```text
+manuscript skeleton = 1 file
+table captions draft = 1 file
+readiness checklist = 1 file
+stage report = 1 file
+```
+
+评估：
+
+这是论文推进上的重要节点。现在项目不再只是分散的 Results、Methods、figures 和 tables，而是已经有一个完整 paper-facing skeleton，包含 title、abstract、introduction、results、discussion outline、methods、figure/table captions 和 availability placeholders。
+
+风险：
+
+- skeleton 还不是投稿稿。
+- Introduction 和 Discussion 仍偏短。
+- Methods 缺 exact software versions 和详细参数。
+- 引用还只是 source list，没有做正式 citation audit。
+- top loci 外部数据库注释仍需补强。
+
 ## 下一阶段目标
 
 下一阶段建议命名为：
 
 ```text
-Stage 5.8: manuscript skeleton assembly
+Stage 5.9: manuscript polish and citation audit
 ```
 
 目标：
 
-把 Results draft、Methods draft、figures、tables 和 captions 合并成正式论文骨架。
+把 skeleton 打磨成更接近投稿前草稿，并补齐引用、软件版本和外部注释。
 
 具体任务：
 
-1. 写 Introduction 草稿。
-2. 合并 Results draft 和 Methods draft。
-3. 加入 Figure 1-3 captions。
-4. 加入 Table 1 和 Supplementary Table captions。
-5. 写 Discussion outline。
-6. 明确 limitations 和 candidate-locus claim boundary。
+1. 扩展 Introduction 文献定位。
+2. 把 Discussion outline 写成完整 Discussion。
+3. 补 Methods 软件版本和关键参数。
+4. 做 citation audit。
+5. 继续补 top loci 外部注释。
+6. 检查 Figure 1-3 字体、尺寸和 caption 一致性。
 
 成功标准：
 

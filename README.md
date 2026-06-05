@@ -11,7 +11,7 @@ ZEAMAP 玉米 oil-trait prediction + GWAS 项目。
 
 ## 当前一句话结论
 
-我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释、top loci 优先级排序、区域图初版、论文主表/补充表和 Results 初稿，以及 Stage 5.7 的 Methods 草稿和 Figure 1/3 主图初版。
+我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释、top loci 优先级排序、区域图初版、论文主表/补充表、Results/Methods 草稿、Figure 1/3 主图初版，以及 Stage 5.8 的 manuscript skeleton。
 
 最可靠的主线是：
 
@@ -214,6 +214,30 @@ docs/2026-06-05-zeamap-v0-1-main-figure-plan.md
 docs/2026-06-05-zeamap-v0-1-figure-captions-draft.md
 ```
 
+### 8. manuscript skeleton
+
+Stage 5.8 已把分散材料合并成论文骨架：
+
+- working title
+- abstract draft
+- keywords
+- introduction draft
+- results
+- discussion outline
+- methods
+- figure captions
+- table captions
+- data/code availability draft
+- manuscript readiness checklist
+
+入口文件：
+
+```text
+docs/2026-06-05-zeamap-v0-1-manuscript-skeleton.md
+docs/2026-06-05-zeamap-v0-1-manuscript-readiness-checklist.md
+docs/2026-06-05-zeamap-v0-1-table-captions-draft.md
+```
+
 ## 重要文件入口
 
 适合先读：
@@ -235,17 +259,19 @@ docs/2026-06-05-zeamap-v0-1-figure-captions-draft.md
 - `docs/2026-06-05-zeamap-v0-1-methods-draft.md`
 - `docs/2026-06-05-zeamap-v0-1-main-figure-plan.md`
 - `docs/2026-06-05-zeamap-v0-1-figure-captions-draft.md`
+- `docs/2026-06-05-zeamap-v0-1-manuscript-skeleton.md`
+- `docs/2026-06-05-zeamap-v0-1-manuscript-readiness-checklist.md`
 - `docs/2026-06-05-zeamap-v0-1-epigenome-decision.md`
 
 ## 下一步
 
-下一步不应该继续加模型复杂度，而应该把 manuscript draft 继续补全：
+下一步不应该继续加模型复杂度，而应该把 manuscript skeleton 打磨成论文草稿：
 
-1. 把 Results draft 和 Methods draft 合并成 manuscript skeleton。
-2. 写 Introduction 草稿，突出 maize oil traits、prediction-guided GWAS 和 ZEAMAP resource。
-3. 打磨 Figure 1-3 captions 和 Supplementary Table captions。
+1. 扩展 Introduction 文献定位。
+2. 把 Results 和 Discussion 从骨架改成流畅论文段落。
+3. 补 Methods 的 exact software versions 和参数。
 4. 继续补 8 个 top regional loci 的 MaizeGDB/UniProt/Gramene 注释。
-5. 对 Figure 1/3 做最终视觉微调。
+5. 做 citation audit 和最终 figure polish。
 
 ## 暂不做的事
 

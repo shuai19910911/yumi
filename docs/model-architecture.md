@@ -270,6 +270,24 @@ Results draft + manuscript tables
 
 这一层仍然不是模型升级，而是把已经完成的 benchmark/GWAS/candidate-locus 结果组织成论文骨架。
 
+Stage 5.8 已完成第一版 manuscript skeleton layer：
+
+```text
+Results draft + Methods draft + figure/table captions
+-> manuscript skeleton
+-> readiness checklist
+-> next polish/audit task list
+```
+
+当前输出：
+
+- manuscript skeleton：1 份。
+- table captions draft：1 份。
+- manuscript readiness checklist：1 份。
+- Stage 5.8 report：1 份。
+
+这一层的作用是把项目从“结果材料集合”推进到“可继续润色的论文草稿骨架”。
+
 ## 以后如果扩展模型，怎么做
 
 只有在当前论文级 benchmark/GWAS 主线稳定后，才考虑扩展模型。
@@ -342,6 +360,8 @@ v0.1 dataset
   |-- manuscript writing layer: evidence table + main/supp tables + Results draft
   |
   |-- manuscript assembly: Methods draft + Figure 1-3 plan/captions
+  |
+  |-- manuscript skeleton: title + abstract + introduction + results + methods + discussion outline
 ```
 
 这个图更符合当前真实进展，也更适合论文方法部分。
