@@ -231,7 +231,7 @@ notes
 
 ### 阶段 3.3：lightweight model comparison
 
-状态：下一步。
+状态：已完成。
 
 目标：在 66 个 robust traits 上比较 ridge、ElasticNet 和轻量 MLP，确认是否值得引入非线性模型。
 
@@ -241,11 +241,21 @@ notes
 - 只在 robust traits 上做，不再使用全部 318 个 traits。
 - MLP 只做小模型和强正则，不上 GPU，不做大 transformer。
 
-建议产出：
+产出：
 
 - `results/v0_1_baseline/lightweight_model_metrics.tsv`
 - `results/v0_1_baseline/lightweight_model_summary.tsv`
+- `results/v0_1_baseline/lightweight_trait_summary.tsv`
 - `docs/2026-06-05-zeamap-v0-1-lightweight-model-report.md`
+
+结果：
+
+- 输入 traits：66 个 robust selected traits。
+- seeds：5 个。
+- `genotype_population_ridge` 最佳：median Pearson 0.498，median R2 0.204。
+- `genotype_population_elasticnet` 接近 ridge：median Pearson 0.483，median R2 0.171。
+- `genotype_population_small_mlp` 明显不稳定：median Pearson 0.351，median R2 -0.191。
+- 当前样本量下不应继续增加模型复杂度；下一步优先做 methylation subset feature experiment。
 
 ## 阶段 4：epigenome 接入
 

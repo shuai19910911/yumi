@@ -134,6 +134,15 @@ v0.1 multi-seed robustness：
 - robust family 分布：oil 29、metabolite 16、agronomic 15、amino acid 6
 - 结论：后续 lightweight MLP、ElasticNet comparison 和 methylation subset experiment 应优先使用这 66 个 robust traits。
 
+v0.1 lightweight model comparison：
+
+- 运行脚本：`scripts/run_zeamap_v0_1_lightweight_models.py`
+- 报告：`docs/2026-06-05-zeamap-v0-1-lightweight-model-report.md`
+- 输入：66 个 robust traits，5 个 random seeds
+- 最佳整体模型：`genotype_population_ridge`
+- median Pearson / R2：ridge 0.498 / 0.204，ElasticNet 0.483 / 0.171，small MLP 0.351 / -0.191
+- 结论：当前样本量下 ridge/ElasticNet 足够强，小 MLP 不稳定；下一步优先做 methylation subset features，而不是继续加深模型。
+
 核心任务：
 
 - v0.1 baseline benchmark：用 genotype PCA/regularized models + population covariates 预测 phenotype/metabolome。
