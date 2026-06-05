@@ -178,6 +178,46 @@ notes
 - `genotype_pca_population_ridge` 有 204 个 trait 的 test R2 为正，226 个 trait 的 test Pearson 大于 0.2。
 - 最强可预测 trait 主要是 oil 相关性状，最高 test Pearson 约 0.92。
 
+### 阶段 3.1：selected traits
+
+状态：已完成。
+
+筛选标准：
+
+- `genotype_pca_population_ridge` test Pearson >= 0.3。
+- `genotype_pca_population_ridge` test R2 > 0。
+- 相比 `population_ridge` 至少满足 Pearson gain >= 0.02 或 R2 gain > 0。
+- trait 通过 baseline QC。
+
+产出：
+
+- `scripts/select_zeamap_v0_1_traits.py`
+- `results/v0_1_baseline/selected_traits.tsv`
+- `results/v0_1_baseline/selected_trait_family_summary.tsv`
+- `results/v0_1_baseline/selected_trait_tier_summary.tsv`
+- `docs/2026-06-05-zeamap-v0-1-selected-traits.md`
+
+结果：
+
+- selected traits：130 / 317。
+- high-priority traits：11。
+- medium-priority traits：28。
+- watch traits：91。
+- family 分布：metabolite 76、oil 29、agronomic 16、amino acid 9。
+- oil traits 最强，最高 test Pearson 约 0.92；metabolite traits 数量最多，但需要 multi-seed robustness 确认稳定性。
+
+### 阶段 3.2：multi-seed robustness
+
+状态：下一步。
+
+目标：只对 130 个 selected traits 重复多个 random seed 的 split 和 baseline，评估 trait ranking 与 test performance 是否稳定。
+
+建议产出：
+
+- `results/v0_1_baseline/robustness_metrics.tsv`
+- `results/v0_1_baseline/robust_selected_traits.tsv`
+- `docs/2026-06-05-zeamap-v0-1-robustness-report.md`
+
 ## 阶段 4：epigenome 接入
 
 目标：在不下载全量原始 reads 的前提下，接入 DNA methylation、open chromatin、chromatin interaction。

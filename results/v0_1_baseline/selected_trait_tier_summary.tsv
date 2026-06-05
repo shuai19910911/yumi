@@ -1,0 +1,11 @@
+trait_family	priority_tier	traits
+agronomic	high	1
+agronomic	medium	5
+agronomic	watch	10
+amino_acid	medium	1
+amino_acid	watch	8
+metabolite	medium	9
+metabolite	watch	67
+oil	high	10
+oil	medium	13
+oil	watch	6

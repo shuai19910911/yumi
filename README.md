@@ -113,6 +113,17 @@ v0.1 baseline benchmark：
 - 最佳 baseline：`genotype_pca_population_ridge`，test median Pearson 0.331，test median R2 0.034
 - 结论：当前样本量可以继续做 trait 筛选和小模型 baseline；复杂多模态预训练仍需谨慎。
 
+v0.1 selected traits：
+
+- 筛选脚本：`scripts/select_zeamap_v0_1_traits.py`
+- 结果：`results/v0_1_baseline/selected_traits.tsv`
+- 报告：`docs/2026-06-05-zeamap-v0-1-selected-traits.md`
+- selected traits：130 / 317 evaluated traits
+- high-priority traits：11
+- medium-priority traits：28
+- family 分布：metabolite 76、oil 29、agronomic 16、amino acid 9
+- 下一步：对 selected traits 做 multi-seed robustness，避免单次 split 偶然性。
+
 核心任务：
 
 - v0.1 baseline benchmark：用 genotype PCA/regularized models + population covariates 预测 phenotype/metabolome。

@@ -50,6 +50,7 @@ genotype_pca_population_ridge               317   0.033692 -0.016162        0.33
 - 204 of 317 evaluated traits have positive test R2 under `genotype_pca_population_ridge`.
 - The strongest predictable traits are mostly oil-related traits, with top test Pearson above 0.9.
 - Mean R2 is still slightly negative because many traits are noisy or weakly predictable; downstream modeling should focus on the stable trait subset rather than all 318 traits.
+- Trait subset selection was run after this benchmark; see `docs/2026-06-05-zeamap-v0-1-selected-traits.md`.
 
 ## Outputs
 
