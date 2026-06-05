@@ -43,8 +43,9 @@
 | 阶段 5.17 single human-input package | 已完成初版 | 已输出单一人工信息总表、同步 dry-run、填写说明和 ARS 投稿闸门自评；真实元数据仍未填 |
 | 阶段 5.18 reviewer-risk register | 已完成初版 | 已输出模拟审稿风险表、修订路线图、submission gate matrix 和 ARS reviewer synthesis |
 | 阶段 5.19 result-to-script reproducibility crosswalk | 已完成初版 | 已输出主结果到脚本/输入/输出/参数的 crosswalk、文件 inventory、Methods 插入段和 ARS 可复现性审查 |
-| 阶段 5.20 GWAS diagnostic appendix | 下一步 | 输出每个 oil trait 的 lambda、样本数、SNP 数、Bonferroni/FDR/suggestive 阈值和图件路径 |
-| 阶段 5.21 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
+| 阶段 5.20 GWAS diagnostic appendix | 已完成初版 | 已输出每个 oil trait 的 lambda、样本数、SNP 数、阈值、hit 数、top lead 和图件路径 |
+| 阶段 5.21 targeted fatty-acid literature support | 下一步 | 强化 chr6 linoleic acid1-region 和 chr9 fatty acyl-ACP thioesterase interval 的文献与注释证据 |
+| 阶段 5.22 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
 
 ## 当前最重要的数字
 
@@ -135,6 +136,10 @@ Result-to-script crosswalk: 1 file
 Reproducibility file inventory: 1 file
 Methods reproducibility insert: 1 file
 ARS reproducibility review: 1 file
+GWAS diagnostic appendix: 1 file
+GWAS diagnostic summary: 1 file
+Methods GWAS diagnostic insert: 1 file
+ARS statistical review: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -931,3 +936,24 @@ Stage 5.9-5.10 打磨后：55-75%
 当前判断：
 
 可复现性风险从“缺少映射表”降为“最终 release 包装还要说明哪些大文件不进 GitHub”。下一步机器侧应做 GWAS diagnostic appendix，把每个 oil trait 的统计诊断整理成投稿附录表。
+
+
+## 阶段 5.20：GWAS diagnostic appendix
+
+状态：已完成初版。
+
+为什么做这一步：
+
+统计遗传学审稿人最关心 GWAS 是否膨胀、阈值是否一致、每个 trait 的样本数和 SNP 数是否清楚、QQ/Manhattan 图能否追踪。Stage 5.20 把这些信息整理成 trait-level diagnostic appendix。
+
+主要产出：
+
+- `docs/2026-06-06-zeamap-v0-1-stage5-20-gwas-diagnostic-appendix.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-20-gwas-diagnostic-summary.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-20-methods-gwas-diagnostic-insert.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-20-ars-statistical-review.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-20-report.md`
+
+当前判断：
+
+10 个 oil-trait GEMMA LMM 诊断均可进入投稿附录：lambda GC 位于 0.95-1.05，QQ/Manhattan 图路径存在，主 p-value 为 `p_lrt`。下一步机器侧应强化 chr6/chr9 fatty-acid 相关文献证据。
