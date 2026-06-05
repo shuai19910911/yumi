@@ -11,7 +11,7 @@ ZEAMAP 玉米 oil-trait prediction + GWAS 项目。
 
 ## 当前一句话结论
 
-我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释、top loci 优先级排序、区域图初版、论文主表/补充表、Results/Methods 草稿、Figure 1/3 主图初版、manuscript skeleton、Stage 5.9 投稿策略/citation audit、Stage 5.10 polished manuscript package、Stage 5.11 top loci external annotation hardening、Stage 5.12 final manuscript assembly、Stage 5.13 final submission gate、Stage 5.14 human metadata/release templates、Stage 5.15 preflight validation、Stage 5.16 metadata ingestion dry-run、Stage 5.17 single human-input package、Stage 5.18 reviewer-risk register、Stage 5.19 result-to-script reproducibility crosswalk 和 Stage 5.20 GWAS diagnostic appendix 初版。
+我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释、top loci 优先级排序、区域图初版、论文主表/补充表、Results/Methods 草稿、Figure 1/3 主图初版、manuscript skeleton、Stage 5.9 投稿策略/citation audit、Stage 5.10 polished manuscript package、Stage 5.11 top loci external annotation hardening、Stage 5.12 final manuscript assembly、Stage 5.13 final submission gate、Stage 5.14 human metadata/release templates、Stage 5.15 preflight validation、Stage 5.16 metadata ingestion dry-run、Stage 5.17 single human-input package、Stage 5.18 reviewer-risk register、Stage 5.19 result-to-script reproducibility crosswalk、Stage 5.20 GWAS diagnostic appendix 和 Stage 5.21 targeted fatty-acid literature support 初版。
 
 最可靠的主线是：
 

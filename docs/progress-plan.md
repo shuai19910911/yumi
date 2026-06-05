@@ -44,8 +44,9 @@
 | 阶段 5.18 reviewer-risk register | 已完成初版 | 已输出模拟审稿风险表、修订路线图、submission gate matrix 和 ARS reviewer synthesis |
 | 阶段 5.19 result-to-script reproducibility crosswalk | 已完成初版 | 已输出主结果到脚本/输入/输出/参数的 crosswalk、文件 inventory、Methods 插入段和 ARS 可复现性审查 |
 | 阶段 5.20 GWAS diagnostic appendix | 已完成初版 | 已输出每个 oil trait 的 lambda、样本数、SNP 数、阈值、hit 数、top lead 和图件路径 |
-| 阶段 5.21 targeted fatty-acid literature support | 下一步 | 强化 chr6 linoleic acid1-region 和 chr9 fatty acyl-ACP thioesterase interval 的文献与注释证据 |
-| 阶段 5.22 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
+| 阶段 5.21 targeted fatty-acid literature support | 已完成初版 | 已输出 chr6/chr9 文献证据表、source ledger、claim audit、manuscript insert 和 ARS domain review |
+| 阶段 5.22 manuscript claim-language audit and expansion | 下一步 | 把 Stage 5.19-5.21 插入段整合进稿件，并审计 Abstract/Results/Discussion/captions 是否过度声称 |
+| 阶段 5.23 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
 
 ## 当前最重要的数字
 
@@ -140,6 +141,11 @@ GWAS diagnostic appendix: 1 file
 GWAS diagnostic summary: 1 file
 Methods GWAS diagnostic insert: 1 file
 ARS statistical review: 1 file
+Targeted fatty-acid source ledger: 1 file
+Region literature support: 1 file
+Targeted claim audit: 1 file
+Targeted manuscript insert: 1 file
+ARS domain review: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -957,3 +963,24 @@ Stage 5.9-5.10 打磨后：55-75%
 当前判断：
 
 10 个 oil-trait GEMMA LMM 诊断均可进入投稿附录：lambda GC 位于 0.95-1.05，QQ/Manhattan 图路径存在，主 p-value 为 `p_lrt`。下一步机器侧应强化 chr6/chr9 fatty-acid 相关文献证据。
+
+
+## 阶段 5.21：targeted fatty-acid literature support
+
+状态：已完成初版。
+
+为什么做这一步：
+
+chr6 和 chr9 是论文最核心的生物学故事。统计结果已经足够强，但投稿前必须把“为什么这两个区域和 fatty-acid/oil traits 有关”讲清楚，同时避免写成已验证 causal gene。Stage 5.21 把文献证据、注释证据和 claim boundary 分开整理。
+
+主要产出：
+
+- `docs/2026-06-06-zeamap-v0-1-stage5-21-targeted-source-ledger.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-21-region-literature-support.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-21-claim-audit.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-21-manuscript-insert.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-21-ars-domain-review.md`
+
+当前判断：
+
+chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可以作为 high-priority C16:0/FatB-like candidate interval。两个区域都不能写成 causal variant、validated gene 或 confirmed mechanism。
