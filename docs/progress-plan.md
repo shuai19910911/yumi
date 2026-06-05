@@ -1062,3 +1062,9 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 通俗解读：这一阶段把“快能投稿了，但东西散在很多文件里”的问题收束成一个投稿包。现在有最新稿件、The Plant Genome 路线 cover letter、期刊备选表、作者最终需要补的信息清单、release/tag/DOI 清单和 ARS 投稿包审查。这样下一步不需要重新理解所有阶段，只要按清单补作者信息、确认图、做 release。
 
 阶段结论：机器侧投稿包已经编译完成；推荐第一目标是 The Plant Genome，备选是 G3 和 BMC Plant Biology。剩余硬门槛仍是作者信息、Funding/Acknowledgements/COI、Figure 1-3 最终人工确认和 GitHub release DOI/PID。
+
+### Stage 5.29 - Format compliance and DOCX/HTML export
+
+通俗解读：这一阶段把最新投稿稿从“项目内部 Markdown”整理成更接近投稿系统可用的文件。脚本去掉内部阶段说明，保留作者待补字段，生成 clean Markdown，并用 `pandoc` 导出 DOCX 和 HTML 预览。同时检查 Core Ideas、摘要、作者-年份参考文献、Data/Code availability、图表 legend 和 claim boundary。
+
+阶段结论：DOCX/HTML 导出版已生成，格式检查没有机器侧 fail。它还不是最终上传稿，因为作者姓名/单位/基金/致谢/COI、Figure 1-3 最终人工确认和 release DOI/PID 仍需要作者完成。
