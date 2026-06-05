@@ -1,0 +1,6 @@
+gate	status	evidence	next_action
+scientific_core_package	pass	Target manuscript includes GEMMA calibration and conservative candidate-interval language.	Keep claim boundary during all edits.
+manuscript_depth	revise	proxy_word_count=2505	Expand novelty, methods reproducibility and discussion before final upload.
+human_metadata	fail	Stage 5.15 verdict=NO_SUBMIT_AUTHOR_METADATA_PENDING	Fill Stage 5.17 single human-input form and rerun preflight.
+metadata_ingestion	fail	Stage 5.16 verdict=DRY_RUN_FAILED_PLACEHOLDERS_REMAIN	Rerun dry-run after synchronized metadata templates contain no placeholders.
+single_form	fail	ready_sections=0/5; placeholder_rows=62	Use single form as source of truth for human metadata.

@@ -41,7 +41,9 @@
 | 阶段 5.15 preflight validation | 已完成校验器 | 已输出文件 manifest、placeholder audit、gate status 和 action items；真实 release 仍需作者填表后执行 |
 | 阶段 5.16 metadata ingestion dry-run | 已完成 dry-run | 已输出 metadata ingestion audit、title-page preview 和 contribution preview；真实元数据仍未填 |
 | 阶段 5.17 single human-input package | 已完成初版 | 已输出单一人工信息总表、同步 dry-run、填写说明和 ARS 投稿闸门自评；真实元数据仍未填 |
-| 阶段 5.18 final metadata insertion and release | 下一步 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
+| 阶段 5.18 reviewer-risk register | 已完成初版 | 已输出模拟审稿风险表、修订路线图、submission gate matrix 和 ARS reviewer synthesis |
+| 阶段 5.19 result-to-script reproducibility crosswalk | 下一步 | 把每个主结果、表、图映射到脚本、输入、输出和参数，降低可复现性审稿风险 |
+| 阶段 5.20 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
 
 ## 当前最重要的数字
 
@@ -124,6 +126,10 @@ Single human-input form: 1 file
 Single-form sync audit: 1 file
 Single-form filling guide: 1 file
 Stage 5.17 ARS self-review: 1 file
+Reviewer-risk register: 1 file
+Revision roadmap: 1 file
+Submission gate matrix: 1 file
+ARS reviewer synthesis: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -878,3 +884,24 @@ Stage 5.9-5.10 打磨后：55-75%
 下一步：
 
 真实信息填完后执行 Stage 5.17 `--apply`，再重跑 Stage 5.15 和 Stage 5.16。只有两个门槛都通过后，才进入真实 release/tag/DOI。
+
+
+## 阶段 5.18：reviewer-risk register
+
+状态：已完成初版。
+
+为什么做这一步：
+
+论文投稿前最容易被审稿人攻击的点已经不是“有没有结果”，而是：稿件是否足够完整、方法能否复现、GWAS 诊断是否透明、chr6/chr9 文献支撑是否足够、prediction-guided 这个说法有没有过度、以及作者/图件/release 信息是否齐全。
+
+主要产出：
+
+- `docs/2026-06-06-zeamap-v0-1-stage5-18-reviewer-risk-register.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-18-revision-roadmap.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-18-submission-gate-matrix.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-18-ars-reviewer-synthesis.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-18-report.md`
+
+当前判断：
+
+核心分析主线可以继续向论文推进，但还不是最终投稿包。机器侧下一步应优先做 result-to-script reproducibility crosswalk 和 GWAS diagnostic appendix；人工侧仍需填写 Stage 5.17 单表并完成图件人工检查。

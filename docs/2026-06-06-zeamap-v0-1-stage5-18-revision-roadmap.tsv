@@ -1,0 +1,9 @@
+priority	risk_id	severity	action	owner	done_when
+1	R07	blocking	Fill single human-input form, synchronize templates, rerun Stage 5.15/5.16, then execute release.	corresponding_author	Evidence file or filled form exists and the relevant Stage 5 gate passes.
+2	R01	major	Add a stronger novelty paragraph and explicit contribution statement before final submission.	machine_plus_author	Evidence file or filled form exists and the relevant Stage 5 gate passes.
+3	R03	major	Add GWAS diagnostic appendix table covering lambda, Bonferroni/FDR/suggestive thresholds, sample count and SNP count per trait.	machine	Evidence file or filled form exists and the relevant Stage 5 gate passes.
+4	R02	major	Create a result-to-script reproducibility crosswalk and cite it in Methods/Data Availability.	machine	Evidence file or filled form exists and the relevant Stage 5 gate passes.
+5	R04	major	Expand literature support for linoleic acid1 and fatty acyl-ACP thioesterase intervals.	machine_plus_author	Evidence file or filled form exists and the relevant Stage 5 gate passes.
+6	R05	major	Create a data/code reproducibility crosswalk before release.	machine	Evidence file or filled form exists and the relevant Stage 5 gate passes.
+7	R06	major	Complete final figure manual checklist after visual inspection.	author_or_analyst	Evidence file or filled form exists and the relevant Stage 5 gate passes.
+8	R08	moderate	Audit Abstract, Discussion and captions for any wording implying validation or causal inference.	machine	Evidence file or filled form exists and the relevant Stage 5 gate passes.
