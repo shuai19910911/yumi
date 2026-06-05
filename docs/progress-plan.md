@@ -42,8 +42,9 @@
 | 阶段 5.16 metadata ingestion dry-run | 已完成 dry-run | 已输出 metadata ingestion audit、title-page preview 和 contribution preview；真实元数据仍未填 |
 | 阶段 5.17 single human-input package | 已完成初版 | 已输出单一人工信息总表、同步 dry-run、填写说明和 ARS 投稿闸门自评；真实元数据仍未填 |
 | 阶段 5.18 reviewer-risk register | 已完成初版 | 已输出模拟审稿风险表、修订路线图、submission gate matrix 和 ARS reviewer synthesis |
-| 阶段 5.19 result-to-script reproducibility crosswalk | 下一步 | 把每个主结果、表、图映射到脚本、输入、输出和参数，降低可复现性审稿风险 |
-| 阶段 5.20 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
+| 阶段 5.19 result-to-script reproducibility crosswalk | 已完成初版 | 已输出主结果到脚本/输入/输出/参数的 crosswalk、文件 inventory、Methods 插入段和 ARS 可复现性审查 |
+| 阶段 5.20 GWAS diagnostic appendix | 下一步 | 输出每个 oil trait 的 lambda、样本数、SNP 数、Bonferroni/FDR/suggestive 阈值和图件路径 |
+| 阶段 5.21 final metadata insertion and release | 待人工信息后执行 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
 
 ## 当前最重要的数字
 
@@ -130,6 +131,10 @@ Reviewer-risk register: 1 file
 Revision roadmap: 1 file
 Submission gate matrix: 1 file
 ARS reviewer synthesis: 1 file
+Result-to-script crosswalk: 1 file
+Reproducibility file inventory: 1 file
+Methods reproducibility insert: 1 file
+ARS reproducibility review: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -905,3 +910,24 @@ Stage 5.9-5.10 打磨后：55-75%
 当前判断：
 
 核心分析主线可以继续向论文推进，但还不是最终投稿包。机器侧下一步应优先做 result-to-script reproducibility crosswalk 和 GWAS diagnostic appendix；人工侧仍需填写 Stage 5.17 单表并完成图件人工检查。
+
+
+## 阶段 5.19：result-to-script reproducibility crosswalk
+
+状态：已完成初版。
+
+为什么做这一步：
+
+审稿人经常会问每个主结果、主表和主图到底由哪个脚本生成，输入是什么，输出在哪里，关键参数是什么。Stage 5.19 把这些信息整理成 crosswalk，让论文从“有结果”进一步变成“结果能追踪、能复核”。
+
+主要产出：
+
+- `docs/2026-06-06-zeamap-v0-1-stage5-19-result-script-crosswalk.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-19-reproducibility-file-inventory.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-19-methods-reproducibility-insert.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-19-ars-reproducibility-review.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-19-report.md`
+
+当前判断：
+
+可复现性风险从“缺少映射表”降为“最终 release 包装还要说明哪些大文件不进 GitHub”。下一步机器侧应做 GWAS diagnostic appendix，把每个 oil trait 的统计诊断整理成投稿附录表。
