@@ -1,0 +1,6 @@
+check	status	evidence
+required_artifacts_exist	pass	All curated submission artifacts exist.
+non_empty_artifacts	pass	All curated submission artifacts are non-empty.
+category_coverage	pass	figure=9; manuscript=3; method=5; release=2; result=6; script=14; submission=8; table=5
+release_pid_not_fabricated	human_required	Checksum manifest is ready, but the final tag, GitHub release and DOI/PID still require author-approved release action.
+author_controlled_fields_not_fabricated	human_required	Author metadata, funding/COI statements and final figure approvals remain template-driven human inputs.

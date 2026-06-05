@@ -1086,3 +1086,34 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 通俗解读：这一阶段把最后剩下的 4 个人工关卡集中到一个文件里。现在作者不需要翻很多阶段文档，只需要打开 Stage 5.32 human action packet，按顺序填作者信息、Funding/COI/致谢、Figure 1-3 最终批准表，再按命令重跑脚本。release/tag/DOI 也列出了执行顺序，但仍必须等作者批准后再做。
 
 阶段结论：机器侧已经把最后人工步骤整理成可执行清单；论文仍不能标记为最终投稿完成，因为真实作者信息、图件批准和 release DOI/PID 还没有发生。
+
+
+## 阶段 5.33 submission artifact integrity manifest
+
+状态：已完成机器端初版，仍需作者最终信息后重跑。
+
+这一步做了什么：
+
+- 把最终投稿需要随包保存的核心文件列成 manifest。
+- 对 manuscript、DOCX/HTML、主图、论文表格、关键结果文件、审计文件和脚本计算 SHA256。
+- 检查这些文件是否存在、是否为空。
+- 生成一个投稿包 README，方便最终上传 GitHub release 和 Zenodo/Figshare。
+
+主要产出：
+
+- `docs/2026-06-06-zeamap-v0-1-stage5-33-submission-artifact-manifest.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-33-submission-artifact-audit.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-33-submission-package-readme.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-33-final-submission-gate.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-33-ars-submission-integrity-review.md`
+
+通俗解释：
+
+现在论文文件已经不是“散落在目录里的很多结果”，而是有一张清单能说明哪些文件是最终投稿包的一部分，每个文件的大小和 SHA256 指纹是什么。以后创建 release 或 DOI 时，可以用这张表确认文件没有被误删、误改或漏传。
+
+仍然不能自动完成的事：
+
+- 作者姓名、单位、ORCID/email 和作者确认。
+- 基金、致谢、利益冲突声明。
+- Figure 1-3 的人工视觉确认。
+- 最终 GitHub release、tag 和 Zenodo/Figshare DOI/PID。

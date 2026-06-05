@@ -11,7 +11,7 @@ ZEAMAP 玉米 oil-trait prediction + GWAS 项目。
 
 ## 当前一句话结论
 
-我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释、top loci 优先级排序、区域图初版、论文主表/补充表、Results/Methods 草稿、Figure 1/3 主图初版、manuscript skeleton、Stage 5.9 投稿策略/citation audit、Stage 5.10 polished manuscript package、Stage 5.11 top loci external annotation hardening、Stage 5.12 final manuscript assembly、Stage 5.13 final submission gate、Stage 5.14 human metadata/release templates、Stage 5.15 preflight validation、Stage 5.16 metadata ingestion dry-run、Stage 5.17 single human-input package、Stage 5.18 reviewer-risk register、Stage 5.19 result-to-script reproducibility crosswalk、Stage 5.20 GWAS diagnostic appendix、Stage 5.21 targeted fatty-acid literature support、Stage 5.22 integrated manuscript/claim audit、Stage 5.23 final bibliography/gene-model verification、Stage 5.24 citation-integrated manuscript 和 Stage 5.25 target-journal reference-styled manuscript/submission gate、Stage 5.26 final figure technical QA、Stage 5.27 external gene-name confirmation、Stage 5.28 final submission package、Stage 5.29 DOCX/HTML export package、Stage 5.30 author metadata ingestion pipeline、Stage 5.31 figure/release readiness pipeline 和 Stage 5.32 single human action packet。
+我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释、top loci 优先级排序、区域图初版、论文主表/补充表、Results/Methods 草稿、Figure 1/3 主图初版、manuscript skeleton、Stage 5.9 投稿策略/citation audit、Stage 5.10 polished manuscript package、Stage 5.11 top loci external annotation hardening、Stage 5.12 final manuscript assembly、Stage 5.13 final submission gate、Stage 5.14 human metadata/release templates、Stage 5.15 preflight validation、Stage 5.16 metadata ingestion dry-run、Stage 5.17 single human-input package、Stage 5.18 reviewer-risk register、Stage 5.19 result-to-script reproducibility crosswalk、Stage 5.20 GWAS diagnostic appendix、Stage 5.21 targeted fatty-acid literature support、Stage 5.22 integrated manuscript/claim audit、Stage 5.23 final bibliography/gene-model verification、Stage 5.24 citation-integrated manuscript 和 Stage 5.25 target-journal reference-styled manuscript/submission gate、Stage 5.26 final figure technical QA、Stage 5.27 external gene-name confirmation、Stage 5.28 final submission package、Stage 5.29 DOCX/HTML export package、Stage 5.30 author metadata ingestion pipeline、Stage 5.31 figure/release readiness pipeline、Stage 5.32 single human action packet 和 Stage 5.33 submission artifact integrity manifest。
 
 最可靠的主线是：
 
@@ -310,3 +310,15 @@ Stage 5.9-5.10 打磨后：约 55-75%
 - 不把 GEMMA lead SNP 直接声称为 causal variant。
 
 Current status: Stage 5.32 has compiled all remaining author-only blockers into one human action packet with exact files, commands and completion evidence. Remaining blockers are still author-only: real metadata, funding/acknowledgements/COI approval, human visual figure approval and release PID.
+
+
+## Stage 5.33 submission integrity manifest
+
+已新增最终投稿包校验清单：
+
+- `docs/2026-06-06-zeamap-v0-1-stage5-33-submission-artifact-manifest.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-33-submission-artifact-audit.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-33-submission-package-readme.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-33-ars-submission-integrity-review.md`
+
+这一步记录核心 manuscript、figure、table、result 和 script 文件的 SHA256 指纹，方便最终 GitHub release、Zenodo/Figshare 归档和投稿后复核。它不替代作者信息、基金/COI、图件人工审核和 DOI/PID 创建。
