@@ -2,21 +2,33 @@
 
 更新日期：2026-06-05
 
-## 建模对象
+## 当前模型定位
 
-第一阶段模型不是泛植物大模型，也不是直接上复杂多模态 transformer。当前 461 个强配对 accession 更适合先做 ZEAMAP 玉米 accession-level baseline benchmark，并把 high-priority oil traits 的 GEMMA mixed-linear-model GWAS 做到论文级候选位点/候选基因输出。
+当前阶段不是做泛植物大模型，也不是直接做复杂多模态 transformer。
 
-主要实体：
+当前阶段要做的是：
 
-- `accession_id`：核心样本单位。
-- `gene_id`：基因级 token 和特征聚合单位。
-- `variant_id`：VCF 中的 SNP/INDEL/SV 位点。
-- `trait_id`：农艺性状、油分/氨基酸、代谢物。
-- `modality`：genotype、expression、epigenome、metabolome、phenotype、population。
+```text
+ZEAMAP maize accession-level benchmark
++ high-priority oil-trait GEMMA LMM GWAS
+```
 
-## 数据接口
+原因：
 
-v0.1 已把强配对 accession 写成本地 processed dataset：
+- v0.1 只有 461 个强配对 accession。
+- methylation 只有 236 个 accession。
+- expression 不是 AMP accession-level paired expression。
+- genotype 特征有 199,856 个 SNP，远多于样本数。
+
+所以当前最稳的路线是：
+
+```text
+小模型 + 严格 split + population 对照 + GEMMA LMM GWAS
+```
+
+## 当前数据接口
+
+v0.1 processed dataset：
 
 ```text
 data/processed/v0_1/accessions.tsv
@@ -28,221 +40,218 @@ data/processed/v0_1/genotype_variants.tsv
 data/processed/v0_1/genotype_dosage_int8.npz
 ```
 
-当前 batch 先使用 genotype、phenotype/metabolome、population 和 methylation coverage mask。第一批 expression 文件是 B73/SK/HZS/Mo17 reference/tissue expression，不是 AMP accession-level paired expression，因此暂不作为 v0.1 accession-level 输入。
-
-建议先把可配对模态变成统一 batch：
+一个训练样本可以理解为：
 
 ```text
-batch = {
+sample = {
   accession_id,
-  modality_mask,
   genotype_features,
-  regulatory_features,
-  metabolite_features,
+  population_covariates,
   phenotype_targets,
-  population_covariates
+  modality_mask
 }
 ```
 
-其中：
+当前不进入主模型的模态：
 
-- `modality_mask` 表示该 accession 哪些模态可用。
-- `genotype_features` 在 v0.1 中来自 `genotype_dosage_int8.npz`，矩阵 shape 为 `[variants, samples]`，sample 顺序以 `genotype_samples.tsv` 为准。
-- `population_covariates` 默认不作为预测目标，而作为协变量或 adversarial/confounder control。
-- `phenotype_targets` 和 `metabolite_features` 在不同任务中可以互换为输入或目标。
+- expression：当前文件不是 AMP accession-level expression。
+- raw methylation gene-window features：236 个 accession 上不稳定。
+- open chromatin/chromatin interaction：当前更适合作为 reference regulatory prior。
 
-## 编码器设计
+## 当前主预测模型
 
-## v0.1 baseline 优先级
-
-当前推荐模型顺序：
-
-1. population-only baseline：只用 PCA/structure 预测 trait，作为群体结构对照。
-2. genotype PCA baseline：从 dosage matrix 提取低维 genotype PCs，再用 ridge/elastic net 预测 trait。
-3. genotype PCA + population：检查 genotype 是否在 population covariates 之外提供增益。
-4. 轻量 MLP：仅在正则化 baseline 有信号后使用，避免样本量不足导致过拟合。
-
-暂不推荐：
-
-- 直接用 199,856 SNP 训练深层模型。
-- 直接做大规模 contrastive pretraining。
-- 把 236 个 methylation-covered accession 作为主训练全集。
-- 把 B73/SK/HZS/Mo17 reference/tissue expression 当成 AMP accession-level expression。
-
-当前 baseline 结果：
-
-- `genotype_pca_population_ridge` 是第一版最优 baseline，test median Pearson 为 0.331，test median R2 为 0.034。
-- `genotype_pca_ridge` 优于 `population_ridge`，说明 genotype PCs 提供了 population covariates 之外的信号。
-- 最强可预测 trait 主要是 oil 相关性状，适合作为下一阶段主评估 trait 集合的候选。
-- 大量 trait 的 R2 仍然较低或不稳定，下一步应做 trait subset selection，而不是直接扩大模型复杂度。
-- 第一版 selected traits 共 130 个：oil 29、agronomic 16、amino acid 9、metabolite 76。后续小模型和多模态实验应优先在这个 trait 集合上做，再用 multi-seed robustness 收紧。
-- Multi-seed robustness 后保留 66 个 robust traits：oil 29、metabolite 16、agronomic 15、amino acid 6。后续模型主目标应优先使用这 66 个 traits。
-- Lightweight model comparison 显示 ridge/ElasticNet 优于 small MLP；当前阶段应优先做特征工程和 methylation subset experiment，而不是加深神经网络。
-- Methylation subset experiment 显示全局 mCG/mCHG/mCHH summary 只带来极小整体增益；后续 epigenome 需要 gene/promoter/cis-window 粒度，而不是 accession-level global summary。
-- Gene/promoter/cis-window methylation PCA 带来小幅 R2 增益，但整体仍有限；下一步应做 trait-specific sparse gene/window feature selection，而不是增加模型复杂度。
-- Trait-specific sparse gene-window methylation ElasticNet 没有超过 gene methylation PCA，整体还低于 genotype+population baseline。当前 v0.1 不应把 raw methylation gene-window features 作为主输入；methylation 只保留为 auxiliary PCA、coverage mask、ablation 和候选解释表。
-- Final v0.1 benchmark 固化 `genotype_population_ridge` 为主模型：66 个 robust traits 的 median Pearson/R2 为 0.498/0.204，oil family 最强。下一步模型工作应转向 genotype attribution，而不是扩大 encoder/fusion 复杂度。
-- Genotype attribution screen 已输出 top 15 traits 的稳定 SNP/gene candidates；这些候选只能作为解释性假设。
-- Covariate-adjusted GWAS baseline 已证明 simple PC/K residualization 会产生明显 inflation，lambda GC 为 2.41-3.97。
-- GEMMA LMM GWAS 已完成 10 个 high-priority oil traits，使用 kinship + PC1-PC3/K1-K3 covariates，lambda GC 为 0.984-1.018，median 0.998。当前解释性主线应以 GEMMA lead SNP/gene table 为论文候选结果，ridge attribution 作为交叉支持。
-
-### Genotype encoder
-
-输入：
-
-- VCF genotype dosage：0/1/2 或 missing。
-- 位点注释：染色体、位置、影响基因、功能注释。
-
-第一版做法：
-
-- SNP 先按 MAF、missing rate、LD pruning 过滤。
-- 对每个 accession 形成 sparse genotype vector。
-- 可选 gene-level 聚合：promoter/gene body/cis-window 内 ALT dosage sum、deleterious count、variant category count。
-
-模型：
-
-- baseline：PCA/SVD + ridge/elastic net。
-- 小模型：MLP 或 linear projection。
-- 后续：variant set transformer 或 gene-window attention。
-- 解释性路线：以 GEMMA LMM GWAS 作为主 association 层，输出 Bonferroni/FDR、LD-clumped lead SNP、B73 RefGen_v4 candidate genes、Manhattan/QQ 图；train-split SNP-trait correlation 和 ridge attribution 只作为辅助交叉证据。
-
-### Expression encoder
-
-输入：
-
-- gene expression matrix，行是 gene，列是 sample/accession。
-
-第一版做法：
-
-- log1p 或 rank-normalization。
-- 选择高变基因或 pathway/gene-family 聚合。
-- 输出 accession expression embedding。
-
-模型：
-
-- MLP over selected genes。
-- gene token transformer：每个 gene 一个 token，token feature 是 expression value + gene embedding。
-
-### Regulatory encoder
-
-输入：
-
-- DNA methylation、open chromatin、chromatin interaction、histone modification。
-
-第一版做法：
-
-- 暂不处理原始 reads。
-- 把 BED/bigWig/matrix 聚合到 gene promoter、gene body、distal cis-window。
-- 允许样本缺失，依赖 `modality_mask`。
-- v0.1 主模型暂不直接接入 raw gene-window methylation features；如使用 methylation，只使用低维 PCA 辅助特征做消融，不作为默认训练输入。
-
-模型：
-
-- region-to-gene pooling + MLP。
-- 后续接 graph attention，把 chromatin interaction 作为 gene-gene 或 enhancer-gene edge。
-
-### Metabolome/phenotype encoder
-
-输入：
-
-- `ZEAMAP_phenotype_AMP_183_known_Metabolites.xls`
-- `ZEAMAP_phenotype_AMP_agri_AA_Oil.xls`
-
-第一版做法：
-
-- 数值列标准化。
-- 分类/环境字段作为 metadata，不直接混入 target。
-- 缺失值用 mask，而不是简单填 0。
-
-模型：
-
-- MLP encoder。
-- 多任务 regression head。
-
-### Population encoder
-
-输入：
-
-- `amp_pca.txt`
-- `amp_str.txt`
-
-用途：
-
-- 作为协变量输入。
-- 用于评估模型是否过度依赖群体结构。
-- 可在 phenotype prediction 中做 residualization 或 covariate adjustment。
-
-## 融合结构
-
-baseline 完成前，第一版不做复杂融合。先比较以下输入组合：
+最终 v0.1 benchmark 使用：
 
 ```text
-population_only -> trait heads
-genotype_pca -> trait heads
-genotype_pca + population -> trait heads
+genotype_population_ridge
 ```
 
-baseline 有明确增益后，再进入 late fusion：
+输入：
+
+- genotype representation
+- population covariates
+
+输出：
+
+- 66 个 robust traits 的单 trait regression 结果。
+
+当前结果：
 
 ```text
-genotype_embedding   \
-expression_embedding  \
-regulatory_embedding   -> fusion transformer/MLP -> accession_embedding -> task heads
-metabolite_embedding  /
-population_embedding /
+overall median Pearson/R2 = 0.498 / 0.204
+oil median Pearson/R2 = 0.596 / 0.321
 ```
 
-原因：
+为什么用 ridge：
 
-- ZEAMAP 各模态覆盖不一定完全一致。
-- late fusion 容易支持缺失模态。
-- 第一阶段更容易调试 ID 对齐和数据泄漏问题。
+- 样本少，特征多。
+- ridge 对高维 SNP 特征更稳。
+- small MLP 已经测试过，表现不稳定。
 
-第二版可以扩展为 gene-centric fusion：
+## 当前模型比较结论
+
+在 66 个 robust traits 上：
+
+```text
+genotype_population_ridge      median Pearson/R2 = 0.498 / 0.204
+genotype_population_elasticnet median Pearson/R2 = 0.483 / 0.171
+small MLP                      median Pearson/R2 = 0.351 / -0.191
+```
+
+结论：
+
+- ridge 是当前默认主模型。
+- ElasticNet 是有用对照。
+- small MLP 暂不作为主模型。
+- 当前不继续加深神经网络。
+
+## Population covariates 的角色
+
+population covariates 有两个用途：
+
+1. 作为 prediction model 的输入，帮助模型解释 population structure。
+2. 作为对照，判断 genotype 是否提供了 population 之外的预测信号。
+
+因此 benchmark 里必须保留：
+
+```text
+population_only
+genotype_only
+genotype + population
+```
+
+如果 genotype + population 没有超过 population-only，就说明模型可能只是学到了群体结构。
+
+当前结果显示 genotype + population 优于 population-only，所以 genotype 确实提供额外信号。
+
+## Methylation 的当前角色
+
+methylation 不作为 v0.1 主输入。
+
+已经测试：
+
+```text
+global methylation summary: almost no overall gain
+gene methylation PCA: small gain
+sparse gene-window methylation: unstable
+```
+
+当前保留方式：
+
+- modality coverage mask
+- methylation PCA auxiliary ablation
+- sparse selected features as candidate explanation only
+
+暂不做：
+
+- raw methylation gene-window features 直接并入主训练矩阵。
+- methylation transformer。
+- 用 236 个 accession 训练复杂 methylation 模型。
+
+## GWAS 和 attribution 的角色
+
+当前有三层解释性分析：
+
+| 层级 | 作用 | 当前地位 |
+|---|---|---|
+| genotype attribution screen | 快速找候选 SNP/gene | 辅助证据 |
+| covariate-only GWAS | 检查 GWAS 工具链和 inflation | 诊断 baseline |
+| GEMMA LMM GWAS | 控制 kinship 后的 association | 论文主 GWAS baseline |
+
+GEMMA LMM 当前结果：
+
+```text
+traits: 10 high-priority oil traits
+n per trait: 440
+SNPs: 199,856
+lambda GC: 0.984-1.018
+median lambda GC: 0.998
+Bonferroni hits per trait: 1-21
+```
+
+当前解释性主线：
+
+```text
+GEMMA lead SNP
+-> LD/locus grouping
+-> candidate gene mapping
+-> function annotation
+-> oil/fatty-acid pathway literature
+-> manuscript figure/table
+```
+
+注意：
+
+- GEMMA lead SNP 是 candidate locus，不是 causal variant。
+- attribution screen 只能作为与 GEMMA 交叉支持的辅助结果。
+- covariate-only GWAS 因为 lambda GC 过高，不作为主结果。
+
+## 以后如果扩展模型，怎么做
+
+只有在当前论文级 benchmark/GWAS 主线稳定后，才考虑扩展模型。
+
+建议扩展顺序：
+
+1. gene-window genotype representation
+
+把 SNP 聚合到 gene body、promoter、cis-window，减少维度，增加可解释性。
+
+2. multi-task ridge/ElasticNet
+
+利用 oil traits 之间的相关性，做 trait family-level multi-task model。
+
+3. methylation PCA 辅助输入
+
+只在明确增益 trait 上使用，不作为默认全局输入。
+
+4. gene-centric fusion
+
+如果后续拿到 accession-level expression 或更完整 epigenome，再考虑：
 
 ```text
 gene token = {
-  gene_id_embedding,
+  gene_id,
   cis_variant_features,
   expression_value,
   methylation_features,
-  chromatin_accessibility_features,
-  interaction_edges
+  chromatin_features
 }
 ```
 
-然后对每个 accession 训练 gene token transformer，得到 accession embedding 和 gene embedding。
+5. transformer or contrastive pretraining
 
-## 预训练任务
+只有在样本量和模态配对显著扩大后再做。
 
-当前优先顺序：
+## 当前不建议的结构
 
-1. genotype/population to phenotype/metabolome baseline。
-2. trait 可预测性筛选。
-3. masked phenotype/metabolite prediction。
-4. modality dropout reconstruction。
-5. gene-context prediction。
-6. cross-modal contrastive learning。
+不建议：
 
-暂缓任务：
+- 直接用 199,856 SNP 训练深层模型。
+- 用 236 个 methylation accession 训练复杂多模态模型。
+- 把 reference/tissue expression 当作 accession expression。
+- 用 transformer 替代当前 ridge baseline。
+- 在没有独立验证的情况下强化 causal gene 结论。
 
-- masked expression prediction：等待 accession-level expression 或明确的 reference prior 设计。
-- genotype-to-expression prediction：当前没有 AMP accession-level expression 配对。
+## 当前论文级模型图可以怎么画
 
-## 评估
+推荐画成三块，而不是画成大模型：
 
-内部评估：
+```text
+ZEAMAP processed data
+  |
+  |-- accession ID harmonization
+  |
+v0.1 dataset
+  |-- genotype
+  |-- population covariates
+  |-- phenotype/metabolome traits
+  |-- methylation coverage mask
+  |
+  |-- prediction benchmark: ridge / ElasticNet / MLP comparison
+  |
+  |-- oil-trait GWAS: GEMMA LMM + kinship
+  |
+  |-- interpretation: lead loci + candidate genes
+```
 
-- 按 accession split，避免同一 accession 泄漏。
-- trait-level R2/Pearson/Spearman。
-- metabolite-level masked reconstruction error。
-- modality ablation：去掉 genotype/expression/population 后性能变化。
-
-关键风险：
-
-- 样本 ID 不一致导致错误配对。
-- 群体结构泄漏导致 phenotype prediction 虚高。
-- reference genome 版本不一致导致 gene ID 无法稳定对齐。
-- epigenome 样本可能和 AMP accessions 弱配对或不完全配对。
-
-第一版目标是先做对齐和 baseline，不追求复杂模型。
+这个图更符合当前真实进展，也更适合论文方法部分。

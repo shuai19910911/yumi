@@ -2,579 +2,433 @@
 
 更新日期：2026-06-05
 
-## 项目定位
+## 项目现在要做什么
 
-本项目第一阶段只做 ZEAMAP/玉米，不扩展到油菜、茶树、大豆或水稻。当前目标不是停留在探索性分析，而是把 ZEAMAP oil-trait prediction benchmark 和 GWAS 按正式论文标准推进：可复现数据集、严格 population/kinship correction、LD clumping、candidate-gene annotation、图表和报告同步产出。当前样本量不适合直接训练大规模多模态 transformer，但足够支撑论文导向的 genotype-to-phenotype benchmark 和 high-priority oil-trait MLM GWAS。
+当前项目只聚焦 ZEAMAP 玉米数据。目标是按正式论文标准完成两条主线：
 
-阶段性判断：
+1. `genotype + population -> phenotype/metabolome` 的预测 benchmark。
+2. high-priority oil traits 的 GEMMA mixed-linear-model GWAS。
 
-- `v0.1` 有 461 个强配对 accession，适合训练和评估小模型 baseline。
-- genotype 维度远大于样本数，必须先做降维、正则化或特征筛选。
-- methylation 有 236 个 accession 覆盖，适合后续 missing-modality 或抽样实验，不作为 `v0.1` 主训练输入。
-- 当前第一目标是形成可写入论文方法和结果的 v0.1 benchmark + GEMMA LMM GWAS 主线，而不是追求复杂模型结构。
+当前不把“大规模多模态预训练”作为近期目标。原因很直接：v0.1 只有 461 个强配对 accession，methylation 只有 236 个 accession，样本量不足以支撑复杂 transformer。现在最有论文价值的是把 oil-trait prediction 和 oil-trait GWAS 做扎实。
 
-## 阶段 0：数据下载清单确认
+## 总体状态表
+
+| 阶段 | 状态 | 结论 |
+|---|---|---|
+| 阶段 0 数据下载与检查 | 已完成 | 第一批、第二批 ZEAMAP 文件可读，核心文件完整 |
+| 阶段 1 样本 ID 统一 | 已完成 | phenotype、population、VCF 可以对齐到 accession |
+| 阶段 2 v0.1 processed dataset | 已完成 | 得到 461 个强配对 accession |
+| 阶段 3 baseline benchmark | 已完成 | genotype+population ridge 有稳定预测信号 |
+| 阶段 3.1 trait 筛选 | 已完成 | 317 个可评估 trait 中筛出 130 个 selected traits |
+| 阶段 3.2 multi-seed 稳定性 | 已完成 | 得到 66 个 robust traits |
+| 阶段 3.3 lightweight model comparison | 已完成 | ridge/ElasticNet 优于 small MLP |
+| 阶段 4 methylation 消融 | 已完成 | methylation 不进入 v0.1 主模型 |
+| 阶段 4.5 final benchmark | 已完成 | 固化 `genotype_population_ridge` 主模型 |
+| 阶段 5.1 genotype attribution screen | 已完成 | 得到候选 SNP/gene，但不是正式 GWAS |
+| 阶段 5.2 covariate-only GWAS | 已完成 | lambda GC 过高，只作诊断 |
+| 阶段 5.3 GEMMA LMM GWAS | 已完成 | lambda GC 接近 1，可作为论文主 GWAS baseline |
+| 阶段 5.4 GEMMA lead loci 注释 | 下一步 | 需要做 candidate gene、功能注释、locus 图和文献核查 |
+
+## 当前最重要的数字
+
+数据规模：
+
+```text
+461 accessions: genotype + population + phenotype/metabolome
+236 accessions: additional methylation coverage
+199,856 SNPs
+318 numeric traits
+66 robust traits for final benchmark
+10 high-priority oil traits for GEMMA GWAS
+```
+
+预测 benchmark：
+
+```text
+final model: genotype_population_ridge
+final traits: 66 robust traits
+median Pearson: 0.498
+median R2: 0.204
+oil traits median Pearson/R2: 0.596 / 0.321
+```
+
+GWAS：
+
+```text
+covariate-only GWAS lambda GC: 2.41-3.97
+GEMMA LMM GWAS lambda GC: 0.984-1.018
+GEMMA LMM median lambda GC: 0.998
+GEMMA Bonferroni hits per oil trait: 1-21
+```
+
+## 阶段 0：数据下载与检查
 
 状态：已完成。
 
-已经确认：
+做了什么：
 
-- CNGBdb `CNP0001565` 是 ZEAMAP database public download data。
-- FTP 根目录下有 `01_Genomics`、`02_Variants`、`03_Genetics`、`04_Populations`、`05_Epigenetics`、`06_Pangenome`、`99_MaizegoResources`。
-- 表达、表型/代谢物、群体结构和 SNP VCF 均有 processed 文件。
-- 第一批 8 个目标文件已下载到 `/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/`。
-- 表达矩阵和群体结构文本文件可读，行数与下载记录一致。
-- 两个 `.xls` 文件经 `file` 检查为合法 `Composite Document File V2 Document`，不是 HTML 错误页。
-- 已在 `bio3` 环境安装 `xlrd/openpyxl`，两个 `.xls` 文件内容级解析通过。
+- 确认 ZEAMAP 数据来自 CNGBdb project `CNP0001565`。
+- 下载第一批 processed expression、phenotype/metabolome、population 文件。
+- 下载第二批 SNP VCF 和 epigenome 相关文件。
+- 检查文本、VCF、xls 文件都能读取，不是错误页或空文件。
 
-已完成产物：
+主要报告：
 
 - `docs/2026-06-04-zeamap-first-batch-download-check.md`
-- `docs/2026-06-04-zeamap-sample-id-check.md`
-- `data/metadata/zeamap_accession_index.tsv`
-- `data/metadata/zeamap_table_id_summary.tsv`
-- `data/metadata/zeamap_expression_sample_columns.tsv`
-- `data/metadata/phenotype_sheets/*.tsv`
+- `docs/2026-06-04-zeamap-second-batch-check.md`
 
-## 阶段 1：metadata-only 统一索引
+## 阶段 1：样本 ID 统一
 
-状态：已完成第一批数据的样本 ID/列名检查和统一索引输出。
+状态：已完成。
 
-产出：
+做了什么：
 
-- `data/metadata/zeamap_file_manifest.tsv`
-- `data/metadata/zeamap_accession_map.tsv`
-- `data/metadata/zeamap_modality_coverage.tsv`
-- 当前实际输出：
-- `data/metadata/zeamap_accession_index.tsv`
-- `data/metadata/zeamap_table_id_summary.tsv`
-- `data/metadata/zeamap_expression_sample_columns.tsv`
-- `data/metadata/phenotype_sheets/*.tsv`
-- `docs/2026-06-04-zeamap-sample-id-check.md`
+- 检查每个表的样本列名和 accession 命名规则。
+- 输出统一样本索引表。
+- 确认 phenotype、population、VCF 三者能对齐。
 
-统一字段：
+主要结果：
 
-```text
-database
-crop
-species
-source_project
-sample_id
-accession_id
-tissue
-developmental_stage
-treatment
-omics_type
-feature_space
-genome_version
-file_format
-source_url
-local_path
-md5
-raw_reads_flag
-notes
-```
-
-关键检查：
-
-- 表达矩阵列名是否直接是 accession。
-- 表型/代谢物表中的材料名是否与表达矩阵一致。
-- `amp_pca.txt`、`amp_str.txt` 的行名是否与 AMP phenotype 和 VCF samples 一致。
-- SNP VCF header 中 sample names 是否覆盖 phenotype/metabolite accessions。
-
-当前结论：
-
-- `amp_pca.txt` 与 `amp_str.txt` 均有 507 个 accession，二者完全交集为 507。
-- metabolite phenotype 有 339 个 accession，agri/AA/Oil phenotype 有 476 个 accession。
+- population 文件有 507 个 accession。
+- metabolite phenotype 有 339 个 accession。
+- agri/AA/Oil phenotype 有 476 个 accession。
 - population + 任一 phenotype/metabolome 的强配对 accession 为 461 个。
-- 第一批 expression 文件是 B73/SK/HZS/Mo17 reference/tissue expression，不是 AMP accession-level expression。
-- 第二批 VCF 有 507 个 samples、1,186,632 个 variants。
-- VCF 与 accession index 交集为 507。
-- genotype + population + 任一 phenotype/metabolome 的强配对 accession 为 461。
-- genotype + population + phenotype/metabolome + 任一 DNA methylation 的强配对 accession 为 236。
-- Chromatin accessibility 和 chromatin interaction 当前更适合作为 B73/reference regulatory prior。
+- VCF 有 507 个 samples，和 population accession 对齐。
 
-## 阶段 2：最小可行数据集
+重要判断：
 
-状态：v0.1 processed dataset 已完成构建和一致性检查。
+- 当前 expression 文件不是 AMP accession-level expression，不能放进 v0.1 主数据。
 
-目标：生成一个只包含强配对样本的 `v0.1` 数据集。当前 v0.1 以 `genotype + population + 任一 phenotype/metabolome` 为强配对标准，共 461 个 accession。
+主要产出：
 
-纳入模态：
+- `data/metadata/zeamap_accession_index.tsv`
+- `data/metadata/zeamap_table_id_summary.tsv`
+- `data/metadata/zeamap_expression_sample_columns.tsv`
+- `docs/2026-06-04-zeamap-sample-id-check.md`
 
-- genotype：`AMP_SNP_anno.vcf.gz`，保留 biallelic SNP、`MAF >= 0.05`、`NS >= 450`，再抽稀到 199,856 个 variants。
-- phenotype/metabolome：两个 AMP phenotype xls。
-- population：PCA 和 structure。
-- methylation：先作为 accession coverage/missing-modality mask，不在 v0.1 中展开区域特征。
-- expression：当前 B73/SK/HZS/Mo17 文件是 reference/tissue expression，不是 AMP accession-level paired expression，因此不纳入 v0.1 paired matrix。
+## 阶段 2：v0.1 processed dataset
 
-产出：
+状态：已完成。
+
+做了什么：
+
+- 以 accession 为单位构建最小可行数据集。
+- 纳入 genotype、population、phenotype/metabolome。
+- methylation 先只作为 coverage/missing-modality 标记。
+- expression 暂不纳入。
+
+主要结果：
+
+- accessions：461。
+- SNP：199,856 个常见、高样本数 biallelic SNP。
+- phenotype/metabolome：318 个数值 trait columns。
+- methylation coverage：236 个 accession。
+
+主要产出：
 
 - `data/processed/v0_1/accessions.tsv`
 - `data/processed/v0_1/phenotype.parquet`
 - `data/processed/v0_1/population.parquet`
 - `data/processed/v0_1/modality_mask.tsv`
-- `data/processed/v0_1/genotype_samples.tsv`
-- `data/processed/v0_1/genotype_variants.tsv`
 - `data/processed/v0_1/genotype_dosage_int8.npz`
-- `data/processed/v0_1/manifest.tsv`
 - `docs/2026-06-04-zeamap-v0-1-build-report.md`
 
-成功标准：
-
-- 至少得到一批同时具有 genotype、phenotype/metabolome、population 的 accessions：已完成，461 个。
-- 每个 accession 有 modality mask：已完成。
-- genotype dosage matrix、sample order、variant table 一致性检查：已完成。
-- 可以训练一个 baseline：用 genotype + population 预测部分 phenotype/metabolite：下一步。
-
-## 阶段 3：v0.1 baseline benchmark
-
-状态：已完成第一版 baseline benchmark。
-
-目标：用 `v0.1` processed dataset 建立可复现 baseline，回答当前 461 个 accession 是否足以支持 genotype-to-phenotype/metabolome learning。
-
-输入：
-
-- `data/processed/v0_1/genotype_dosage_int8.npz`
-- `data/processed/v0_1/genotype_samples.tsv`
-- `data/processed/v0_1/genotype_variants.tsv`
-- `data/processed/v0_1/phenotype.parquet`
-- `data/processed/v0_1/population.parquet`
-- `data/processed/v0_1/modality_mask.tsv`
-
-训练策略：
-
-- 固定 accession-level train/validation/test split，避免 accession 泄漏。
-- genotype 先做低维表示，不直接把 199,856 SNP 全量喂给复杂模型。
-- 优先 baseline：population-only、genotype PCA + ridge/elastic net、genotype PCA + population、轻量 MLP。
-- 对 phenotype/metabolome 每个 trait 单独评估，保留缺失率、方差、有效样本数。
-- population covariates 同时作为输入和对照，检查模型是否只是学习群体结构。
-
-产出：
-
-- `data/processed/v0_1/splits/`
-- `data/processed/v0_1/genotype_pca.tsv`
-- `data/processed/v0_1/genotype_pca_variance.tsv`
-- `results/v0_1_baseline/trait_qc.tsv`
-- `results/v0_1_baseline/trait_metrics.tsv`
-- `results/v0_1_baseline/model_comparison.tsv`
-- `results/v0_1_baseline/top_predictable_traits.tsv`
-- `docs/2026-06-05-zeamap-v0-1-baseline-plan.md`
-- `docs/2026-06-05-zeamap-v0-1-baseline-report.md`
-
-成功标准：
-
-- 至少完成 population-only 与 genotype+population 两类 baseline。
-- 输出每个 trait 的 R2、Pearson、Spearman、MAE/RMSE、有效样本数和缺失率。
-- 找出一批稳定可预测 trait，用作后续多模态模型的主评估集合。
-- 如果大多数 trait 信号弱，仍保留结果作为样本量和模态覆盖不足的证据。
-
-当前结果：
-
-- split：train 322、validation 69、test 70。
-- genotype PCA：100 PCs，累计解释方差 0.504527。
-- 318 个 trait 中 317 个通过 baseline 过滤。
-- test median Pearson：`genotype_pca_population_ridge` 0.331，`genotype_pca_ridge` 0.298，`population_ridge` 0.237。
-- `genotype_pca_population_ridge` 有 204 个 trait 的 test R2 为正，226 个 trait 的 test Pearson 大于 0.2。
-- 最强可预测 trait 主要是 oil 相关性状，最高 test Pearson 约 0.92。
-
-### 阶段 3.1：selected traits
+## 阶段 3：prediction benchmark
 
 状态：已完成。
 
-筛选标准：
-
-- `genotype_pca_population_ridge` test Pearson >= 0.3。
-- `genotype_pca_population_ridge` test R2 > 0。
-- 相比 `population_ridge` 至少满足 Pearson gain >= 0.02 或 R2 gain > 0。
-- trait 通过 baseline QC。
-
-产出：
-
-- `scripts/select_zeamap_v0_1_traits.py`
-- `results/v0_1_baseline/selected_traits.tsv`
-- `results/v0_1_baseline/selected_trait_family_summary.tsv`
-- `results/v0_1_baseline/selected_trait_tier_summary.tsv`
-- `docs/2026-06-05-zeamap-v0-1-selected-traits.md`
-
-结果：
-
-- selected traits：130 / 317。
-- high-priority traits：11。
-- medium-priority traits：28。
-- watch traits：91。
-- family 分布：metabolite 76、oil 29、agronomic 16、amino acid 9。
-- oil traits 最强，最高 test Pearson 约 0.92；metabolite traits 数量最多，但需要 multi-seed robustness 确认稳定性。
-
-### 阶段 3.2：multi-seed robustness
-
-状态：已完成。
-
-目标：只对 130 个 selected traits 重复多个 random seed 的 split 和 baseline，评估 trait ranking 与 test performance 是否稳定。
-
-产出：
-
-- `results/v0_1_baseline/robustness_metrics.tsv`
-- `results/v0_1_baseline/robustness_model_summary.tsv`
-- `results/v0_1_baseline/robustness_trait_summary.tsv`
-- `results/v0_1_baseline/robust_selected_traits.tsv`
-- `docs/2026-06-05-zeamap-v0-1-robustness-report.md`
-
-结果：
-
-- seeds：20260605、20260606、20260607、20260608、20260609。
-- `genotype_pca_population_ridge` 在 selected traits 上的 5-seed test median Pearson 为 0.396，median R2 为 0.109。
-- robust selected traits：66 / 130。
-- robust family 分布：oil 29、metabolite 16、agronomic 15、amino acid 6。
-- oil traits 全部通过 robust 规则，是当前最稳定目标集合。
-- 这 66 个 robust traits 是后续 lightweight MLP、ElasticNet comparison 和 methylation subset experiment 的优先目标。
-
-### 阶段 3.3：lightweight model comparison
-
-状态：已完成。
-
-目标：在 66 个 robust traits 上比较 ridge、ElasticNet 和轻量 MLP，确认是否值得引入非线性模型。
-
-建议约束：
-
-- 仍然使用 accession-level split，避免泄漏。
-- 只在 robust traits 上做，不再使用全部 318 个 traits。
-- MLP 只做小模型和强正则，不上 GPU，不做大 transformer。
-
-产出：
-
-- `results/v0_1_baseline/lightweight_model_metrics.tsv`
-- `results/v0_1_baseline/lightweight_model_summary.tsv`
-- `results/v0_1_baseline/lightweight_trait_summary.tsv`
-- `docs/2026-06-05-zeamap-v0-1-lightweight-model-report.md`
-
-结果：
-
-- 输入 traits：66 个 robust selected traits。
-- seeds：5 个。
-- `genotype_population_ridge` 最佳：median Pearson 0.498，median R2 0.204。
-- `genotype_population_elasticnet` 接近 ridge：median Pearson 0.483，median R2 0.171。
-- `genotype_population_small_mlp` 明显不稳定：median Pearson 0.351，median R2 -0.191。
-- 当前样本量下不应继续增加模型复杂度；下一步优先做 methylation subset feature experiment。
-
-## 阶段 4：epigenome 接入
-
-目标：在不下载全量原始 reads 的前提下，接入 DNA methylation、open chromatin、chromatin interaction。
-
-策略：
-
-- 先下载目录清单和 md5。
-- 优先 processed matrix、BED、bigWig summary，不处理 FASTQ。
-- 把 epigenome features 聚合到 gene body、promoter、cis-window。
-- 如果 epigenome 样本不是 AMP 全覆盖，允许作为 missing-modality 训练数据。
-
-产出：
-
-- `data/processed/v0_2/regulatory_gene_features.parquet`
-- `data/processed/v0_2/modality_mask.parquet`
-- `docs/epigenome-alignment-report.md`
-
-进入条件：
-
-- `v0.1 baseline` 确认至少部分 phenotype/metabolome trait 有可预测信号。
-- 明确 methylation 文件的 accession、组织、时期和区域类型。
-- 优先从 236 个 methylation-covered accession 做小规模 missing-modality 实验。
-
-### 阶段 4.1：methylation subset global summary
-
-状态：已完成。
-
-目标：先用 DNA methylation `01_regions` bedgraph 文件构建 accession-level 全局 summary features，测试是否能在 236 个 methylation-covered accession 子集上提升 66 个 robust traits 的预测。
-
-产出：
-
-- `scripts/run_zeamap_v0_1_methylation_subset.py`
-- `scripts/slurm/run_zeamap_v0_1_methylation_subset.sh`
-- `data/processed/v0_1/methylation_region_summary.tsv`
-- `results/v0_1_baseline/methylation_subset_metrics.tsv`
-- `results/v0_1_baseline/methylation_subset_model_summary.tsv`
-- `results/v0_1_baseline/methylation_subset_trait_summary.tsv`
-- `docs/2026-06-05-zeamap-v0-1-methylation-subset-report.md`
-
-结果：
-
-- methylation-covered v0.1 accession：236。
-- `genotype_population_methylation_ridge` median Pearson/R2：0.496 / 0.173。
-- `genotype_population_ridge` median Pearson/R2：0.490 / 0.173。
-- 全局 methylation summary 整体增益很小，但少数 traits 有稳定增益，例如 `metabolite__Feruloyltryptamine_E1` 和 `metabolite__N_Coumaroyltryptamine_E1`。
-
-结论：
-
-- accession-level global methylation summary 不足以明显提升整体预测。
-- 下一步如果继续 epigenome，应做 gene/promoter/cis-window methylation aggregation，而不是继续加深模型。
-
-### 阶段 4.2：gene/promoter/cis-window methylation PCA
-
-状态：已完成。
-
-目标：用 B73 RefGen_v4 gene annotation 把 mCG/mCHG/mCHH region methylation 聚合到 gene body、promoter 和 cis-window，然后用 PCA 压缩为 accession-level features，测试是否优于 genotype+population baseline。
-
-输入：
-
-- Ensembl Plants release 47 `Zea_mays.B73_RefGen_v4.47.chr.gff3.gz`
-- DNA methylation `01_regions` mCG/mCHG/mCHH bedgraph
-- 236 个 methylation-covered v0.1 accessions
-- 66 个 robust selected traits
-
-产出：
-
-- `scripts/run_zeamap_v0_1_gene_methylation_pca.py`
-- `scripts/slurm/run_zeamap_v0_1_gene_methylation_pca.sh`
-- `data/processed/v0_1/b73_refgen_v4_gene_windows.tsv`
-- `data/processed/v0_1/methylation_gene_region_pca.tsv`
-- `data/processed/v0_1/methylation_gene_region_pca_variance.tsv`
-- `results/v0_1_baseline/gene_methylation_pca_metrics.tsv`
-- `results/v0_1_baseline/gene_methylation_pca_model_summary.tsv`
-- `results/v0_1_baseline/gene_methylation_pca_trait_summary.tsv`
-- `docs/2026-06-05-zeamap-v0-1-gene-methylation-pca-report.md`
-
-结果：
-
-- genes：39,005。
-- region types：gene body、promoter upstream 2kb、cis-window +/-10kb。
-- methylation PCA features：90。
-- `genotype_population_gene_methylation_pca_ridge` median Pearson/R2：0.496 / 0.199。
-- `genotype_population_ridge` median Pearson/R2：0.490 / 0.173。
-- 增益最大的 traits 包括 `agri_aa_oil__Kernernumberperrow`、`metabolite__Norcinnamolaurine_E1`、`agri_aa_oil__Oil_C18_0`、`agri_aa_oil__100grainweight`。
-
-结论：
-
-- gene/promoter/cis-window methylation PCA 比全局 methylation summary 更合理，R2 有小幅提升。
-- 整体增益仍有限，下一步不应加深模型，而应做 trait-specific sparse gene/window methylation feature selection。
-
-### 阶段 4.3：trait-specific methylation feature selection
-
-状态：已完成。
-
-目标：对阶段 4.2 中 methylation gain 较高的 traits，直接在 gene/promoter/cis-window methylation features 上做稀疏筛选，寻找可能有解释价值的 gene/window，而不是只用全局 PCA。
-
-输入：
-
-- 10 个 methylation PCA gain 较高且 R2 gain 为正的 traits。
-- 236 个 methylation-covered v0.1 accessions。
-- mCG/mCHG/mCHH x gene/promoter/cis-window，每个 context-region 组合取方差 top 500，共 4500 个候选 gene-window features。
-- 每个 trait/seed 只在 train split 上按相关性预筛 top 200 methylation features，再用 genotype+population+sparse methylation ElasticNetCV 评估 test split。
-
-产出：
-
-- `scripts/run_zeamap_v0_1_sparse_methylation_selection.py`
-- `scripts/slurm/run_zeamap_v0_1_sparse_methylation_selection.sh`
-- `data/processed/v0_1/methylation_gene_window_sparse_candidates.tsv`
-- `data/processed/v0_1/methylation_gene_window_sparse_candidate_metadata.tsv`
-- `results/v0_1_baseline/sparse_methylation_selection_metrics.tsv`
-- `results/v0_1_baseline/sparse_methylation_selection_model_summary.tsv`
-- `results/v0_1_baseline/sparse_methylation_selection_trait_summary.tsv`
-- `results/v0_1_baseline/sparse_methylation_selected_features.tsv`
-- `docs/2026-06-05-zeamap-v0-1-sparse-methylation-selection-report.md`
-
-结果：
-
-- `genotype_population_gene_methylation_pca_ridge` median Pearson/R2：0.449 / 0.160。
-- `genotype_population_ridge` median Pearson/R2：0.414 / 0.106。
-- `genotype_population_sparse_methylation_elasticnet` median Pearson/R2：0.338 / 0.025。
-- 稀疏模型共选出 2,281 个不同 methylation features，其中 69 个在 5 个 seeds 都被选中，229 个在至少 4 个 seeds 被选中。
-- 只有 `agri_aa_oil__Oil_C180_C200` 的 sparse methylation 相比 genotype+population 有较稳定正增益，但仍低于 gene methylation PCA。
-
-结论：
-
-- 当前 236 个 methylation-covered accession 不足以支持 raw gene-window methylation 稀疏模型成为主模型输入。
-- methylation 可保留为低优先级辅助模态、消融分析和候选 gene/window 解释表，但 v0.1 主线应继续以 `genotype+population ridge` 和 66 个 robust traits 为核心。
-- 下一步不建议继续加深 methylation 模型；应转向 genotype 侧的可解释特征、trait family 多任务建模，或补充更大 accession-level paired expression/epigenome 数据。
-
-### 阶段 4.4：当前 epigenome 决策
-
-状态：已完成。
-
-目标：把阶段 4.1-4.3 的结果固化为 v0.1 数据策略：methylation 不进入主训练矩阵，只保留 PCA 辅助特征、coverage mask 和 selected feature report；open chromatin/chromatin interaction 暂作为 B73/reference regulatory prior，不做 accession-level 主模型输入。
-
-产出：
-
-- `docs/2026-06-05-zeamap-v0-1-epigenome-decision.md`
-
-决策：
-
-- v0.1 主模型不接入 raw gene-window methylation features。
-- methylation PCA 可以保留为 auxiliary ablation，但不作为默认训练输入。
-- 下一步转向固化 v0.1 final benchmark 和 genotype 侧可解释性。
-
-## 阶段 4.5：v0.1 final benchmark
-
-状态：已完成。
-
-目标：把阶段 3-4 的结果整理为一个稳定的 v0.1 benchmark 入口，明确主模型、主 trait 集合、family-level performance 和 epigenome 决策。
-
-产出：
-
-- `scripts/build_zeamap_v0_1_final_benchmark.py`
-- `results/v0_1_baseline/final_v0_1_trait_benchmark.tsv`
-- `results/v0_1_baseline/final_v0_1_family_summary.tsv`
-- `docs/2026-06-05-zeamap-v0-1-final-benchmark.md`
-
-结果：
-
-- 主模型：`genotype_population_ridge`。
-- 主评估集合：66 个 robust selected traits。
-- overall median Pearson/R2：0.498 / 0.204。
-- positive R2 fraction：0.979。
-- family 表现：oil median Pearson/R2 0.596 / 0.321；agronomic 0.498 / 0.190；metabolite 0.389 / 0.116；amino acid 0.367 / 0.131。
-- top traits 主要为 oil 相关性状，`agri_aa_oil__Oil_OIL` median Pearson/R2 为 0.924 / 0.824。
-
-结论：
-
-- v0.1 已经足以支撑 accession-level genotype/population 到 phenotype/metabolome 的小模型 benchmark。
-- 当前不进入大规模多模态预训练；下一步做 genotype 侧可解释性和 trait family 层面的 feature attribution。
-
-## 阶段 5：预训练样本构建
-
-### 阶段 5.1：genotype attribution screen
-
-状态：已完成。
-
-目标：在不训练复杂模型的前提下，对 final benchmark 中最稳定的 top traits 做 genotype 侧候选解释性分析，输出稳定 SNP 和附近基因候选列表。
-
-方法：
-
-- 目标 traits：final benchmark 中 `ridge_median_pearson` 最高的 15 个 traits。
-- 每个 seed 使用 accession-level train split，不使用 test split 计算 SNP-trait correlation。
-- 每个 trait/seed 取绝对相关最高的 200 个 SNP。
-- 跨 5 个 seeds 聚合，输出每个 trait top 50 稳定 SNP。
-- 用 B73 RefGen_v4 gene body、promoter、10kb cis-window 映射最近基因。
-
-产出：
-
-- `scripts/run_zeamap_v0_1_genotype_attribution.py`
-- `scripts/slurm/run_zeamap_v0_1_genotype_attribution.sh`
-- `results/v0_1_baseline/genotype_attribution_snp_summary.tsv`
-- `results/v0_1_baseline/genotype_attribution_gene_summary.tsv`
-- `docs/2026-06-05-zeamap-v0-1-genotype-attribution-report.md`
-
-结果：
-
-- SNP summary：750 行，覆盖 15 个 traits。
-- 674 个 SNP 在 5 个 seeds 都进入该 trait 的 top-correlation 候选，745 个 SNP 至少 4 个 seeds 入选。
-- gene relation 分布：gene body 488、cis-window 147、promoter 59、nearest 56。
-- gene summary：587 行，其中 519 个 gene-level candidates 对应至少一个 5-seed stable SNP。
-
-结论：
-
-- 该结果是候选解释性 screen，不是正式 GWAS。
-- 后续如果继续解释性，应加入 LD clumping、population covariate residualization/permutation、候选基因功能注释和 trait family-specific validation。
-
-### 阶段 5.2：covariate-adjusted GWAS baseline
-
-状态：已完成，作为 inflation diagnostic baseline 保留。
-
-目标：把 genotype 解释性分析从 train-split correlation screen 推进到可复现 GWAS baseline：使用所有有 phenotype 的 accession，控制 population covariates，输出 genome-wide p-value、Bonferroni/FDR、LD clumped lead SNP、gene mapping、Manhattan/QQ 图。
-
-输入：
-
-- 10 个 high-priority oil traits。
-- 每个 trait 有 440 个非缺失 accession。
-- 199,856 个 SNP。
-- covariates：PC1、PC2、PC3、K1、K2、K3。
-
-产出：
-
-- `scripts/run_zeamap_v0_1_population_corrected_association.py`
-- `scripts/slurm/run_zeamap_v0_1_population_corrected_association.sh`
-- `results/v0_1_baseline/gwas_v0_1/gwas_summary.tsv`
-- `results/v0_1_baseline/gwas_v0_1/gwas_lead_snps.tsv`
-- `results/v0_1_baseline/gwas_v0_1/gwas_gene_summary.tsv`
-- `results/v0_1_baseline/gwas_v0_1/figures/*.png`
-- `docs/2026-06-05-zeamap-v0-1-gwas-baseline-report.md`
-
-结果：
-
-- 所有 10 个 oil traits 都有 Bonferroni-level hits。
-- 最小 p-value 达到 `2.76e-54` 到 `6.30e-21`。
-- 但 lambda GC 为 2.41-3.97，明显偏高。
-- 这说明 PC/K covariate correction 不足以完全控制亲缘关系、LD 或残余群体结构。
-
-结论：
-
-- 该结果可以作为论文导向的 v0.1 GWAS baseline 和工具链验证。
-- 不能直接作为最终论文 GWAS 结论。
-- 下一步已升级到 mixed-linear-model/kinship GWAS。
-- 只有在 MLM 后仍稳定的 loci 才能进入 manuscript candidate-gene table。
-
-### 阶段 5.3：GEMMA mixed-linear-model GWAS
-
-状态：已完成 v0.1 oil-trait manuscript-facing GWAS baseline。
-
-目标：用 genotype-derived kinship matrix 和 population covariates 控制亲缘关系/群体结构，替代 covariate-only GWAS 作为当前论文主 GWAS 结果。
-
-输入：
-
-- 10 个 high-priority oil traits。
-- 每个 trait 有 440 个非缺失 accession。
-- 199,856 个 SNP。
-- covariates：intercept、PC1、PC2、PC3、K1、K2、K3。
-- kinship：GEMMA centered relatedness matrix，由同一套 filtered SNP 构建。
-
-产出：
-
-- `scripts/prepare_zeamap_v0_1_gemma_inputs.py`
-- `scripts/slurm/run_zeamap_v0_1_gemma_lmm.sh`
-- `scripts/slurm/run_zeamap_v0_1_gemma_lmm_missing_array.sh`
-- `scripts/summarize_zeamap_v0_1_gemma_lmm.py`
-- `results/v0_1_baseline/gemma_lmm_v0_1/gemma_lmm_summary.tsv`
-- `results/v0_1_baseline/gemma_lmm_v0_1/gemma_lmm_lead_snps.tsv`
-- `results/v0_1_baseline/gemma_lmm_v0_1/gemma_lmm_gene_summary.tsv`
-- `results/v0_1_baseline/gemma_lmm_v0_1/figures/*.png`
-- `docs/2026-06-05-zeamap-v0-1-gemma-lmm-report.md`
-
-结果：
-
-- GEMMA p-value 使用 `p_lrt`。
-- lambda GC range：0.984-1.018，median：0.998。
-- covariate-only GWAS lambda GC range：2.41-3.97。
-- GEMMA LMM 后 Bonferroni hits 明显收敛：每 trait 1-21 个，而 covariate-only baseline 为 635-4316 个。
-- 最强 trait-locus 例子：`agri_aa_oil__Oil_C200_C220` min p-value `2.35e-25`；`agri_aa_oil__Oil_C18_1` min p-value `4.55e-19`。
-
-结论：
-
-- GEMMA LMM 有效消除了 covariate-only GWAS 的统计膨胀，是当前可作为论文主线的 GWAS baseline。
-- lead SNP/gene 表可以作为 manuscript candidate loci 初稿。
-- 还不能直接写 causal claim；下一步需要候选基因功能注释、已知 oil/fatty-acid pathway 文献核查、局部 LD/locus 图，以及尽可能做外部或分层复现。
-- 计算执行经验：不要再用单作业串行跑多个 trait；后续 GWAS 使用 SLURM array，并直接调用 `yumi` 环境中的 `python/gemma`，避免并行 `mamba run` lock。
-
-进入条件：
-
-- baseline benchmark 已建立，并筛出主评估 trait。
-- 确认 accession-level 样本量不足以支撑大模型后，转向小模型、多任务学习、gene-level token 扩样或跨数据源扩展。
-
-训练样本形态：
-
-- accession-level sample：一个 accession 对应多个模态向量。
-- gene-level sample：一个 accession 的一个 gene token，包含 cis variants、expression、regulatory features。
-- trait-level sample：一个 accession 的多个 phenotype/metabolite labels。
-
-任务组合：
-
-- masked metabolite/phenotype prediction
-- modality contrastive learning
-- gene-context reconstruction
-- masked expression prediction：仅在拿到 accession-level expression 或明确使用 reference expression prior 后启用。
-- genotype-to-expression prediction：当前暂缓，因为现有 expression 文件不是 AMP accession-level paired expression。
-
-## 阶段 6：GitHub 更新习惯
-
-后续每完成一个小阶段，更新：
-
-- `README.md`：当前项目入口、下载清单和状态。
-- `docs/progress-plan.md`：阶段状态。
-- `docs/model-architecture.md`：模型结构和数据接口变化。
-- 新增阶段报告放在 `docs/`。
-
-提交信息建议：
+这一步回答的问题：
 
 ```text
-docs: update ZEAMAP data manifest plan
-data: add ZEAMAP metadata manifest
-model: document v0.1 pretraining architecture
+只用 genotype 和 population，能不能预测 phenotype/metabolome？
 ```
+
+第一版 baseline：
+
+- train/validation/test = 322/69/70。
+- genotype 先做 PCA。
+- 最佳第一版模型是 `genotype_pca_population_ridge`。
+- 在 317 个 traits 上 test median Pearson = 0.331，median R2 = 0.034。
+
+为什么还要继续筛 trait：
+
+- 所有 trait 混在一起看，中位数不高。
+- 但 oil traits 信号很强。
+- 需要找出稳定、可重复预测的 trait 集合。
+
+主要报告：
+
+- `docs/2026-06-05-zeamap-v0-1-baseline-report.md`
+
+## 阶段 3.1-3.2：trait 筛选和稳定性
+
+状态：已完成。
+
+流程：
+
+1. 从 317 个可评估 traits 中筛出 130 个 selected traits。
+2. 用 5 个 random seeds 重复训练和测试。
+3. 保留多次 split 下稳定的 traits，得到 66 个 robust traits。
+
+66 个 robust traits 组成：
+
+```text
+oil: 29
+metabolite: 16
+agronomic: 15
+amino acid: 6
+```
+
+结论：
+
+- oil traits 是当前最强主线。
+- 这 66 个 robust traits 是后续模型比较和消融实验的主评估集合。
+
+主要报告：
+
+- `docs/2026-06-05-zeamap-v0-1-selected-traits.md`
+- `docs/2026-06-05-zeamap-v0-1-robustness-report.md`
+
+## 阶段 3.3：lightweight model comparison
+
+状态：已完成。
+
+比较模型：
+
+- ridge
+- ElasticNet
+- small MLP
+
+结果：
+
+```text
+genotype_population_ridge      median Pearson/R2 = 0.498 / 0.204
+genotype_population_elasticnet median Pearson/R2 = 0.483 / 0.171
+small MLP                      median Pearson/R2 = 0.351 / -0.191
+```
+
+结论：
+
+- ridge 是当前最稳主模型。
+- ElasticNet 接近 ridge。
+- small MLP 不稳定，暂时不继续加深神经网络。
+
+主要报告：
+
+- `docs/2026-06-05-zeamap-v0-1-lightweight-model-report.md`
+
+## 阶段 4：methylation 消融
+
+状态：已完成。
+
+我们测试了三种 methylation 用法。
+
+### 4.1 global methylation summary
+
+结果：
+
+```text
+genotype+population+methylation median Pearson/R2 = 0.496 / 0.173
+genotype+population             median Pearson/R2 = 0.490 / 0.173
+```
+
+结论：整体增益很小。
+
+### 4.2 gene/promoter/cis-window methylation PCA
+
+结果：
+
+```text
+genotype+population+gene methylation PCA median Pearson/R2 = 0.496 / 0.199
+genotype+population                      median Pearson/R2 = 0.490 / 0.173
+```
+
+结论：比 global summary 好一些，但提升仍有限。
+
+### 4.3 sparse gene-window methylation
+
+结果：
+
+```text
+gene methylation PCA ridge      median Pearson/R2 = 0.449 / 0.160
+genotype+population ridge       median Pearson/R2 = 0.414 / 0.106
+sparse methylation ElasticNet   median Pearson/R2 = 0.338 / 0.025
+```
+
+结论：raw gene-window methylation 稀疏模型不稳定，不适合做主输入。
+
+最终决策：
+
+- v0.1 主模型不接入 raw methylation features。
+- methylation 保留为 coverage mask、辅助 PCA 消融和候选解释材料。
+
+主要报告：
+
+- `docs/2026-06-05-zeamap-v0-1-methylation-subset-report.md`
+- `docs/2026-06-05-zeamap-v0-1-gene-methylation-pca-report.md`
+- `docs/2026-06-05-zeamap-v0-1-sparse-methylation-selection-report.md`
+- `docs/2026-06-05-zeamap-v0-1-epigenome-decision.md`
+
+## 阶段 4.5：final benchmark
+
+状态：已完成。
+
+最终主模型：
+
+```text
+genotype_population_ridge
+```
+
+最终主评估集合：
+
+```text
+66 个 robust traits
+```
+
+结果：
+
+```text
+overall median Pearson/R2 = 0.498 / 0.204
+positive R2 fraction = 0.979
+oil median Pearson/R2 = 0.596 / 0.321
+```
+
+结论：
+
+- v0.1 已经足够支撑 accession-level prediction benchmark。
+- 当前不进入大规模多模态预训练。
+- 下一步重点转向 oil traits 的 GWAS 和候选基因解释。
+
+主要报告：
+
+- `docs/2026-06-05-zeamap-v0-1-final-benchmark.md`
+
+## 阶段 5.1：genotype attribution screen
+
+状态：已完成。
+
+做了什么：
+
+- 选 final benchmark 中表现最好的 15 个 traits。
+- 只在 train split 中计算 SNP-trait correlation。
+- 每个 trait 输出稳定 top SNP。
+- 把 SNP 映射到 B73 RefGen_v4 gene/promoter/cis-window。
+
+结果：
+
+- SNP-trait candidates：750 行。
+- 674 个 SNP 在 5 个 seeds 都入选。
+- gene-level candidates：587 行。
+
+结论：
+
+- 这是候选解释性 screen。
+- 它不是正式 GWAS，不能用来声称 causal variant。
+
+主要报告：
+
+- `docs/2026-06-05-zeamap-v0-1-genotype-attribution-report.md`
+
+## 阶段 5.2：covariate-only GWAS
+
+状态：已完成，但只作为诊断 baseline。
+
+做了什么：
+
+- 对 10 个 high-priority oil traits 做逐 SNP association。
+- 每个 trait 有 440 个非缺失 accession。
+- SNP 数为 199,856。
+- 用 PC1-PC3 和 K1-K3 做 covariate residualization。
+- 输出 Bonferroni/FDR、LD clumping、gene mapping、Manhattan/QQ 图。
+
+结果：
+
+```text
+lambda GC = 2.41-3.97
+```
+
+解释：
+
+- lambda GC 明显偏高，说明统计膨胀严重。
+- 这一步不能作为论文主 GWAS。
+- 它的作用是证明必须用 mixed linear model 处理 kinship。
+
+主要报告：
+
+- `docs/2026-06-05-zeamap-v0-1-gwas-baseline-report.md`
+
+## 阶段 5.3：GEMMA LMM GWAS
+
+状态：已完成，是当前论文主 GWAS baseline。
+
+做了什么：
+
+- 对同样 10 个 high-priority oil traits 做 GEMMA LMM。
+- 每个 trait 有 440 个非缺失 accession。
+- SNP 数为 199,856。
+- 使用 genotype-derived kinship matrix。
+- 加入 PC1-PC3、K1-K3 covariates。
+- 使用 GEMMA `p_lrt`。
+- 输出 Bonferroni/FDR、LD clumped lead SNP、gene mapping、Manhattan/QQ 图。
+
+结果：
+
+```text
+lambda GC range = 0.984-1.018
+median lambda GC = 0.998
+Bonferroni hits per trait = 1-21
+```
+
+和 covariate-only GWAS 对比：
+
+```text
+covariate-only lambda GC = 2.41-3.97
+GEMMA LMM lambda GC       = 0.984-1.018
+```
+
+结论：
+
+- GEMMA LMM 有效消除了统计膨胀。
+- GEMMA LMM 是当前能面向论文的 GWAS 主结果。
+- lead SNP/gene 表可以进入 candidate loci 初稿。
+- 还不能直接写 causal claim，下一步必须做功能注释、文献核查和 locus 图。
+
+主要报告：
+
+- `docs/2026-06-05-zeamap-v0-1-gemma-lmm-report.md`
+
+## 阶段 5.4：下一步任务
+
+状态：待开始。
+
+目标：
+
+把 GEMMA lead SNP 变成论文能用的 candidate locus/candidate gene 结果。
+
+需要做：
+
+1. 整理每个 oil trait 的 lead SNP。
+2. 合并相近 lead SNP 为 locus。
+3. 给每个 locus 匹配 candidate gene。
+4. 补 gene function annotation。
+5. 查 oil/fatty-acid pathway、maize oil QTL/GWAS 文献。
+6. 画重点 locus 的局部 LD/locus 图。
+7. 检查 GEMMA lead loci 和 ridge attribution candidates 是否重叠。
+
+成功标准：
+
+- 每个 high-priority oil trait 有清楚的 top locus/candidate gene 表。
+- 表中区分 genome-wide significant、FDR significant 和 suggestive loci。
+- 图表可以进入论文结果草稿。
+- 所有结论都保持 candidate locus 口径，不写成 causal variant。
+
+## GitHub 更新规则
+
+每完成一个小阶段都更新并提交：
+
+- `README.md`
+- `docs/progress-plan.md`
+- `docs/model-architecture.md`
+- 阶段报告：`docs/YYYY-MM-DD-*.md`
+
+本地大矩阵和 raw result 不提交到 GitHub，只提交脚本、summary table、报告和小图表。

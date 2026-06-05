@@ -2,366 +2,244 @@
 
 日期：2026-06-05
 
-## 评估结论
+## 总评
 
-当前项目已经完成从数据下载、ID 对齐、`v0.1` processed dataset、baseline benchmark、trait 筛选、methylation 消融到 genotype 候选解释性 screen 的闭环。
+当前项目进展是好的，而且方向应该继续冲论文。
 
-整体评估：
+现在已经不是“刚把数据跑通”的阶段，而是已经有了一个可以写成论文结果雏形的 v0.1：
 
 ```text
-进展状态：良好
-当前结论可靠性：中高
-是否适合继续：适合
-下一步方向：GEMMA LMM lead loci 的候选基因注释、局部 locus 解释和论文图表，而不是扩大模型复杂度
+v0.1 processed dataset
++ prediction benchmark
++ robust trait selection
++ methylation ablation
++ GEMMA LMM oil-trait GWAS
 ```
 
-## 已完成度评估
-
-### 数据层
-
-完成度：高。
-
-已完成：
-
-- ZEAMAP 第一批和第二批数据检查。
-- accession ID 统一索引。
-- genotype、population、phenotype/metabolome 强配对集合。
-- 461 个 accession 的 `v0.1` processed dataset。
-- 236 个 methylation-covered accession 的 coverage/missing-modality 标记。
-
-主要风险：
-
-- expression 当前不是 AMP accession-level paired expression，因此不能用于 accession-level 输入。
-- chromatin accessibility 和 interaction 不是当前主模型可直接使用的 accession-level matrix。
-
-评估：
-
-数据层已经足够支撑当前小模型 benchmark。暂时不需要下载原始 FASTQ 或全量 assembly。
-
-### 模型层
-
-完成度：中高。
-
-已完成：
-
-- population-only baseline。
-- genotype PCA + ridge baseline。
-- genotype + population ridge/ElasticNet。
-- small MLP 对照。
-- 5-seed robustness。
-- final benchmark 汇总。
-
-关键结果：
-
-- `genotype_population_ridge` 在 66 个 robust traits 上 median Pearson/R2 为 0.498/0.204。
-- positive R2 fraction 为 0.979。
-- small MLP 不稳定，R2 为负。
-
-评估：
-
-当前主模型选择合理。样本量只有 461，正则线性模型优于小神经网络是符合预期的。继续堆复杂模型的收益低，过拟合风险高。
-
-### trait 筛选层
-
-完成度：高。
-
-已完成：
-
-- 317 个可评估 traits 的初始 benchmark。
-- 130 个 selected traits。
-- 66 个 robust selected traits。
-- family-level performance summary。
-
-关键结论：
-
-- oil traits 最强。
-- agronomic traits 次之。
-- metabolite 和 amino acid 有信号，但稳定性较弱。
-
-评估：
-
-66 个 robust traits 可以作为后续主评估集合。oil traits 应作为第一优先目标。
-
-### methylation 层
-
-完成度：中高。
-
-已完成：
-
-- global methylation summary。
-- gene/promoter/cis-window methylation PCA。
-- sparse gene-window methylation feature selection。
-- epigenome decision。
-
-关键结果：
-
-- global summary 几乎没有增益。
-- gene methylation PCA 有小幅 R2 增益。
-- sparse raw gene-window methylation 低于 genotype+population baseline。
-
-评估：
-
-methylation 的当前定位清楚：辅助消融和候选解释，不作为主输入。这个决策降低了过拟合和模型复杂度风险。
-
-### genotype attribution 层
-
-完成度：初步完成。
-
-已完成：
-
-- top 15 traits 的 train-split SNP correlation screen。
-- SNP 到 B73 RefGen_v4 gene/promoter/cis-window 的映射。
-- SNP summary 和 gene summary。
-
-关键结果：
-
-- 750 个 SNP-trait candidates。
-- 674 个 SNP 在 5 个 seeds 都入选。
-- 488 个候选落在 gene body。
-
-评估：
-
-这是有价值的候选发现步骤，但不是正式 association analysis。下一步必须加入 population covariates、LD clumping 和多重检验控制。
-
-### covariate-adjusted GWAS 层
-
-完成度：baseline 完成，作为 inflation diagnostic 保留。
-
-已完成：
-
-- 10 个 high-priority oil traits。
-- 每个 trait 440 个非缺失 accession。
-- 199,856 个 SNP。
-- PC1-PC3、K1-K3 covariate residualization。
-- Bonferroni、BH-FDR、LD clumping、gene mapping。
-- Manhattan/QQ 图。
-
-关键结果：
-
-- 每个 oil trait 都有 Bonferroni-level hits。
-- lambda GC 为 2.41-3.97。
-
-评估：
-
-这一步是论文导向的必要 baseline，但不能作为最终论文 GWAS。lambda GC 明显偏高，说明 PC/K covariates 仍不足以控制亲缘关系或残余结构。该风险已通过 GEMMA LMM 升级处理。
-
-### GEMMA LMM GWAS 层
-
-完成度：v0.1 high-priority oil traits 主 GWAS 完成。
-
-已完成：
-
-- 10 个 high-priority oil traits。
-- 每个 trait 440 个非缺失 accession。
-- 199,856 个 SNP。
-- genotype-derived kinship matrix。
-- PC1-PC3、K1-K3 covariates。
-- GEMMA LMM `p_lrt` 主检验。
-- Bonferroni、BH-FDR、LD clumping、B73 RefGen_v4 gene mapping。
-- Manhattan/QQ 图。
-
-关键结果：
-
-- lambda GC range：0.984-1.018。
-- median lambda GC：0.998。
-- 每 trait Bonferroni hits：1-21。
-- covariate-only GWAS 的 lambda GC 2.41-3.97 被有效校正。
-
-评估：
-
-这是当前最接近正式论文要求的 GWAS 结果。它可以作为 manuscript-facing GWAS baseline 和 candidate-gene table 的来源。仍需注意，GEMMA lead SNP 是候选 locus，不等于 causal variant；后续必须做功能注释、文献核查、局部 LD/locus 解释，以及尽可能的外部或分层复现。
-
-## 当前最大风险
-
-### 风险 1：样本量限制
-
-461 个 accession 对复杂模型偏少，236 个 methylation-covered accession 更少。
-
-影响：
-
-- 深度模型容易过拟合。
-- 高维 methylation sparse selection 不稳定。
-- 单个 trait 的 test set 可能只有几十个有效样本。
-
-应对：
-
-- 使用 ridge/ElasticNet。
-- 多 seed robustness。
-- trait family-level 总结。
-- 不扩大模型复杂度。
-
-### 风险 2：群体结构混杂
-
-玉米群体结构强，population covariates 可能解释很多 phenotype variation。
-
-影响：
-
-- 如果不控制 population，genotype association 可能虚高。
-- attribution candidates 可能反映 population difference，而非 causal variant。
-
-应对：
-
-- 保留 population-only baseline。
-- 主模型使用 genotype+population。
-- 下一步解释性分析必须加入 residualization 或 covariate-adjusted association。
-
-### 风险 3：特征维度远大于样本数
-
-199,856 SNP 对 461 accession，methylation gene-window 也远多于样本。
-
-影响：
-
-- 容易选到偶然相关特征。
-- 稀疏模型不稳定。
-
-应对：
-
-- PCA/降维。
-- 正则化。
-- train-only feature selection。
-- 跨 seed 稳定性筛选。
-
-### 风险 4：模态不是完全配对
-
-methylation 只有 236 个 accession，expression 不是 AMP accession-level。
-
-影响：
-
-- 多模态模型会损失大量样本。
-- 错误使用 expression 会造成错误结论。
-
-应对：
-
-- v0.1 主模型不使用 expression。
-- methylation 只做辅助消融。
-- modality mask 保留，等待后续更完整数据。
-
-## 当前结论可信度
-
-高可信：
-
-- 数据配对数量和 modality coverage。
-- 66 个 robust traits 的存在。
-- ridge/ElasticNet 强于 small MLP。
-- oil traits 是最稳定 family。
-- methylation raw features 不适合作为 v0.1 主输入。
-- covariate-adjusted GWAS 存在明显 inflation。
-- GEMMA LMM GWAS 已把 lambda GC 控制到接近 1。
-
-中等可信：
-
-- methylation PCA 有小幅增益。
-- genotype attribution candidates 的稳定性。
-- metabolite/amino acid family 的可预测性排序。
-
-低可信或不能声称：
-
-- 某个 SNP/gene 是 causal。
-- methylation sparse selected gene 是真实调控因子。
-- 当前数据足以训练大规模多模态预训练模型。
-- reference/tissue expression 可代表 AMP accession expression。
-- covariate-adjusted GWAS lead SNP 是最终论文级 locus。
-- GEMMA lead SNP 是 causal variant。
-
-## 是否达到阶段目标
-
-阶段目标 1：验证 ZEAMAP processed data 能否构建统一 accession-level 数据集。
-
-结果：达到。
-
-阶段目标 2：判断当前样本量能否做 baseline benchmark。
-
-结果：达到。
-
-阶段目标 3：找出稳定可预测 trait。
-
-结果：达到，66 个 robust traits。
-
-阶段目标 4：判断 methylation 是否进入主模型。
-
-结果：达到，结论是不进入主模型。
-
-阶段目标 5：开始 genotype 解释性方向。
-
-结果：达到，已完成候选 screen、covariate-only GWAS baseline 和 GEMMA LMM GWAS。
-
-## 下一步建议
-
-### 首选任务：GEMMA lead loci 论文注释
-
-目标：
-
-- 从 GEMMA lead SNP 走向可写入论文的候选基因列表和图表。
-
-建议做法：
-
-- 对每个 high-priority oil trait 选 Bonferroni lead loci。
-- 整理 lead SNP、nearest gene、gene relation、distance、effect direction、allele frequency、p-value/q-value。
-- 做 oil/fatty-acid pathway 文献核查。
-- 检查候选 gene 是否与已知 maize/oil metabolism/QTL 文献重叠。
-- 画局部 locus/LD 图和最终 Manhattan/QQ figure panel。
-- 与 ridge attribution screen 做 overlap，标记跨方法稳定候选。
-
-成功标准：
-
-- 每个 high-priority oil trait 得到清晰的 top locus/candidate gene 解释。
-- 候选表中明确区分 genome-wide significant、FDR significant 和 suggestive loci。
-- 不把候选 locus 写成 causal claim。
-
-### 第二任务：gene-window genotype representation
-
-目标：
-
-- 把 SNP-level 高维输入变成 gene-level 可解释输入。
-
-建议做法：
-
-- 根据 B73 RefGen_v4 gene body/promoter/cis-window 聚合 SNP dosage。
-- 构建 gene-window burden 或 variant count features。
-- 比较 gene-window ridge/ElasticNet 与 genotype PCA ridge。
-
-成功标准：
-
-- 性能接近 PCA baseline。
-- 可解释性更强。
-
-### 第三任务：结果汇报材料
-
-目标：
-
-- 把当前进展整理成图表和报告。
-
-建议图表：
-
-- final benchmark model comparison barplot。
-- trait family performance boxplot。
-- top 15 traits performance table。
-- methylation ablation comparison。
-- genotype attribution candidate locus/gene table。
-
-## 暂不建议做的事
-
-- 训练 transformer 或复杂多模态模型。
-- 下载并处理 raw SRA/FASTQ。
-- 把 methylation raw gene-window features 直接并入主训练。
-- 把 expression 文件当作 accession-level paired expression。
-- 对 attribution candidates 做强生物学结论。
-
-## 项目当前定位
-
-当前项目最适合定位为：
+当前最适合的论文定位是：
 
 ```text
-ZEAMAP 玉米 accession-level genotype-to-phenotype benchmark
-+ robust trait selection
-+ epigenome ablation
-+ genotype candidate attribution
+ZEAMAP maize accession-level genotype-to-phenotype benchmark
+and mixed-linear-model GWAS for oil-related traits
 ```
 
 不是：
 
 ```text
-大规模泛植物多模态预训练模型
+large-scale plant multi-omics foundation model
 ```
 
-后者需要更多 accession-level paired omics、更大样本量和更严格的跨数据源 harmonization。
+后者现在样本量和模态配对都不够。
+
+## 当前能写进论文的内容
+
+### 可以写
+
+1. 数据集构建
+
+我们可以写 ZEAMAP processed data 被整理成 accession-level v0.1 数据集，包含 461 个强配对 accession、199,856 个 SNP、318 个数值 traits 和 population covariates。
+
+2. 预测 benchmark
+
+我们可以写 ridge/ElasticNet 在 66 个 robust traits 上建立了稳定预测基准，其中 oil traits 表现最好。
+
+3. 模型选择
+
+我们可以写在当前样本量下，正则线性模型优于 small MLP，说明复杂模型会有过拟合风险。
+
+4. methylation 消融
+
+我们可以写 methylation PCA 有小幅增益，但 raw gene-window methylation features 在 236 个 accession 上不稳定，所以 methylation 不作为 v0.1 主输入。
+
+5. GWAS 方法升级
+
+我们可以写 covariate-only GWAS 出现明显 inflation，而 GEMMA LMM 通过 kinship correction 把 lambda GC 控制到接近 1。
+
+6. oil-trait candidate loci
+
+我们可以写 GEMMA LMM 为 10 个 high-priority oil traits 产生了 candidate loci 初稿。
+
+### 不能写
+
+1. 不能说当前模型是大规模预训练模型。
+2. 不能说 small MLP 或 transformer 优于线性模型。
+3. 不能把 B73/SK/HZS/Mo17 expression 当成 AMP accession expression。
+4. 不能把 attribution screen 的 SNP 当成 GWAS lead SNP。
+5. 不能把 covariate-only GWAS 的 hits 当成最终论文 loci。
+6. 不能把 GEMMA lead SNP 直接写成 causal variant。
+
+## 各部分完成度
+
+| 模块 | 完成度 | 评价 |
+|---|---|---|
+| 数据下载检查 | 高 | 文件完整，可读性检查完成 |
+| accession ID 对齐 | 高 | phenotype、population、VCF 已对齐 |
+| v0.1 processed dataset | 高 | 461 个强配对 accession 已构建 |
+| prediction benchmark | 高 | ridge/ElasticNet baseline 完成 |
+| robust trait selection | 高 | 66 个 robust traits 已确定 |
+| methylation ablation | 中高 | 已证明不适合作为主输入 |
+| genotype attribution screen | 中 | 可作为候选解释，不能作为正式 GWAS |
+| covariate-only GWAS | 中 | 工具链完成，但 inflation 高 |
+| GEMMA LMM GWAS | 中高 | 当前论文主 GWAS baseline 已完成 |
+| candidate gene annotation | 低 | 下一步要做 |
+| manuscript figures | 低到中 | Manhattan/QQ 有了，locus 图和汇总图还缺 |
+
+## 当前最大优势
+
+### 1. oil traits 信号强
+
+oil family 的 benchmark 表现最好：
+
+```text
+oil median Pearson/R2 = 0.596 / 0.321
+```
+
+这说明 oil traits 是最适合继续深入的论文主线。
+
+### 2. GWAS inflation 已经被处理
+
+covariate-only GWAS：
+
+```text
+lambda GC = 2.41-3.97
+```
+
+GEMMA LMM：
+
+```text
+lambda GC = 0.984-1.018
+median = 0.998
+```
+
+这是一条很清楚的方法学故事：
+
+```text
+简单协变量校正不够 -> mixed linear model 必要 -> GEMMA 后 inflation 得到控制
+```
+
+### 3. 当前模型选择稳健
+
+ridge/ElasticNet 优于 small MLP，这和样本量、特征维度关系一致。这个结果虽然不花哨，但可信。
+
+## 当前最大风险
+
+### 风险 1：样本量仍然偏小
+
+461 个 accession 对 199,856 SNP 是小样本高维问题。236 个 methylation accession 更小。
+
+应对：
+
+- 继续使用 ridge/ElasticNet。
+- 保持 multi-seed robustness。
+- 不上复杂深度模型。
+
+### 风险 2：群体结构很强
+
+玉米 accession 存在明显 population structure。如果控制不够，GWAS 和 prediction 都可能虚高。
+
+应对：
+
+- prediction 里保留 population-only baseline。
+- GWAS 主结果使用 GEMMA LMM。
+- covariate-only GWAS 只作为 diagnostic baseline。
+
+### 风险 3：candidate locus 还没有生物学解释
+
+GEMMA 已经给出 lead SNP，但还缺：
+
+- candidate gene function
+- oil/fatty-acid pathway support
+- 已知 maize QTL/GWAS 文献对照
+- locus/LD 图
+
+应对：
+
+- 下一阶段优先做 GEMMA lead loci 注释。
+
+### 风险 4：模态配对不完整
+
+expression 不是 AMP accession-level，methylation 只有 236 个 accession。
+
+应对：
+
+- v0.1 主模型只用 genotype + population。
+- methylation 只做辅助消融。
+- expression 暂不进入主数据集。
+
+## 对当前结果的可信度分级
+
+高可信：
+
+- 461 个强配对 accession。
+- 66 个 robust traits。
+- oil traits 是最强 trait family。
+- ridge/ElasticNet 是当前最稳模型。
+- methylation raw features 不适合作为 v0.1 主输入。
+- GEMMA LMM 后 lambda GC 接近 1。
+
+中等可信：
+
+- methylation PCA 的小幅增益。
+- genotype attribution screen 的候选 SNP/gene。
+- metabolite 和 amino acid traits 的可预测性。
+
+低可信或不能声称：
+
+- causal SNP。
+- causal gene。
+- methylation sparse selected genes 是真实调控因子。
+- 当前数据足够做大规模多模态预训练。
+
+## 是否适合继续
+
+适合继续，但方向要明确。
+
+适合继续做：
+
+- GEMMA lead loci 注释。
+- candidate gene 功能解释。
+- oil/fatty-acid pathway 文献核查。
+- locus/LD 图。
+- final benchmark 图表整理。
+- ridge attribution 和 GEMMA lead loci overlap。
+
+不适合继续做：
+
+- 直接上 transformer。
+- 扩大 neural network。
+- 处理 raw FASTQ。
+- 把 methylation raw features 强行加进主模型。
+- 把 expression 文件强行配到 AMP accession。
+
+## 下一阶段目标
+
+下一阶段建议命名为：
+
+```text
+Stage 5.4: GEMMA lead loci annotation and paper figure preparation
+```
+
+目标：
+
+把 GEMMA GWAS 的统计结果整理成论文可用的候选基因和图表。
+
+具体任务：
+
+1. 从 `gemma_lmm_lead_snps.tsv` 提取每个 trait 的 lead SNP。
+2. 按 LD 或物理距离合并成 locus。
+3. 给每个 locus 匹配 candidate gene。
+4. 补充 gene annotation、GO/pathway、known maize ortholog/function。
+5. 查 oil/fatty-acid/seed metabolism 文献。
+6. 画每个重点 trait 的 Manhattan/QQ/locus panel。
+7. 输出 manuscript-facing candidate loci table。
+
+成功标准：
+
+- 每个 oil trait 有清楚的 candidate locus 表。
+- 每个重点 locus 有 candidate gene 和功能解释。
+- 图表能进入论文结果草稿。
+- 所有表述保持 candidate 口径，不夸大成 causal。
+
+## 当前一句话判断
+
+项目已经有论文级雏形，但还没到可以写完整 GWAS 结果段落的程度。下一步不是再堆模型，而是把 GEMMA lead loci 做成 candidate gene、locus figure 和文献支持。
