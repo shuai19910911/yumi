@@ -288,6 +288,25 @@ Results draft + Methods draft + figure/table captions
 
 这一层的作用是把项目从“结果材料集合”推进到“可继续润色的论文草稿骨架”。
 
+Stage 5.9 已完成第一版 journal/citation strategy layer：
+
+```text
+manuscript skeleton
+-> citation audit
+-> software/version supplement
+-> journal strategy
+-> acceptance probability estimate
+```
+
+当前输出：
+
+- journal strategy and acceptance estimate：1 份。
+- citation audit：1 份。
+- methods software versions：1 份。
+- Stage 5.9 report：1 份。
+
+这一层用于决定投稿路线和下一步补强优先级，不改变模型或 GWAS 结果。
+
 ## 以后如果扩展模型，怎么做
 
 只有在当前论文级 benchmark/GWAS 主线稳定后，才考虑扩展模型。
@@ -362,6 +381,8 @@ v0.1 dataset
   |-- manuscript assembly: Methods draft + Figure 1-3 plan/captions
   |
   |-- manuscript skeleton: title + abstract + introduction + results + methods + discussion outline
+  |
+  |-- journal strategy: citation audit + software versions + submission target ranking
 ```
 
 这个图更符合当前真实进展，也更适合论文方法部分。

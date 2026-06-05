@@ -11,7 +11,7 @@ ZEAMAP 玉米 oil-trait prediction + GWAS 项目。
 
 ## 当前一句话结论
 
-我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释、top loci 优先级排序、区域图初版、论文主表/补充表、Results/Methods 草稿、Figure 1/3 主图初版，以及 Stage 5.8 的 manuscript skeleton。
+我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释、top loci 优先级排序、区域图初版、论文主表/补充表、Results/Methods 草稿、Figure 1/3 主图初版、manuscript skeleton，以及 Stage 5.9 的投稿策略和 citation audit 初版。
 
 最可靠的主线是：
 
@@ -238,6 +238,31 @@ docs/2026-06-05-zeamap-v0-1-manuscript-readiness-checklist.md
 docs/2026-06-05-zeamap-v0-1-table-captions-draft.md
 ```
 
+### 9. 投稿策略和 citation audit
+
+Stage 5.9 已完成初版：
+
+- 投稿策略和中稿率估计。
+- Citation audit 初版。
+- Methods software versions 初版。
+
+推荐投稿路线：
+
+```text
+平衡路线：The Plant Genome -> G3 -> BMC Plant Biology
+保守高概率路线：G3 or BMC Plant Biology
+冲刺路线：Journal of Experimental Botany presubmission enquiry
+暂不建议首投：Nature Plants / Plant Physiology
+```
+
+当前中稿率判断：
+
+```text
+当前 skeleton 直接投：合理期刊 eventually accepted 约 35-55%
+Stage 5.9-5.10 打磨后：约 55-75%
+有独立验证/更强多组学支持后：约 70-85%
+```
+
 ## 重要文件入口
 
 适合先读：
@@ -261,17 +286,20 @@ docs/2026-06-05-zeamap-v0-1-table-captions-draft.md
 - `docs/2026-06-05-zeamap-v0-1-figure-captions-draft.md`
 - `docs/2026-06-05-zeamap-v0-1-manuscript-skeleton.md`
 - `docs/2026-06-05-zeamap-v0-1-manuscript-readiness-checklist.md`
+- `docs/2026-06-05-zeamap-v0-1-journal-strategy-and-acceptance-estimate.md`
+- `docs/2026-06-05-zeamap-v0-1-citation-audit.md`
+- `docs/2026-06-05-zeamap-v0-1-methods-software-versions.md`
 - `docs/2026-06-05-zeamap-v0-1-epigenome-decision.md`
 
 ## 下一步
 
-下一步不应该继续加模型复杂度，而应该把 manuscript skeleton 打磨成论文草稿：
+下一步不应该继续加模型复杂度，而应该继续 manuscript polish：
 
 1. 扩展 Introduction 文献定位。
 2. 把 Results 和 Discussion 从骨架改成流畅论文段落。
-3. 补 Methods 的 exact software versions 和参数。
+3. 把 Methods software versions 和关键参数并入 skeleton。
 4. 继续补 8 个 top regional loci 的 MaizeGDB/UniProt/Gramene 注释。
-5. 做 citation audit 和最终 figure polish。
+5. 做 citation audit 第二轮和最终 figure polish。
 
 ## 暂不做的事
 

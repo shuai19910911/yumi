@@ -32,7 +32,8 @@
 | 阶段 5.6 论文主表和 Results 初稿 | 已完成初版 | 已输出 top regional evidence table、tier1 主表、184 loci 补充表和 Results draft |
 | 阶段 5.7 Methods 草稿和主图整合 | 已完成初版 | 已输出 Methods draft、Figure 1、Figure 3、figure plan 和 captions draft |
 | 阶段 5.8 manuscript skeleton | 已完成初版 | 已输出完整论文骨架、table captions、readiness checklist |
-| 阶段 5.9 manuscript polish and citation audit | 下一步 | 扩展 Introduction/Discussion，补软件版本、外部注释和引用核查 |
+| 阶段 5.9 manuscript polish and citation audit | 已完成初版 | 已输出投稿策略/中稿率、citation audit 和软件版本文件 |
+| 阶段 5.10 manuscript polish round 2 | 下一步 | 扩展 Introduction/Discussion，补外部注释和正式 reference list |
 
 ## 当前最重要的数字
 
@@ -82,6 +83,9 @@ Methods draft: 1 file
 Figure captions draft: 1 file
 Manuscript skeleton: 1 file
 Readiness checklist: 1 file
+Journal strategy: 1 file
+Citation audit: 1 file
+Methods software versions: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -628,20 +632,60 @@ GEMMA LMM lambda GC       = 0.984-1.018
 
 ## 阶段 5.9：manuscript polish and citation audit
 
+状态：已完成初版。
+
+目标：
+
+开始把 skeleton 打磨成更接近投稿前草稿，并给出投稿路线和中稿率判断。
+
+已完成：
+
+- 输出投稿策略和中稿率估计。
+- 输出 citation audit 初版。
+- 输出 Methods software versions 初版。
+- 明确推荐投稿路线。
+- 明确仍需补 ZEAMAP/GEMMA/B73 annotation/reference list。
+
+推荐投稿路线：
+
+```text
+平衡路线：The Plant Genome -> G3 -> BMC Plant Biology
+保守路线：G3 or BMC Plant Biology
+冲刺路线：Journal of Experimental Botany presubmission enquiry
+暂不首投：Nature Plants / Plant Physiology
+```
+
+中稿率估计：
+
+```text
+当前 skeleton：合理期刊 eventual acceptance 35-55%
+Stage 5.9-5.10 打磨后：55-75%
+有独立验证/更强多组学支持后：70-85%
+```
+
+产出：
+
+- `docs/2026-06-05-zeamap-v0-1-journal-strategy-and-acceptance-estimate.md`
+- `docs/2026-06-05-zeamap-v0-1-citation-audit.md`
+- `docs/2026-06-05-zeamap-v0-1-methods-software-versions.md`
+- `docs/2026-06-05-zeamap-v0-1-stage5-9-polish-citation-report.md`
+
+## 阶段 5.10：manuscript polish round 2
+
 状态：下一步。
 
 目标：
 
-把 skeleton 打磨成更接近投稿前草稿。
+把 manuscript skeleton 进一步改成更完整论文草稿。
 
 需要做：
 
 - 扩展 Introduction 文献定位。
 - 把 Discussion outline 写成完整 Discussion。
-- 补 Methods 软件版本和参数。
-- 做 citation audit。
+- 把软件版本和关键参数并入 Methods。
+- 添加 ZEAMAP、GEMMA、B73 RefGen_v4/Gramene/Ensembl 等正式引用。
 - 继续补 top loci 外部注释。
-- 最终检查 Figure 1-3 字体、尺寸和 caption 一致性。
+- 检查 Figure 1-3 字体、尺寸和 caption 一致性。
 
 ## GitHub 更新规则
 

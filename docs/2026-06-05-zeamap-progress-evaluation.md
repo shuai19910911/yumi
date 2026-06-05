@@ -86,6 +86,7 @@ large-scale plant multi-omics foundation model
 | manuscript tables/results | 中高 | 已输出 top regional evidence table、tier1 主表、184 loci 补充表和 Results draft |
 | manuscript methods/figures | 中高 | 已输出 Methods draft、Figure 1、Figure 3、figure plan 和 captions draft |
 | manuscript skeleton | 中 | 已输出完整骨架，但还需要文献扩展、citation audit 和正式润色 |
+| submission strategy | 中 | 已输出投稿策略和中稿率估计，但需按最终稿质量更新 |
 
 ## 当前最大优势
 
@@ -371,24 +372,64 @@ stage report = 1 file
 - 引用还只是 source list，没有做正式 citation audit。
 - top loci 外部数据库注释仍需补强。
 
+## 已完成的新阶段：Stage 5.9
+
+Stage 5.9 已完成投稿策略、citation audit 和软件版本补充初版。
+
+结果：
+
+```text
+journal strategy = 1 file
+citation audit = 1 file
+methods software versions = 1 file
+stage report = 1 file
+```
+
+投稿路线建议：
+
+```text
+平衡路线：The Plant Genome -> G3 -> BMC Plant Biology
+保守路线：G3 or BMC Plant Biology
+冲刺路线：Journal of Experimental Botany presubmission enquiry
+暂不首投：Nature Plants / Plant Physiology
+```
+
+中稿率估计：
+
+```text
+当前 skeleton：合理期刊 eventual acceptance 35-55%
+Stage 5.9-5.10 打磨后：55-75%
+有独立验证/更强多组学支持后：70-85%
+```
+
+评估：
+
+当前文章最适合定位为 crop genomics / GWAS / reproducible benchmark manuscript。它有清楚数据整理、预测 benchmark、GEMMA LMM 和 candidate loci 主线，但缺独立验证、fine-mapping 和实验功能证据。因此 The Plant Genome、G3、BMC Plant Biology 是现实路线；Nature Plants 和 Plant Physiology 暂不适合首投。
+
+风险：
+
+- 中稿率是基于当前稿件成熟度的主观估计，不是期刊官方概率。
+- 投稿策略要在 final manuscript 完成后重新评估。
+- Citation audit 仍是 first pass，还没有形成正式 reference list。
+
 ## 下一阶段目标
 
 下一阶段建议命名为：
 
 ```text
-Stage 5.9: manuscript polish and citation audit
+Stage 5.10: manuscript polish round 2
 ```
 
 目标：
 
-把 skeleton 打磨成更接近投稿前草稿，并补齐引用、软件版本和外部注释。
+把 skeleton 进一步改成接近投稿前草稿，并补齐正式引用和外部注释。
 
 具体任务：
 
 1. 扩展 Introduction 文献定位。
 2. 把 Discussion outline 写成完整 Discussion。
-3. 补 Methods 软件版本和关键参数。
-4. 做 citation audit。
+3. 把软件版本和关键参数并入 Methods。
+4. 添加 ZEAMAP、GEMMA、B73 RefGen_v4/Gramene/Ensembl 等正式引用。
 5. 继续补 top loci 外部注释。
 6. 检查 Figure 1-3 字体、尺寸和 caption 一致性。
 

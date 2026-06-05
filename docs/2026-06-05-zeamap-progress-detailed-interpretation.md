@@ -721,3 +721,64 @@ docs/2026-06-05-zeamap-v0-1-manuscript-skeleton.md
 7. Figure 1-3 还要做最终字体、尺寸和 caption 一致性检查。
 
 下一阶段 Stage 5.9 应该做 manuscript polish and citation audit。
+
+## 27. Stage 5.9 已经完成了什么
+
+Stage 5.9 完成了三件事：
+
+```text
+投稿策略和中稿率估计
+citation audit 初版
+Methods software versions 初版
+```
+
+最重要的判断：
+
+```text
+这篇文章现在更像 crop genomics / GWAS / benchmark paper。
+还不是 Nature Plants 级别的 functional genomics paper。
+```
+
+推荐路线：
+
+```text
+平衡路线：The Plant Genome -> G3 -> BMC Plant Biology
+保守高概率路线：G3 or BMC Plant Biology
+冲刺路线：Journal of Experimental Botany presubmission enquiry
+暂不首投：Nature Plants / Plant Physiology
+```
+
+## 28. 中稿率怎么理解
+
+现在的中稿率估计不是数学模型算出来的，而是基于论文成熟度、结果强弱和期刊定位的主观风险评估。
+
+当前 skeleton 直接投：
+
+```text
+合理期刊 eventually accepted: 35-55%
+直接一投接收: <10%
+更可能结果: major revision
+```
+
+Stage 5.9-5.10 打磨后：
+
+```text
+合理期刊 eventually accepted: 55-75%
+直接一投接收: 10-20%
+更可能结果: major revision 或 minor revision
+```
+
+如果后面补上独立验证或更强多组学支持：
+
+```text
+合理期刊 eventually accepted: 70-85%
+强一点 plant journal 的机会: 20-40%
+```
+
+最能提高中稿率的事情：
+
+1. 补 ZEAMAP、GEMMA、B73 annotation、oil biology 的正式引用。
+2. 补 8 个 top loci 的 MaizeGDB/UniProt/Gramene 注释。
+3. 把 Introduction 和 Discussion 写完整。
+4. 把 Methods 软件版本和参数写全。
+5. 保持 candidate locus/gene 口径，不夸大 causal claim。
