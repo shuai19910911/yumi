@@ -209,4 +209,6 @@ v0.1 genotype attribution screen：
 更多细节见：
 
 - `docs/progress-plan.md`
+- `docs/2026-06-05-zeamap-progress-detailed-interpretation.md`
+- `docs/2026-06-05-zeamap-progress-evaluation.md`
 - `docs/model-architecture.md`
