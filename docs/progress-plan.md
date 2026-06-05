@@ -40,7 +40,8 @@
 | 阶段 5.14 human metadata and release finalization templates | 已完成模板包 | 已输出作者/单位/基金/COI、命名审稿人、图件人工检查和 release 命令模板 |
 | 阶段 5.15 preflight validation | 已完成校验器 | 已输出文件 manifest、placeholder audit、gate status 和 action items；真实 release 仍需作者填表后执行 |
 | 阶段 5.16 metadata ingestion dry-run | 已完成 dry-run | 已输出 metadata ingestion audit、title-page preview 和 contribution preview；真实元数据仍未填 |
-| 阶段 5.17 final metadata insertion and release | 下一步 | 真实元数据填完后写回最终稿、重跑 preflight、创建 release/tag/DOI |
+| 阶段 5.17 single human-input package | 已完成初版 | 已输出单一人工信息总表、同步 dry-run、填写说明和 ARS 投稿闸门自评；真实元数据仍未填 |
+| 阶段 5.18 final metadata insertion and release | 下一步 | 单表填完并同步后，重跑 preflight/dry-run，通过后创建 release/tag/DOI |
 
 ## 当前最重要的数字
 
@@ -119,6 +120,10 @@ Action-item table: 1 file
 Metadata ingestion dry-run: 1 file
 Title-page preview: 1 file
 Contribution preview: 1 file
+Single human-input form: 1 file
+Single-form sync audit: 1 file
+Single-form filling guide: 1 file
+Stage 5.17 ARS self-review: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -852,3 +857,24 @@ Stage 5.9-5.10 打磨后：55-75%
 - Stage 5.15 preflight 为 `READY_FOR_RELEASE_EXECUTION`。
 - Stage 5.16 metadata ingestion dry-run 为 `READY_TO_INSERT_METADATA`。
 - 通讯作者确认 final upload package。
+
+
+## 阶段 5.17：single human-input package
+
+状态：已完成初版，但真实作者信息仍未填。
+
+为什么做这一步：
+
+投稿前必须有人确认作者、单位、基金、利益冲突、审稿人和图件人工检查。之前这些内容散在多个模板中，容易漏填。Stage 5.17 把它们收敛成一个总表，填完后可自动同步回 Stage 5.14 模板。
+
+主要产出：
+
+- `docs/2026-06-06-zeamap-v0-1-single-human-input-form.tsv`
+- `docs/2026-06-06-zeamap-v0-1-single-human-input-form-guide.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-17-single-form-sync-audit.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-17-sync-report.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-17-ars-self-review.md`
+
+下一步：
+
+真实信息填完后执行 Stage 5.17 `--apply`，再重跑 Stage 5.15 和 Stage 5.16。只有两个门槛都通过后，才进入真实 release/tag/DOI。

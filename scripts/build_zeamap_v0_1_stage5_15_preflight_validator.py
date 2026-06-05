@@ -151,6 +151,13 @@ def gate_status(manifest: pd.DataFrame, placeholders: pd.DataFrame) -> pd.DataFr
 def actionable_tasks(placeholders: pd.DataFrame) -> pd.DataFrame:
     rows = [
         {
+            "priority": 0,
+            "task": "Fill the single human-input form first",
+            "file": "docs/2026-06-06-zeamap-v0-1-single-human-input-form.tsv",
+            "owner": "corresponding author",
+            "done_when": "No TO_COMPLETE, yes/no or pass/revise placeholders remain; then synchronize it with Stage 5.17 --apply.",
+        },
+        {
             "priority": 1,
             "task": "Fill author metadata template",
             "file": "docs/2026-06-06-zeamap-v0-1-author-metadata-template.tsv",
@@ -193,6 +200,8 @@ def actionable_tasks(placeholders: pd.DataFrame) -> pd.DataFrame:
             "done_when": "GitHub release/tag exists and DOI is inserted into Data/Code Availability if required.",
         },
     ]
+    if not (ROOT / "docs/2026-06-06-zeamap-v0-1-single-human-input-form.tsv").exists():
+        rows = [row for row in rows if row["priority"] != 0]
     return pd.DataFrame(rows)
 
 
@@ -232,7 +241,16 @@ The manuscript package is technically assembled and all required project artifac
 
 ## Next Step
 
-Fill the Stage 5.14 templates, rerun:
+Preferred route: fill the Stage 5.17 single human-input form, synchronize it, then rerun this preflight:
+
+```bash
+mamba run -n yumi python scripts/build_zeamap_v0_1_stage5_17_single_human_input_pack.py --apply
+mamba run -n yumi python scripts/build_zeamap_v0_1_stage5_15_preflight_validator.py
+```
+
+Direct Stage 5.14 template editing is still possible, but the single form reduces inconsistent author/reviewer/figure metadata.
+
+Legacy direct-template route:
 
 ```bash
 mamba run -n yumi python scripts/build_zeamap_v0_1_stage5_15_preflight_validator.py

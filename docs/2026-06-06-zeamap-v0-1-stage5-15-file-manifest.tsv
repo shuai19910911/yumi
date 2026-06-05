@@ -1,6 +1,6 @@
 path	exists	bytes	sha256	release_include
-README.md	True	10988	0991705227c1c06001040d98118f44eba5e1ff882753dedab01bb513d07bc885	True
-docs/progress-plan.md	True	28582	d13a5a48e9251fd7ae5759252d3e07e19b13c8990d7b383d6ae95f28373fc1e6	True
+README.md	True	11066	463eb19af72fabb6b159d6bea100bb7e824e66117005e9684606c605d6a4f73d	True
+docs/progress-plan.md	True	30486	dfee744dee01c92f5a69efb0b32a1006c66074dc35c502d5a70c9b25c33edffe	True
 docs/2026-06-06-zeamap-v0-1-stage5-12-target-journal-manuscript.md	True	19078	9992e92bf3912152ab6b429298466fd561720ecdd950baa6933b11f70ac9663c	True
 docs/2026-06-06-zeamap-v0-1-data-code-availability-draft.md	True	1377	4e8c98e289927f73e7ad87ac8fb2d4f4df64b7cd1efb92d5b4f12474a3b1ae21	True
 docs/2026-06-06-zeamap-v0-1-reference-doi-audit.tsv	True	4829	da88f17c58d08bf31b0d2b58592b3571d639778e40f851df5e3e081856f88140	True
