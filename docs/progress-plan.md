@@ -1068,3 +1068,9 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 通俗解读：这一阶段把最新投稿稿从“项目内部 Markdown”整理成更接近投稿系统可用的文件。脚本去掉内部阶段说明，保留作者待补字段，生成 clean Markdown，并用 `pandoc` 导出 DOCX 和 HTML 预览。同时检查 Core Ideas、摘要、作者-年份参考文献、Data/Code availability、图表 legend 和 claim boundary。
 
 阶段结论：DOCX/HTML 导出版已生成，格式检查没有机器侧 fail。它还不是最终上传稿，因为作者姓名/单位/基金/致谢/COI、Figure 1-3 最终人工确认和 release DOI/PID 仍需要作者完成。
+
+### Stage 5.30 - Author metadata ingestion pipeline
+
+通俗解读：这一阶段没有假装已经知道作者信息，而是把作者信息、单位、Funding、致谢和 COI 拆成可填写的 TSV 模板，并写了一个验证/填稿脚本。作者把真实信息填进去后，脚本可以自动检查每个作者是否确认投稿、是否确认 COI、是否有通讯作者、单位和声明是否完整，然后生成填好作者信息的稿件预览。
+
+阶段结论：作者信息 blocker 还没有关闭，因为真实作者信息仍未提供；但关闭这个 blocker 的机器流程已经准备好。下一步只需要填模板并重跑脚本。
