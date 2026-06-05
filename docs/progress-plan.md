@@ -28,7 +28,8 @@
 | 阶段 5.2 covariate-only GWAS | 已完成 | lambda GC 过高，只作诊断 |
 | 阶段 5.3 GEMMA LMM GWAS | 已完成 | lambda GC 接近 1，可作为论文主 GWAS baseline |
 | 阶段 5.4 GEMMA lead loci 注释 | 已完成初版 | 已输出 manuscript candidate loci/gene 表和 Nature 风格 summary figure |
-| 阶段 5.5 重点 locus 文献核查和局部图 | 下一步 | 对 lipid/fatty-acid top loci 做文献注释、locus/LD 图和论文主表 |
+| 阶段 5.5 top locus 优先级和局部图 | 已完成初版 | 已输出 top loci 排序、seed literature evidence 和 8 个 regional locus/LD/gene-track figures |
+| 阶段 5.6 top loci 外部注释补强和结果写作 | 下一步 | 对 8 个重点区域做逐个文献/数据库核查，形成论文主表和结果段落 |
 
 ## 当前最重要的数字
 
@@ -64,6 +65,11 @@ manuscript candidate loci: 184
 manuscript candidate genes: 147
 lipid/fatty-acid keyword loci: 11
 ridge-supported manuscript loci: 63
+top prioritized loci: 184
+tier1 main-text loci: 18
+tier2 strong loci: 22
+top regional figures: 8
+strongest region: chr6 Zm00001d036982 / linoleic acid1
 ```
 
 ## 阶段 0：数据下载与检查
@@ -454,28 +460,63 @@ GEMMA LMM lambda GC       = 0.984-1.018
 - 图表可以进入论文结果草稿。
 - 所有结论都保持 candidate locus 口径，不写成 causal variant。
 
-## 阶段 5.5：重点 locus 文献核查和局部图
+## 阶段 5.5：top locus 优先级和局部图
+
+状态：已完成初版。
+
+目标：
+
+从 184 个 manuscript candidate loci 中优先挑出最适合写论文主结果的 top loci，并先生成可审稿级打磨的 regional association/locus/LD/gene-track 图。
+
+已完成：
+
+1. 建立 top locus priority score。
+2. 把 GEMMA 显著等级、`-log10(P)`、ridge attribution overlap、lipid/fatty-acid keyword、多 oil traits 复现、candidate gene 数量合并成排序依据。
+3. 输出 184 个 manuscript loci 的优先级表。
+4. 标出 18 个 tier1 main-text loci 和 22 个 tier2 strong loci。
+5. 选择 8 个 top regional targets。
+6. 为 8 个 top regions 生成 Nature 风格 PDF/SVG/PNG 区域图。
+7. 建立 seed literature evidence 表，用于指导文献核查。
+
+最重要结果：
+
+- chr6 `Zm00001d036982` / linoleic acid1 是当前最强主结果候选，跨 7 个 oil traits 复现，最佳 `P = 2.35e-25`。
+- chr4 `Zm00001d049511`、chr1 `Zm00001d031002`、chr8 `Zm00001d009150` 是多 trait 复现的 tier1 regions。
+- chr9 `Zm00001d045383` 区域虽然是 tier2，但局部包含 `Zm00001d045387` fatty acyl-ACP thioesterase2，应优先做功能注释补强。
+
+产出：
+
+- `scripts/build_zeamap_v0_1_top_locus_priority.py`
+- `results/v0_1_baseline/gemma_lmm_v0_1/top_loci/gemma_top_locus_priority.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/top_loci/gemma_top_region_targets.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/top_loci/gemma_literature_evidence_seed.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/regional_figures/*regional_locus_nature.pdf`
+- `results/v0_1_baseline/gemma_lmm_v0_1/regional_figures/*regional_locus_nature.svg`
+- `results/v0_1_baseline/gemma_lmm_v0_1/regional_figures/*regional_locus_nature.png`
+- `docs/2026-06-05-zeamap-v0-1-top-locus-priority-report.md`
+
+限制：
+
+- priority score 是排序工具，不是新的统计检验。
+- regional figure 是 association + LD context + gene model，不是 fine-mapping。
+- seed literature evidence 不是完整系统综述，下一阶段还要逐个 top region 补 MaizeGDB/UniProt/Gramene/论文证据。
+
+## 阶段 5.6：top loci 外部注释补强和结果写作
 
 状态：下一步。
 
 目标：
 
-从 184 个 manuscript candidate loci 中优先挑出最适合写论文主结果的 top loci。
-
-优先级：
-
-1. Bonferroni significant。
-2. 有 lipid/fatty-acid keyword。
-3. 有 ridge attribution overlap。
-4. 多个 oil traits 共定位。
-5. gene description 可解释。
+把 8 个 top regional loci 从“统计候选”推进到“论文结果段落可解释候选”。
 
 需要做：
 
-- 对 top loci 查 maize oil/fatty-acid/QTL/GWAS 文献。
-- 对缺少 GFF description 的候选基因补 MaizeGDB、UniProt、Gramene 或 Ensembl BioMart 注释。
-- 画重点 locus 的 regional association/locus/LD 图。
-- 输出论文主候选表和补充候选表。
+- 对 8 个 top regions 逐个查 maize oil/fatty-acid/QTL/GWAS 文献。
+- 对关键 candidate genes 补 MaizeGDB、UniProt、Gramene 或 Ensembl BioMart 注释。
+- 将 `gemma_top_locus_priority.tsv` 压缩成论文主候选表。
+- 将 184 个 manuscript candidate loci 整理为补充表。
+- 按 Nature 风格继续打磨 regional panels 和多面板总图。
+- 写 prediction benchmark + GEMMA GWAS + candidate loci 的 results 初稿。
 
 ## GitHub 更新规则
 

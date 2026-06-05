@@ -199,11 +199,33 @@ GEMMA lead SNPs
 - lipid/fatty-acid keyword loci：11。
 - ridge-supported manuscript loci：63。
 
+Stage 5.5 已完成第一版 top locus priority layer：
+
+```text
+manuscript candidate loci
+-> priority score
+-> tier1/tier2 manuscript candidates
+-> top regional targets
+-> regional association + LD + gene-track figures
+-> seed literature evidence
+```
+
+当前输出：
+
+- prioritized loci：184。
+- tier1 main-text loci：18。
+- tier2 strong loci：22。
+- top regional figures：8。
+- 最强主线：chr6 `Zm00001d036982` / linoleic acid1。
+- 重要补充候选：chr9 `Zm00001d045383` 区域，包含 `Zm00001d045387` fatty acyl-ACP thioesterase2。
+
 注意：
 
 - GEMMA lead SNP 是 candidate locus，不是 causal variant。
 - attribution screen 只能作为与 GEMMA 交叉支持的辅助结果。
 - covariate-only GWAS 因为 lambda GC 过高，不作为主结果。
+- priority score 是候选排序工具，不是新的统计检验。
+- regional figures 是 association/LD context，不是 fine-mapping。
 
 ## 以后如果扩展模型，怎么做
 
@@ -271,6 +293,8 @@ v0.1 dataset
   |-- oil-trait GWAS: GEMMA LMM + kinship
   |
   |-- interpretation: lead loci + candidate genes
+  |
+  |-- manuscript triage: top loci + regional figures + literature evidence
 ```
 
 这个图更符合当前真实进展，也更适合论文方法部分。

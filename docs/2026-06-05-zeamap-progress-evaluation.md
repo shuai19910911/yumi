@@ -57,7 +57,7 @@ large-scale plant multi-omics foundation model
 
 6. oil-trait candidate loci
 
-我们可以写 GEMMA LMM 为 10 个 high-priority oil traits 产生了 candidate loci 初稿。
+我们可以写 GEMMA LMM 为 10 个 high-priority oil traits 产生了 candidate loci，并已进一步整理出 top priority loci 和 regional locus figures 初稿。
 
 ### 不能写
 
@@ -81,8 +81,8 @@ large-scale plant multi-omics foundation model
 | genotype attribution screen | 中 | 可作为候选解释，不能作为正式 GWAS |
 | covariate-only GWAS | 中 | 工具链完成，但 inflation 高 |
 | GEMMA LMM GWAS | 中高 | 当前论文主 GWAS baseline 已完成 |
-| candidate gene annotation | 中 | 已完成 GFF description 初版，文献注释还缺 |
-| manuscript figures | 中 | Nature 风格 GWAS summary figure 已有，重点 locus/LD 图还缺 |
+| candidate gene annotation | 中高 | 已完成 GFF description 初版和 top loci priority，外部数据库/文献注释还需补强 |
+| manuscript figures | 中高 | Nature 风格 GWAS summary figure 和 8 个 regional locus/LD 图已有初版 |
 
 ## 当前最大优势
 
@@ -195,10 +195,10 @@ expression 不是 AMP accession-level，methylation 只有 236 个 accession。
 
 适合继续做：
 
-- top GEMMA candidate loci 文献注释。
+- 8 个 top regional loci 的逐个文献注释。
 - 缺失/泛化 gene description 的外部注释补充。
 - oil/fatty-acid pathway 文献核查。
-- locus/LD 图。
+- Nature 风格 regional locus/LD 图继续打磨。
 - final benchmark 图表整理。
 - ridge attribution 和 GEMMA lead loci overlap。
 
@@ -237,25 +237,72 @@ lipid/fatty-acid keyword loci = 11
 
 这一步把 GEMMA 统计结果推进到了论文候选表初稿。功能注释现在来自 B73 RefGen_v4 GFF3，已经足够做第一轮筛选，但还需要对重点 locus 做 MaizeGDB/UniProt/Gramene/文献层面的增强注释。
 
+## 已完成的新阶段：Stage 5.5
+
+Stage 5.5 已完成 top locus priority 和 regional figure 初版。
+
+结果：
+
+```text
+prioritized loci = 184
+tier1 main-text loci = 18
+tier2 strong loci = 22
+top regional figures = 8
+```
+
+最强候选：
+
+```text
+chr6 Zm00001d036982 / linoleic acid1
+best P = 2.35e-25
+recurrent oil traits = 7
+significance = Bonferroni
+support = lipid/fatty-acid annotation + ridge attribution overlap
+```
+
+需要特别保留的 tier2 候选：
+
+```text
+chr9 Zm00001d045383 region
+trait = Oil_C16_0
+best P = 7.76e-17
+nearby lipid gene = Zm00001d045387 fatty acyl-ACP thioesterase2
+```
+
+产出：
+
+- `results/v0_1_baseline/gemma_lmm_v0_1/top_loci/gemma_top_locus_priority.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/top_loci/gemma_top_region_targets.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/top_loci/gemma_literature_evidence_seed.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/regional_figures/*regional_locus_nature.pdf`
+- `results/v0_1_baseline/gemma_lmm_v0_1/regional_figures/*regional_locus_nature.svg`
+- `results/v0_1_baseline/gemma_lmm_v0_1/regional_figures/*regional_locus_nature.png`
+- `docs/2026-06-05-zeamap-v0-1-top-locus-priority-report.md`
+
+评估：
+
+这一步已经把“候选表初稿”推进到“论文主结果候选池”。现在可以开始写 Results 的 GWAS 候选位点段落，但还必须把 seed literature evidence 扩展成逐 locus 的外部数据库和论文核查。
+
 ## 下一阶段目标
 
 下一阶段建议命名为：
 
 ```text
-Stage 5.5: top locus literature annotation and regional figure preparation
+Stage 5.6: top locus external annotation and results drafting
 ```
 
 目标：
 
-把 184 个 manuscript candidate loci 缩小成论文主结果中的重点 locus，并补足文献证据和局部图。
+把 8 个 top regional loci 的功能证据补足，并形成论文主表、补充表和 Results 初稿。
 
 具体任务：
 
-1. 优先挑 Bonferroni + lipid/fatty-acid keyword + ridge-supported loci。
-2. 对这些 genes 查 MaizeGDB、UniProt、Gramene、Ensembl 和论文。
-3. 标注是否与已知 oil/fatty-acid/seed metabolism/QTL/GWAS 证据重叠。
-4. 画重点 locus 的 regional association/locus/LD panel。
-5. 输出论文主 candidate loci table 和补充全量 table。
+1. 对 8 个 top regions 的 candidate genes 查 MaizeGDB、UniProt、Gramene、Ensembl 和论文。
+2. 标注是否与已知 oil/fatty-acid/seed metabolism/QTL/GWAS 证据重叠。
+3. 把 18 个 tier1 loci 压缩成论文主 candidate loci table。
+4. 把 184 个 manuscript candidate loci 整理成补充表。
+5. 打磨 Nature 风格 multi-panel figure 和 regional panels。
+6. 写 prediction benchmark + GEMMA GWAS + top candidate loci 的 Results 初稿。
 
 成功标准：
 
@@ -266,4 +313,4 @@ Stage 5.5: top locus literature annotation and regional figure preparation
 
 ## 当前一句话判断
 
-项目已经有论文级雏形，但还没到可以写完整 GWAS 结果段落的程度。下一步不是再堆模型，而是把 GEMMA lead loci 做成 candidate gene、locus figure 和文献支持。
+项目已经有论文级雏形，并且 GWAS 主结果已经进入候选位点写作前夜。下一步不是再堆模型，而是把 8 个 top regional loci 的外部注释、文献证据、论文主表和 Results 段落补齐。

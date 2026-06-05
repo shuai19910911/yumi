@@ -402,3 +402,139 @@ lipid/fatty-acid keyword loci = 11
 -> 画局部 locus/LD 图
 -> 形成论文主表和补充表
 ```
+
+## 14. top loci 排序和区域图现在完成了什么
+
+Stage 5.5 已经完成初版。
+
+这一步做的不是重新跑 GWAS，而是把 184 个 manuscript candidate loci 排出优先级。排序依据包括：
+
+- GEMMA 显著性强不强。
+- `P` 值有多小。
+- 是否在多个 oil traits 里反复出现。
+- 是否有 ridge attribution 交叉支持。
+- candidate gene description 里是否有 lipid/fatty-acid 相关关键词。
+- 一个区域里 candidate genes 是否太多。
+
+结果：
+
+```text
+prioritized loci = 184
+tier1 main-text loci = 18
+tier2 strong loci = 22
+top regional figures = 8
+```
+
+怎么理解：
+
+- 184 个 loci 是补充表候选池。
+- 18 个 tier1 loci 是论文主表优先候选。
+- 8 个 regional figures 是主文/扩展数据图的初稿。
+- 这个 priority score 只是排序工具，不是新的统计检验。
+
+## 15. 当前最强候选为什么是 chr6 Zm00001d036982
+
+chr6 `Zm00001d036982` / linoleic acid1 区域现在是最强主线。
+
+原因：
+
+```text
+跨 7 个 oil traits 复现
+最佳 P = 2.35e-25
+Bonferroni significant
+有 lipid/fatty-acid annotation
+有 ridge attribution overlap
+局部图显示清楚 association peak 和 LD context
+```
+
+通俗讲，这个区域同时满足：
+
+- 统计很强。
+- 多个油脂性状都指向它。
+- gene function 和 oil/fatty-acid 方向能解释。
+- prediction model 的解释性结果也支持。
+
+所以它最适合做论文 Results 里的第一个重点 locus。
+
+但仍然要注意：
+
+```text
+可以写 candidate locus / candidate gene。
+不能写 causal variant 已证明。
+```
+
+## 16. 为什么 chr9 Zm00001d045383 区域也重要
+
+chr9 `Zm00001d045383` 区域只有一个主要 trait：
+
+```text
+agri_aa_oil__Oil_C16_0
+P = 7.76e-17
+```
+
+它不是多 trait 复现区域，所以排在 tier2。但这个区域局部包含：
+
+```text
+Zm00001d045387: fatty acyl-ACP thioesterase2
+```
+
+fatty acyl-ACP thioesterase 和脂肪酸链长/组成有直接生物学关联，所以它值得优先补 MaizeGDB、UniProt、Gramene 和文献证据。
+
+这类区域的写法应该谨慎：
+
+```text
+The chr9 C16:0-associated region contains a fatty acyl-ACP thioesterase candidate gene.
+```
+
+不要写成：
+
+```text
+We proved this gene controls C16:0.
+```
+
+## 17. regional figure 能说明什么
+
+现在的区域图包含三层信息：
+
+1. 区域内 SNP 的 GEMMA association strength。
+2. 每个 SNP 和 lead SNP 的 LD `r2`。
+3. 区域内 candidate gene models 和重点 gene labels。
+
+这类图能支持：
+
+```text
+这个 locus 的 association peak 在哪里。
+lead SNP 附近有哪些 candidate genes。
+候选 gene 是否落在同一 LD/物理区域中。
+```
+
+这类图不能支持：
+
+```text
+fine-mapped causal variant。
+唯一 causal gene。
+实验验证结论。
+```
+
+## 18. 下一步要补什么才更像正式论文
+
+下一阶段是 Stage 5.6。
+
+重点不是再跑模型，而是把 top loci 的证据链补完整：
+
+```text
+top region
+-> candidate gene
+-> external annotation
+-> known oil/fatty-acid/QTL/GWAS evidence
+-> main table
+-> results paragraph
+```
+
+具体要做：
+
+1. 对 8 个 top regional loci 逐个查文献和数据库。
+2. 把 18 个 tier1 loci 压缩成论文主表。
+3. 把 184 个 manuscript candidate loci 放入补充表。
+4. 继续打磨 Nature 风格 summary figure 和 regional panels。
+5. 写 prediction benchmark 与 GEMMA GWAS 的 Results 初稿。

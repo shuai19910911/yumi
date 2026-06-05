@@ -11,7 +11,7 @@ ZEAMAP 玉米 oil-trait prediction + GWAS 项目。
 
 ## 当前一句话结论
 
-我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融和 10 个 high-priority oil traits 的 GEMMA LMM GWAS。
+我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释，以及 top loci 的优先级排序和区域图初版。
 
 最可靠的主线是：
 
@@ -159,6 +159,25 @@ results/v0_1_baseline/gemma_lmm_v0_1/candidate_loci/
 results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures/
 ```
 
+### 5. top loci 和区域图初版
+
+已把 184 个 manuscript candidate loci 进一步排序，得到论文主结果优先候选：
+
+- Tier 1 main-text loci：18 个。
+- Tier 2 strong loci：22 个。
+- 已生成 8 个 top regional association/LD/gene-track figures。
+- 最强主线：chr6 `Zm00001d036982` / linoleic acid1 区域，跨 7 个 oil traits 复现，Bonferroni significant，有 lipid/fatty-acid 注释，并且有 ridge attribution 交叉支持。
+- 重要补充候选：chr9 `Zm00001d045383` 区域，C16:0 强信号，局部包含 `Zm00001d045387` fatty acyl-ACP thioesterase2。
+
+输出目录：
+
+```text
+results/v0_1_baseline/gemma_lmm_v0_1/top_loci/
+results/v0_1_baseline/gemma_lmm_v0_1/regional_figures/
+```
+
+注意：当前文献证据是 seed evidence，用来指导 top loci triage；还不是完整系统文献综述。
+
 ## 重要文件入口
 
 适合先读：
@@ -174,16 +193,17 @@ results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures/
 - `docs/2026-06-05-zeamap-v0-1-final-benchmark.md`
 - `docs/2026-06-05-zeamap-v0-1-gemma-lmm-report.md`
 - `docs/2026-06-05-zeamap-v0-1-gemma-candidate-loci-report.md`
+- `docs/2026-06-05-zeamap-v0-1-top-locus-priority-report.md`
 - `docs/2026-06-05-zeamap-v0-1-epigenome-decision.md`
 
 ## 下一步
 
-下一步不应该继续加模型复杂度，而应该把 GWAS 结果整理成论文可用结果：
+下一步不应该继续加模型复杂度，而应该把 GWAS 结果整理成论文结果段落：
 
-1. 对 top Bonferroni lipid/fatty-acid loci 做文献核查。
-2. 查 oil/fatty-acid pathway 和已知 maize QTL/GWAS 文献。
-3. 画重点 locus 的局部 locus/LD 图。
-4. 形成论文主表和补充表。
+1. 对 8 个 top regional loci 做逐个文献核查和外部功能注释补强。
+2. 把 `gemma_top_locus_priority.tsv` 压缩成论文主表，把 184 个 manuscript candidate loci 放入补充表。
+3. 按 Nature 风格继续打磨 main figure 和 regional locus panels。
+4. 写 prediction benchmark + GEMMA GWAS + top candidate loci 的 results 草稿。
 5. 对缺少 GFF description 的 candidate genes 补 MaizeGDB/UniProt/Gramene 注释。
 
 ## 暂不做的事

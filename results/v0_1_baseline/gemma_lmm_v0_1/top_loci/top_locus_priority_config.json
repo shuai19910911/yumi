@@ -1,0 +1,9 @@
+{
+  "candidate_dir": "results/v0_1_baseline/gemma_lmm_v0_1/candidate_loci",
+  "raw_gemma_dir": "results/v0_1_baseline/gemma_v0_1",
+  "out_dir": "results/v0_1_baseline/gemma_lmm_v0_1/top_loci",
+  "fig_dir": "results/v0_1_baseline/gemma_lmm_v0_1/regional_figures",
+  "gff": "/home/user/zhangzhishuai/data/plantDB/maize_ZEAMAP/reference/B73_RefGen_v4/Zea_mays.B73_RefGen_v4.47.chr.gff3.gz",
+  "top_regions": 8,
+  "regional_window_bp": 2000000
+}
