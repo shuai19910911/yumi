@@ -143,6 +143,15 @@ v0.1 lightweight model comparison：
 - median Pearson / R2：ridge 0.498 / 0.204，ElasticNet 0.483 / 0.171，small MLP 0.351 / -0.191
 - 结论：当前样本量下 ridge/ElasticNet 足够强，小 MLP 不稳定；下一步优先做 methylation subset features，而不是继续加深模型。
 
+v0.1 methylation subset experiment：
+
+- 运行脚本：`scripts/run_zeamap_v0_1_methylation_subset.py`
+- 报告：`docs/2026-06-05-zeamap-v0-1-methylation-subset-report.md`
+- 输入：236 个 methylation-covered v0.1 accessions，66 个 robust traits，5 个 seeds
+- methylation features：mCG/mCHG/mCHH region-level 全局 summary
+- 整体结果：genotype+population+methylation median Pearson/R2 为 0.496/0.173，genotype+population 为 0.490/0.173
+- 结论：全局 methylation summary 只带来极小整体增益；如果继续 epigenome，应做 gene/promoter/cis-window 聚合，而不是继续加模型复杂度。
+
 核心任务：
 
 - v0.1 baseline benchmark：用 genotype PCA/regularized models + population covariates 预测 phenotype/metabolome。

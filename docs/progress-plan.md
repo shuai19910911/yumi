@@ -280,6 +280,34 @@ notes
 - 明确 methylation 文件的 accession、组织、时期和区域类型。
 - 优先从 236 个 methylation-covered accession 做小规模 missing-modality 实验。
 
+### 阶段 4.1：methylation subset global summary
+
+状态：已完成。
+
+目标：先用 DNA methylation `01_regions` bedgraph 文件构建 accession-level 全局 summary features，测试是否能在 236 个 methylation-covered accession 子集上提升 66 个 robust traits 的预测。
+
+产出：
+
+- `scripts/run_zeamap_v0_1_methylation_subset.py`
+- `scripts/slurm/run_zeamap_v0_1_methylation_subset.sh`
+- `data/processed/v0_1/methylation_region_summary.tsv`
+- `results/v0_1_baseline/methylation_subset_metrics.tsv`
+- `results/v0_1_baseline/methylation_subset_model_summary.tsv`
+- `results/v0_1_baseline/methylation_subset_trait_summary.tsv`
+- `docs/2026-06-05-zeamap-v0-1-methylation-subset-report.md`
+
+结果：
+
+- methylation-covered v0.1 accession：236。
+- `genotype_population_methylation_ridge` median Pearson/R2：0.496 / 0.173。
+- `genotype_population_ridge` median Pearson/R2：0.490 / 0.173。
+- 全局 methylation summary 整体增益很小，但少数 traits 有稳定增益，例如 `metabolite__Feruloyltryptamine_E1` 和 `metabolite__N_Coumaroyltryptamine_E1`。
+
+结论：
+
+- accession-level global methylation summary 不足以明显提升整体预测。
+- 下一步如果继续 epigenome，应做 gene/promoter/cis-window methylation aggregation，而不是继续加深模型。
+
 ## 阶段 5：预训练样本构建
 
 进入条件：
