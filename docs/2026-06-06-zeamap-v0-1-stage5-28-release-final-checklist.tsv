@@ -1,0 +1,8 @@
+step	command_or_action	when	current_pre_stage5_28_head
+pre_release_status	git status --short	after author metadata and final figure approval	374a509
+final_commit	commit author metadata, final manuscript and release-note updates	before tagging	374a509
+tag	"git tag -a zeamap-oil-v0.1-submission -m ""ZEAMAP maize oil-trait manuscript submission package"""	after final clean status	374a509
+push_tag	git push origin zeamap-oil-v0.1-submission	after local tag creation	374a509
+github_release	Create GitHub release from tag with manuscript title and data-source notes.	after tag push	374a509
+archive_pid	Archive GitHub release in Zenodo/Figshare if required by target journal.	after GitHub release	374a509
+record_pid	Insert archive DOI/PID into Data Availability and repository release docs.	after archive PID is issued	374a509

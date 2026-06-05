@@ -1056,3 +1056,9 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 通俗解读：这一阶段把之前的“chr6/chr9 外部数据库基因名还要确认”往前推进了一步。我们下载并使用 MaizeGDB 官方 B73v4-to-B73v5 cross-reference，确认 `Zm00001d036982 -> Zm00001eb277490`、`Zm00001d045383 -> Zm00001eb377300`、`Zm00001d045387 -> Zm00001eb377350`。随后用 Ensembl/Gramene 侧 REST xrefs 检查这些 current IDs 的功能证据。
 
 阶段结论：外部证据支持 chr6 candidate 与 lipid/acyltransferase/DGAT-like biology 相关；chr9 需要继续谨慎写法，lead-host gene 是 `Zm00001d045383/Zm00001eb377300`，附近更有 fatty-acid pathway 注释的是 `Zm00001d045387/Zm00001eb377350`。因此最终稿应继续写 candidate interval，不写 causal gene、causal allele 或 validated gene。
+
+### Stage 5.28 - Final submission package
+
+通俗解读：这一阶段把“快能投稿了，但东西散在很多文件里”的问题收束成一个投稿包。现在有最新稿件、The Plant Genome 路线 cover letter、期刊备选表、作者最终需要补的信息清单、release/tag/DOI 清单和 ARS 投稿包审查。这样下一步不需要重新理解所有阶段，只要按清单补作者信息、确认图、做 release。
+
+阶段结论：机器侧投稿包已经编译完成；推荐第一目标是 The Plant Genome，备选是 G3 和 BMC Plant Biology。剩余硬门槛仍是作者信息、Funding/Acknowledgements/COI、Figure 1-3 最终人工确认和 GitHub release DOI/PID。
