@@ -1080,3 +1080,9 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 通俗解读：这一阶段继续处理剩余人工关卡。机器已经确认 Figure 1-3 文件存在且分辨率足够，但最终投稿前还需要作者逐张打开 PDF/SVG/PNG，确认标签、文字、重叠、legend 和颜色。Stage 5.31 把这些确认项做成可填写模板。同时生成 GitHub release notes 和 Zenodo metadata 草稿，但不创建 tag、不发布 release、不申请 DOI。
 
 阶段结论：图件批准和 release DOI/PID 的执行流程已经准备好；但这两个 blocker 仍不能关闭，因为还缺作者最终批准、最终提交版本和真实 creator 信息。
+
+### Stage 5.32 - Single human action packet
+
+通俗解读：这一阶段把最后剩下的 4 个人工关卡集中到一个文件里。现在作者不需要翻很多阶段文档，只需要打开 Stage 5.32 human action packet，按顺序填作者信息、Funding/COI/致谢、Figure 1-3 最终批准表，再按命令重跑脚本。release/tag/DOI 也列出了执行顺序，但仍必须等作者批准后再做。
+
+阶段结论：机器侧已经把最后人工步骤整理成可执行清单；论文仍不能标记为最终投稿完成，因为真实作者信息、图件批准和 release DOI/PID 还没有发生。
