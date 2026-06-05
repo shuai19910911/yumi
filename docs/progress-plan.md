@@ -402,6 +402,33 @@ notes
 - methylation PCA 可以保留为 auxiliary ablation，但不作为默认训练输入。
 - 下一步转向固化 v0.1 final benchmark 和 genotype 侧可解释性。
 
+## 阶段 4.5：v0.1 final benchmark
+
+状态：已完成。
+
+目标：把阶段 3-4 的结果整理为一个稳定的 v0.1 benchmark 入口，明确主模型、主 trait 集合、family-level performance 和 epigenome 决策。
+
+产出：
+
+- `scripts/build_zeamap_v0_1_final_benchmark.py`
+- `results/v0_1_baseline/final_v0_1_trait_benchmark.tsv`
+- `results/v0_1_baseline/final_v0_1_family_summary.tsv`
+- `docs/2026-06-05-zeamap-v0-1-final-benchmark.md`
+
+结果：
+
+- 主模型：`genotype_population_ridge`。
+- 主评估集合：66 个 robust selected traits。
+- overall median Pearson/R2：0.498 / 0.204。
+- positive R2 fraction：0.979。
+- family 表现：oil median Pearson/R2 0.596 / 0.321；agronomic 0.498 / 0.190；metabolite 0.389 / 0.116；amino acid 0.367 / 0.131。
+- top traits 主要为 oil 相关性状，`agri_aa_oil__Oil_OIL` median Pearson/R2 为 0.924 / 0.824。
+
+结论：
+
+- v0.1 已经足以支撑 accession-level genotype/population 到 phenotype/metabolome 的小模型 benchmark。
+- 当前不进入大规模多模态预训练；下一步做 genotype 侧可解释性和 trait family 层面的 feature attribution。
+
 ## 阶段 5：预训练样本构建
 
 进入条件：

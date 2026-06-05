@@ -179,6 +179,16 @@ v0.1 epigenome decision：
 - methylation PCA 仅保留为辅助消融；open chromatin/chromatin interaction 暂作为 B73/reference regulatory prior。
 - 下一步主线：固化 v0.1 final benchmark，并做 genotype 侧可解释性。
 
+v0.1 final benchmark：
+
+- 汇总脚本：`scripts/build_zeamap_v0_1_final_benchmark.py`
+- 报告：`docs/2026-06-05-zeamap-v0-1-final-benchmark.md`
+- 最终主模型：`genotype_population_ridge`
+- 主评估集合：66 个 robust traits
+- median Pearson/R2：0.498/0.204
+- trait family 表现：oil 最稳定，median Pearson/R2 为 0.596/0.321；agronomic 次之，为 0.498/0.190；metabolite 和 amino acid 较弱但仍有可预测信号。
+- 下一步主线：genotype 侧可解释性，优先对 high/medium traits 做 SNP/gene-window attribution。
+
 核心任务：
 
 - v0.1 baseline benchmark：用 genotype PCA/regularized models + population covariates 预测 phenotype/metabolome。

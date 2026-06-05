@@ -81,6 +81,7 @@ batch = {
 - Methylation subset experiment 显示全局 mCG/mCHG/mCHH summary 只带来极小整体增益；后续 epigenome 需要 gene/promoter/cis-window 粒度，而不是 accession-level global summary。
 - Gene/promoter/cis-window methylation PCA 带来小幅 R2 增益，但整体仍有限；下一步应做 trait-specific sparse gene/window feature selection，而不是增加模型复杂度。
 - Trait-specific sparse gene-window methylation ElasticNet 没有超过 gene methylation PCA，整体还低于 genotype+population baseline。当前 v0.1 不应把 raw methylation gene-window features 作为主输入；methylation 只保留为 auxiliary PCA、coverage mask、ablation 和候选解释表。
+- Final v0.1 benchmark 固化 `genotype_population_ridge` 为主模型：66 个 robust traits 的 median Pearson/R2 为 0.498/0.204，oil family 最强。下一步模型工作应转向 genotype attribution，而不是扩大 encoder/fusion 复杂度。
 
 ### Genotype encoder
 
