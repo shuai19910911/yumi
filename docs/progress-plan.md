@@ -308,6 +308,51 @@ notes
 - accession-level global methylation summary 不足以明显提升整体预测。
 - 下一步如果继续 epigenome，应做 gene/promoter/cis-window methylation aggregation，而不是继续加深模型。
 
+### 阶段 4.2：gene/promoter/cis-window methylation PCA
+
+状态：已完成。
+
+目标：用 B73 RefGen_v4 gene annotation 把 mCG/mCHG/mCHH region methylation 聚合到 gene body、promoter 和 cis-window，然后用 PCA 压缩为 accession-level features，测试是否优于 genotype+population baseline。
+
+输入：
+
+- Ensembl Plants release 47 `Zea_mays.B73_RefGen_v4.47.chr.gff3.gz`
+- DNA methylation `01_regions` mCG/mCHG/mCHH bedgraph
+- 236 个 methylation-covered v0.1 accessions
+- 66 个 robust selected traits
+
+产出：
+
+- `scripts/run_zeamap_v0_1_gene_methylation_pca.py`
+- `scripts/slurm/run_zeamap_v0_1_gene_methylation_pca.sh`
+- `data/processed/v0_1/b73_refgen_v4_gene_windows.tsv`
+- `data/processed/v0_1/methylation_gene_region_pca.tsv`
+- `data/processed/v0_1/methylation_gene_region_pca_variance.tsv`
+- `results/v0_1_baseline/gene_methylation_pca_metrics.tsv`
+- `results/v0_1_baseline/gene_methylation_pca_model_summary.tsv`
+- `results/v0_1_baseline/gene_methylation_pca_trait_summary.tsv`
+- `docs/2026-06-05-zeamap-v0-1-gene-methylation-pca-report.md`
+
+结果：
+
+- genes：39,005。
+- region types：gene body、promoter upstream 2kb、cis-window +/-10kb。
+- methylation PCA features：90。
+- `genotype_population_gene_methylation_pca_ridge` median Pearson/R2：0.496 / 0.199。
+- `genotype_population_ridge` median Pearson/R2：0.490 / 0.173。
+- 增益最大的 traits 包括 `agri_aa_oil__Kernernumberperrow`、`metabolite__Norcinnamolaurine_E1`、`agri_aa_oil__Oil_C18_0`、`agri_aa_oil__100grainweight`。
+
+结论：
+
+- gene/promoter/cis-window methylation PCA 比全局 methylation summary 更合理，R2 有小幅提升。
+- 整体增益仍有限，下一步不应加深模型，而应做 trait-specific sparse gene/window methylation feature selection。
+
+### 阶段 4.3：trait-specific methylation feature selection
+
+状态：下一步。
+
+目标：对阶段 4.2 中 methylation gain 较高的 traits，直接在 gene/promoter/cis-window methylation features 上做稀疏筛选，寻找可能有解释价值的 gene/window，而不是只用全局 PCA。
+
 ## 阶段 5：预训练样本构建
 
 进入条件：

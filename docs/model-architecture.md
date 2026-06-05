@@ -79,6 +79,7 @@ batch = {
 - Multi-seed robustness 后保留 66 个 robust traits：oil 29、metabolite 16、agronomic 15、amino acid 6。后续模型主目标应优先使用这 66 个 traits。
 - Lightweight model comparison 显示 ridge/ElasticNet 优于 small MLP；当前阶段应优先做特征工程和 methylation subset experiment，而不是加深神经网络。
 - Methylation subset experiment 显示全局 mCG/mCHG/mCHH summary 只带来极小整体增益；后续 epigenome 需要 gene/promoter/cis-window 粒度，而不是 accession-level global summary。
+- Gene/promoter/cis-window methylation PCA 带来小幅 R2 增益，但整体仍有限；下一步应做 trait-specific sparse gene/window feature selection，而不是增加模型复杂度。
 
 ### Genotype encoder
 

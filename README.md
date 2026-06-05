@@ -152,6 +152,17 @@ v0.1 methylation subset experiment：
 - 整体结果：genotype+population+methylation median Pearson/R2 为 0.496/0.173，genotype+population 为 0.490/0.173
 - 结论：全局 methylation summary 只带来极小整体增益；如果继续 epigenome，应做 gene/promoter/cis-window 聚合，而不是继续加模型复杂度。
 
+v0.1 gene/promoter/cis-window methylation PCA：
+
+- annotation：Ensembl Plants release 47 `B73_RefGen_v4`
+- 运行脚本：`scripts/run_zeamap_v0_1_gene_methylation_pca.py`
+- 报告：`docs/2026-06-05-zeamap-v0-1-gene-methylation-pca-report.md`
+- genes：39,005
+- region types：gene body、promoter upstream 2kb、cis-window +/-10kb
+- methylation PCs：mCG/mCHG/mCHH x 3 region types x 10 PCs = 90 features
+- 结果：genotype+population+gene methylation PCA median Pearson/R2 为 0.496/0.199，genotype+population 为 0.490/0.173
+- 结论：gene-level methylation PCA 比全局 summary 稍好，但整体增益仍小；下一步应做 trait-specific sparse gene/window feature selection。
+
 核心任务：
 
 - v0.1 baseline benchmark：用 genotype PCA/regularized models + population covariates 预测 phenotype/metabolome。
