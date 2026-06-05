@@ -37,7 +37,8 @@
 | 阶段 5.11 external annotation hardening | 已完成初版 | 已输出 top regional loci 外部注释硬化表和投稿就绪度评估 |
 | 阶段 5.12 final manuscript assembly | 已完成初版 | 已输出目标期刊稿件组装、supplement column dictionary、figure audit 和 data/code availability |
 | 阶段 5.13 final submission gate | 已完成初版 | 已输出 DOI/reference audit、cover letter、reviewer profiles、release plan 和 final gate audit |
-| 阶段 5.14 human metadata and release finalization | 下一步 | 作者/单位/基金/利益冲突、命名审稿人、GitHub release/DOI、最终人工图件检查 |
+| 阶段 5.14 human metadata and release finalization templates | 已完成模板包 | 已输出作者/单位/基金/COI、命名审稿人、图件人工检查和 release 命令模板 |
+| 阶段 5.15 author-confirmed release execution | 下一步 | 填入真实作者信息、命名审稿人、人工图件确认、GitHub release/DOI 并写回最终稿 |
 
 ## 当前最重要的数字
 
@@ -104,6 +105,11 @@ Cover letter draft: 1 file
 Reviewer suggestion draft: 1 file
 Repository release plan: 1 file
 Final submission gate audit: 1 file
+Author metadata template: 1 file
+Affiliation template: 1 file
+Reviewer worksheet: 1 file
+Figure manual checklist: 1 file
+Release command draft: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -786,3 +792,22 @@ Stage 5.9-5.10 打磨后：55-75%
 - 命名审稿人和回避审稿人。
 - GitHub release/Zenodo DOI 是否执行。
 - Figure 1-3 最终人工视觉确认。
+
+
+## 阶段 5.15：author-confirmed release execution
+
+状态：下一步，需要作者信息。
+
+目标：
+
+把 Stage 5.14 的模板填成真实投稿元数据，并执行最终 release/DOI。
+
+需要人工输入：
+
+- 作者姓名、排序、单位、邮箱、ORCID。
+- 通讯作者和共同一作信息。
+- CRediT contribution。
+- funding、acknowledgements、competing interests。
+- 命名推荐审稿人和回避审稿人。
+- Figure 1-3 人工视觉确认。
+- 是否创建 GitHub release 和 Zenodo/Figshare DOI。

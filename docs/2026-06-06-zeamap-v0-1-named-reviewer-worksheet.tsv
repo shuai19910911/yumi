@@ -1,0 +1,5 @@
+type	name	email	institution	expertise	reason	conflict_checked	notes
+suggested	TO_COMPLETE	TO_COMPLETE	TO_COMPLETE	Maize quantitative genetics / mixed-model GWAS	Can evaluate population-structure control, GEMMA LMM and candidate-locus statistics.	yes/no	Avoid ZEAMAP data generators or close collaborators if conflicted.
+suggested	TO_COMPLETE	TO_COMPLETE	TO_COMPLETE	Maize seed oil / fatty-acid metabolism	Can evaluate chr6 linoleic acid1-region and chr9 acyl-ACP thioesterase interpretation.	yes/no	Check for unpublished direct competition on chr6/chr9 loci.
+suggested	TO_COMPLETE	TO_COMPLETE	TO_COMPLETE	Crop genomics resource reuse and reproducible analysis	Can evaluate ZEAMAP accession harmonization and public-resource reuse.	yes/no	Prefer reviewer with no direct role in ZEAMAP construction.
+opposed_optional	TO_COMPLETE	TO_COMPLETE	TO_COMPLETE	TO_COMPLETE	Conflict or direct competition reason.	yes/no	Only include if journal permits opposed reviewers and reason is defensible.
