@@ -29,7 +29,8 @@
 | 阶段 5.3 GEMMA LMM GWAS | 已完成 | lambda GC 接近 1，可作为论文主 GWAS baseline |
 | 阶段 5.4 GEMMA lead loci 注释 | 已完成初版 | 已输出 manuscript candidate loci/gene 表和 Nature 风格 summary figure |
 | 阶段 5.5 top locus 优先级和局部图 | 已完成初版 | 已输出 top loci 排序、seed literature evidence 和 8 个 regional locus/LD/gene-track figures |
-| 阶段 5.6 top loci 外部注释补强和结果写作 | 下一步 | 对 8 个重点区域做逐个文献/数据库核查，形成论文主表和结果段落 |
+| 阶段 5.6 论文主表和 Results 初稿 | 已完成初版 | 已输出 top regional evidence table、tier1 主表、184 loci 补充表和 Results draft |
+| 阶段 5.7 Methods 草稿和主图整合 | 下一步 | 组织 Figure 1-3，多面板图和 dataset/GWAS 方法文字 |
 
 ## 当前最重要的数字
 
@@ -70,6 +71,10 @@ tier1 main-text loci: 18
 tier2 strong loci: 22
 top regional figures: 8
 strongest region: chr6 Zm00001d036982 / linoleic acid1
+top regional evidence table: 8 rows
+main tier1 locus table: 18 rows
+supplementary manuscript candidate loci: 184 rows
+literature/source records: 6
 ```
 
 ## 阶段 0：数据下载与检查
@@ -501,22 +506,60 @@ GEMMA LMM lambda GC       = 0.984-1.018
 - regional figure 是 association + LD context + gene model，不是 fine-mapping。
 - seed literature evidence 不是完整系统综述，下一阶段还要逐个 top region 补 MaizeGDB/UniProt/Gramene/论文证据。
 
-## 阶段 5.6：top loci 外部注释补强和结果写作
+## 阶段 5.6：论文主表和 Results 初稿
+
+状态：已完成初版。
+
+目标：
+
+把 8 个 top regional loci 从“统计候选”推进到“论文写作材料”。
+
+已完成：
+
+1. 建立 8 个 top regional loci 的 evidence table。
+2. 给每个 top region 标注 evidence level、推荐 manuscript claim 和 claim boundary。
+3. 输出 18 行 tier1 main-text locus table。
+4. 输出 184 行 supplementary manuscript candidate loci table。
+5. 输出 6 条 literature/source records。
+6. 写出 Results draft，覆盖 prediction benchmark、GEMMA LMM inflation control、prioritized oil-trait loci 和 claim boundary。
+
+最重要判断：
+
+- chr6 `Zm00001d036982` 是 A 级 direct prior lipid locus，适合作为第一个 Results 重点区域。
+- chr9 `Zm00001d045383`/附近 `Zm00001d045387` fatty acyl-ACP thioesterase2 是 A 级 C16:0 fatty-acid candidate interval，适合和 chr6 一起作为重点图。
+- chr4、chr1、chr8 等多 trait 复现区域要保持 indirect/recurrent candidate 口径。
+
+产出：
+
+- `scripts/build_zeamap_v0_1_stage5_6_manuscript_tables.py`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_tables/top_regional_loci_evidence.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_tables/main_tier1_locus_table.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_tables/supplementary_manuscript_candidate_loci.tsv`
+- `results/v0_1_baseline/gemma_lmm_v0_1/manuscript_tables/literature_sources.tsv`
+- `docs/2026-06-05-zeamap-v0-1-results-draft.md`
+- `docs/2026-06-05-zeamap-v0-1-stage5-6-manuscript-tables-report.md`
+
+限制：
+
+- 当前 evidence table 是 curated first pass，不是系统综述。
+- A 级证据表示有较强先验/通路/区域支持，不等于本研究证明 causal gene。
+- 后续还要继续补 MaizeGDB/UniProt/Gramene 的逐基因外部注释。
+
+## 阶段 5.7：Methods 草稿和主图整合
 
 状态：下一步。
 
 目标：
 
-把 8 个 top regional loci 从“统计候选”推进到“论文结果段落可解释候选”。
+把当前结果组织成正式论文骨架。
 
 需要做：
 
-- 对 8 个 top regions 逐个查 maize oil/fatty-acid/QTL/GWAS 文献。
-- 对关键 candidate genes 补 MaizeGDB、UniProt、Gramene 或 Ensembl BioMart 注释。
-- 将 `gemma_top_locus_priority.tsv` 压缩成论文主候选表。
-- 将 184 个 manuscript candidate loci 整理为补充表。
-- 按 Nature 风格继续打磨 regional panels 和多面板总图。
-- 写 prediction benchmark + GEMMA GWAS + candidate loci 的 results 初稿。
+- 整合 Figure 1：v0.1 dataset construction + prediction benchmark。
+- 整合 Figure 2：GEMMA LMM calibration + candidate-locus summary。
+- 整合 Figure 3：chr6 和 chr9 regional candidate intervals。
+- 写 Methods 草稿：dataset construction、prediction benchmark、GEMMA LMM、candidate-locus annotation、regional figure generation。
+- 把 Results draft 扩展成更完整的 manuscript Results。
 
 ## GitHub 更新规则
 

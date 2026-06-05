@@ -227,6 +227,28 @@ manuscript candidate loci
 - priority score 是候选排序工具，不是新的统计检验。
 - regional figures 是 association/LD context，不是 fine-mapping。
 
+Stage 5.6 已完成第一版 manuscript evidence layer：
+
+```text
+top regional targets
+-> evidence level
+-> recommended manuscript claim
+-> claim boundary
+-> main tier1 locus table
+-> supplementary candidate-locus table
+-> Results draft
+```
+
+当前输出：
+
+- top regional evidence table：8 行。
+- main tier1 locus table：18 行。
+- supplementary manuscript candidate loci：184 行。
+- literature/source records：6 条。
+- Results draft：1 份。
+
+这一层不是模型训练层，而是论文解释层。它的核心作用是把统计结果转换成可写、可审稿、不过度声称的 manuscript material。
+
 ## 以后如果扩展模型，怎么做
 
 只有在当前论文级 benchmark/GWAS 主线稳定后，才考虑扩展模型。
@@ -295,6 +317,8 @@ v0.1 dataset
   |-- interpretation: lead loci + candidate genes
   |
   |-- manuscript triage: top loci + regional figures + literature evidence
+  |
+  |-- manuscript writing layer: evidence table + main/supp tables + Results draft
 ```
 
 这个图更符合当前真实进展，也更适合论文方法部分。

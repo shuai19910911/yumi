@@ -81,8 +81,9 @@ large-scale plant multi-omics foundation model
 | genotype attribution screen | 中 | 可作为候选解释，不能作为正式 GWAS |
 | covariate-only GWAS | 中 | 工具链完成，但 inflation 高 |
 | GEMMA LMM GWAS | 中高 | 当前论文主 GWAS baseline 已完成 |
-| candidate gene annotation | 中高 | 已完成 GFF description 初版和 top loci priority，外部数据库/文献注释还需补强 |
+| candidate gene annotation | 中高 | 已完成 GFF description、top loci priority 和 Stage 5.6 evidence table；逐基因外部数据库注释还需补强 |
 | manuscript figures | 中高 | Nature 风格 GWAS summary figure 和 8 个 regional locus/LD 图已有初版 |
+| manuscript tables/results | 中高 | 已输出 top regional evidence table、tier1 主表、184 loci 补充表和 Results draft |
 
 ## 当前最大优势
 
@@ -283,26 +284,62 @@ nearby lipid gene = Zm00001d045387 fatty acyl-ACP thioesterase2
 
 这一步已经把“候选表初稿”推进到“论文主结果候选池”。现在可以开始写 Results 的 GWAS 候选位点段落，但还必须把 seed literature evidence 扩展成逐 locus 的外部数据库和论文核查。
 
+## 已完成的新阶段：Stage 5.6
+
+Stage 5.6 已完成论文主表和 Results 初稿。
+
+结果：
+
+```text
+top regional evidence table = 8 rows
+main tier1 locus table = 18 rows
+supplementary manuscript candidate loci = 184 rows
+literature/source records = 6
+Results draft = 1 file
+```
+
+当前证据分级：
+
+```text
+A direct-prior/direct fatty-acid intervals = 2 regions
+B lipid-related indirect interval = 1 region
+C indirect/recurrent/regulatory/transport candidates = 4 regions
+D statistical candidate = 1 region
+```
+
+评估：
+
+这一步很关键，因为它把“候选位点很多”变成了“哪些可以写主文、哪些只能写补充、哪些 claim 不能越界”。现在最强的两个主文候选是：
+
+- chr6 `Zm00001d036982` / linoleic acid1。
+- chr9 C16:0 区域，附近 `Zm00001d045387` fatty acyl-ACP thioesterase2。
+
+风险：
+
+- 当前 evidence table 是 curated first pass，不是系统综述。
+- A 级表示强候选证据，不代表 causal gene 已被本研究证明。
+- 仍需补 MaizeGDB/UniProt/Gramene 的逐基因注释。
+
 ## 下一阶段目标
 
 下一阶段建议命名为：
 
 ```text
-Stage 5.6: top locus external annotation and results drafting
+Stage 5.7: Methods drafting and main-figure assembly
 ```
 
 目标：
 
-把 8 个 top regional loci 的功能证据补足，并形成论文主表、补充表和 Results 初稿。
+把当前结果组织成正式论文骨架：Methods 草稿、Figure 1-3 多面板图和更完整 Results。
 
 具体任务：
 
-1. 对 8 个 top regions 的 candidate genes 查 MaizeGDB、UniProt、Gramene、Ensembl 和论文。
-2. 标注是否与已知 oil/fatty-acid/seed metabolism/QTL/GWAS 证据重叠。
-3. 把 18 个 tier1 loci 压缩成论文主 candidate loci table。
-4. 把 184 个 manuscript candidate loci 整理成补充表。
-5. 打磨 Nature 风格 multi-panel figure 和 regional panels。
-6. 写 prediction benchmark + GEMMA GWAS + top candidate loci 的 Results 初稿。
+1. 写 dataset construction Methods。
+2. 写 prediction benchmark Methods。
+3. 写 GEMMA LMM GWAS Methods。
+4. 写 candidate-locus annotation 和 evidence-level Methods。
+5. 组织 Figure 1-3。
+6. 把 Results draft 扩展成正式 Results。
 
 成功标准：
 

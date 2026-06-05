@@ -518,7 +518,7 @@ fine-mapped causal variant。
 
 ## 18. 下一步要补什么才更像正式论文
 
-下一阶段是 Stage 5.6。
+这一段原本对应 Stage 5.6 的目标；现在 Stage 5.6 已经完成初版，见第 19-22 节。
 
 重点不是再跑模型，而是把 top loci 的证据链补完整：
 
@@ -538,3 +538,78 @@ top region
 3. 把 184 个 manuscript candidate loci 放入补充表。
 4. 继续打磨 Nature 风格 summary figure 和 regional panels。
 5. 写 prediction benchmark 与 GEMMA GWAS 的 Results 初稿。
+
+## 19. Stage 5.6 又完成了什么
+
+Stage 5.6 已经把 top loci 变成论文写作材料。
+
+这一步的产出可以理解成：
+
+```text
+8 个 top regional loci
+-> evidence level
+-> 推荐论文写法
+-> 不能越界的 claim boundary
+-> 主表
+-> 补充表
+-> Results 初稿
+```
+
+生成的核心表：
+
+```text
+top regional evidence table: 8 行
+main tier1 locus table: 18 行
+supplementary manuscript candidate loci: 184 行
+literature/source records: 6 条
+```
+
+## 20. evidence level 怎么理解
+
+Stage 5.6 不是简单写“这个 gene 有意思”，而是给每个 top region 分证据等级。
+
+当前最重要的等级：
+
+- A：有直接 fatty-acid/oil 先验或明确同通路候选。
+- B：有 lipid-related annotation，但机制还偏间接。
+- C：统计很强或多 trait 复现，但 gene function 还不够直接。
+- D：统计候选，暂时没有明确 oil annotation。
+
+这有两个好处：
+
+1. 写论文时不会把弱证据写得太满。
+2. 审稿人问“为什么挑这些 gene”时，我们有清楚规则。
+
+## 21. 现在最适合写进主文的两个区域
+
+第一个是 chr6 `Zm00001d036982`：
+
+```text
+证据等级: A_direct_prior_lipid_locus
+最佳 P = 2.35e-25
+跨 7 个 oil traits 复现
+本地注释: linoleic acid1
+```
+
+这个区域适合做 Results 第一重点。
+
+第二个是 chr9 C16:0 区域：
+
+```text
+证据等级: A_direct_fatty_acid_candidate_interval
+最佳 P = 7.76e-17
+附近候选: Zm00001d045387 fatty acyl-ACP thioesterase2
+```
+
+这个区域虽然只对应 C16:0 一个 trait，但 fatty acyl-ACP thioesterase 和脂肪酸组成非常相关，所以适合做第二重点区域。
+
+## 22. 现在已经可以怎么写 Results
+
+Results draft 已经写出四段主逻辑：
+
+1. genotype-based prediction 说明 oil traits 是最强主线。
+2. GEMMA LMM 说明 mixed model 控制了 GWAS inflation。
+3. prioritized oil-trait loci 说明 184 loci、18 tier1、22 tier2 和 8 个区域图。
+4. candidate-claim boundaries 明确不写 causal variant。
+
+这已经是论文结果段落的雏形。下一步是把它扩展成完整 manuscript Results，并配 Figure 1-3。
