@@ -35,7 +35,8 @@
 | 阶段 5.9 manuscript polish and citation audit | 已完成初版 | 已输出投稿策略/中稿率、citation audit 和软件版本文件 |
 | 阶段 5.10 manuscript polish round 2 | 已完成初版 | 已输出 polished manuscript、reference list、Methods parameter supplement 和 ARS self-review |
 | 阶段 5.11 external annotation hardening | 已完成初版 | 已输出 top regional loci 外部注释硬化表和投稿就绪度评估 |
-| 阶段 5.12 final manuscript assembly | 下一步 | 期刊格式化、supplement column dictionary、最终图件检查和 data/code availability |
+| 阶段 5.12 final manuscript assembly | 已完成初版 | 已输出目标期刊稿件组装、supplement column dictionary、figure audit 和 data/code availability |
+| 阶段 5.13 final submission gate | 下一步 | DOI/reference audit、cover letter、最终图件人工检查、仓库 release/DOI 策略 |
 
 ## 当前最重要的数字
 
@@ -92,6 +93,11 @@ Reference list draft: 1 file
 Methods parameter supplement: 1 file
 Academic-research-suite self-review: 1 file
 Methods software versions: 1 file
+External annotation hardening table: 1 file
+Target-journal manuscript assembly: 1 file
+Supplementary column dictionary: 1 file
+Figure quality audit: 1 file
+Data/code availability draft: 1 file
 ```
 
 ## 阶段 0：数据下载与检查
@@ -739,3 +745,21 @@ Stage 5.9-5.10 打磨后：55-75%
 - 给 supplementary tables 写 column dictionary。
 - 最终检查 Figure 1-3 的字体、线宽、panel 标签和 caption。
 - 完成 Data availability、Code availability、Author contributions、Competing interests。
+
+
+## 阶段 5.13：final submission gate
+
+状态：下一步。
+
+目标：
+
+把 Stage 5.12 的 near-submission package 过一遍最终投稿闸门。
+
+需要做：
+
+- 确认首投期刊：The Plant Genome 或 G3。
+- 完成 reference DOI/author-list audit。
+- 生成人工最终检查版 cover letter。
+- 完成 reviewer suggestion / opposed reviewer 草稿。
+- 检查 Figure 1-3 最终版视觉质量。
+- 明确 GitHub release、Zenodo/Figshare DOI 或 data availability 方案。
