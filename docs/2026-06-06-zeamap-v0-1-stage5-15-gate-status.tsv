@@ -1,6 +1,0 @@
-gate	status	evidence	blocks_submission
-required_files_present	pass	missing_required_files=0	False
-human_metadata_filled	fail	blocking_placeholder_count=58	True
-reference_doi_audit_exists	pass	reference DOI audit generated at Stage 5.13	False
-release_not_yet_executed	pending_until_preflight_passes	release commands are drafted but intentionally not executed before author metadata is confirmed	True
-final_figure_manual_check	fail	figure_manual_check_placeholder_count=27	True

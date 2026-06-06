@@ -1,5 +1,0 @@
-format	method	path	status	bytes	stdout	stderr
-md	placeholder_markdown	docs/2026-06-06-zeamap-v0-1-stage5-34-placeholder-submission-manuscript.md	pass	26826		
-docx	pandoc_docx	docs/2026-06-06-zeamap-v0-1-stage5-34-placeholder-submission-manuscript.docx	pass	21491		
-latex	pandoc_latex	docs/2026-06-06-zeamap-v0-1-stage5-34-placeholder-submission-manuscript.tex	pass	30363		
-pdf	reportlab_pdf	docs/2026-06-06-zeamap-v0-1-stage5-34-placeholder-submission-manuscript.pdf	pass	44756		ReportLab PDF generated with DejaVuSans placeholder support.

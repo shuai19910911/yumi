@@ -1,5 +1,0 @@
-file	exists	rows	missing_columns	placeholder_cells	ready
-docs/2026-06-06-zeamap-v0-1-author-metadata-template.tsv	True	1		8	False
-docs/2026-06-06-zeamap-v0-1-affiliation-template.tsv	True	1		6	False
-docs/2026-06-06-zeamap-v0-1-named-reviewer-worksheet.tsv	True	4		17	False
-docs/2026-06-06-zeamap-v0-1-final-figure-manual-checklist.tsv	True	3		27	False

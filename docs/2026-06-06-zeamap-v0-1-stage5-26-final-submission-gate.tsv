@@ -1,8 +1,0 @@
-gate	status	evidence
-manuscript_reference_style	pass	Stage 5.25 target-journal author-year reference gate passed with 18/18 references.
-main_figure_technical_files	pass	Figures 1-3 have PNG/PDF/SVG files, valid headers and expected high-resolution PNG dimensions.
-main_figure_human_visual_review	human_required	Agent visual spot-check found figures readable, with Figure 1 schematic simplicity and Figure 3 chr9 label crowding as polish items; final author approval at journal page size is still required.
-author_metadata	human_required	Author names, affiliations, corresponding author and CRediT roles are not known to the agent.
-funding_acknowledgements_coi	human_required	Funding, acknowledgements and final competing-interest confirmation need author approval.
-repository_release_pid	human_required	A final GitHub release/tag and archive DOI/PID should be created only after author approval.
-external_gene_name_confirmation	human_required	Final MaizeGDB/Gramene names for chr6/chr9 candidate intervals remain an author-side verification item.

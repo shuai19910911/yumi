@@ -1,4 +1,0 @@
-artifact	format	command	exit_code	size_bytes	status	stdout	stderr
-docs/2026-06-06-zeamap-v0-1-stage5-29-submission-clean-manuscript.docx	docx	pandoc docs/2026-06-06-zeamap-v0-1-stage5-29-submission-clean-manuscript.md -o docs/2026-06-06-zeamap-v0-1-stage5-29-submission-clean-manuscript.docx	0	21591	pass	NA	NA
-docs/2026-06-06-zeamap-v0-1-stage5-29-submission-clean-manuscript.html	html	pandoc docs/2026-06-06-zeamap-v0-1-stage5-29-submission-clean-manuscript.md -s --metadata title=Prediction-guided mixed-model GWAS prioritizes maize oil-trait candidate loci in ZEAMAP -o docs/2026-06-06-zeamap-v0-1-stage5-29-submission-clean-manuscript.html	0	33268	pass	NA	NA
-PDF	pdf	Not generated automatically; target journal generally accepts DOCX/LaTeX/online submission and PDF may require a TeX engine.	NA	NA	not_required_for_current_gate	NA	PDF can be produced later after author metadata and figure approval.
