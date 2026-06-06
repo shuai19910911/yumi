@@ -207,6 +207,31 @@ small regularized WindowFormer:  Pearson 0.325 / R2 0.040
 
 ```text
 docs/2026-06-06-windowformer-training-validation-and-next-data.md
+docs/2026-06-06-external-genotype-download-manifest.tsv
+```
+
+下载后检查命令：
+
+```bash
+python scripts/inspect_external_genotype_downloads.py --root data/external
+```
+
+如果在登录节点不想直接跑，也可以提交 q08：
+
+```bash
+sbatch -p q08 -c 2 jobs/2026-06-06_inspect_external_genotypes_q08.sh
+```
+
+下载完成后，外部预训练输入准备脚本是：
+
+```bash
+python scripts/prepare_external_genotype_pretrain_inputs.py
+```
+
+当前这个脚本已经能检查 inventory 和 ZEAMAP SNP 参考表；因为 G2F/Panzea genotype 还没下载，所以目前会明确提示：
+
+```text
+No usable external genotype files found yet.
 ```
 
 ### 1. 数据整理

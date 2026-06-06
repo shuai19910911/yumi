@@ -393,6 +393,7 @@ test median R2 = 0.040
 
 ```text
 docs/2026-06-06-windowformer-training-validation-and-next-data.md
+docs/2026-06-06-external-genotype-download-manifest.tsv
 ```
 
 当前模型训练结论：
@@ -424,11 +425,45 @@ bash jobs/gpu_run_windowformer_supervised.sh
 
 1. 下载 G2F 2014-2023 genotypic data。
 2. 下载 Panzea HapMap/GBS genotype flat files。
-3. 写外部 genotype ingestion 脚本。
-4. 扩大 masked-genotype pretraining。
-5. 回到 ZEAMAP v0.1 做 fine-tuning/evaluation。
-5. 做多 seed、trait family、population/methylation 消融。
-6. 根据深度模型结果重写模型论文。
+3. 下载后运行外部 genotype 完整性检查：
+
+```bash
+python scripts/inspect_external_genotype_downloads.py --root data/external
+```
+
+也可以提交 q08：
+
+```bash
+sbatch -p q08 -c 2 jobs/2026-06-06_inspect_external_genotypes_q08.sh
+```
+
+当前已经新增下载后检查脚本：
+
+```text
+scripts/inspect_external_genotype_downloads.py
+jobs/2026-06-06_inspect_external_genotypes_q08.sh
+```
+
+当前已经新增外部预训练输入准备骨架：
+
+```text
+scripts/prepare_external_genotype_pretrain_inputs.py
+```
+
+目前运行结果是：
+
+```text
+No usable external genotype files found yet.
+```
+
+这是预期结果，因为 G2F/Panzea genotype 还没有下载到 `data/external/`。
+
+4. 下载完成后运行 inventory 检查。
+5. 根据实际文件格式补全 VCF/HapMap/table parser。
+6. 扩大 masked-genotype pretraining。
+7. 回到 ZEAMAP v0.1 做 fine-tuning/evaluation。
+8. 做多 seed、trait family、population/methylation 消融。
+9. 根据深度模型结果重写模型论文。
 
 ## 论文建议标题
 
