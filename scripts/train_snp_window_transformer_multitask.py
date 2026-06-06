@@ -22,6 +22,7 @@ import random
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 
 
 def parse_args() -> argparse.Namespace:
@@ -93,10 +94,19 @@ def main() -> None:
     targets = np.load(data_dir / "phenotype_targets.float32.npy")
     target_mask = np.load(data_dir / "phenotype_observed_mask.bool.npy")
     population = np.load(data_dir / "population_covariates.float32.npy")
-    splits = np.genfromtxt(data_dir / "splits.tsv", delimiter="\t", dtype=str, names=True)
-    split_rows = splits[splits["seed"].astype(int) == args.split_seed]
-    split_map = {a: s for a, s in zip(split_rows["accession_id_norm"], split_rows["split"])}
-    accessions = np.genfromtxt(data_dir / "accessions.tsv", delimiter="\t", dtype=str, names=True)["accession_id_norm"]
+    splits = pd.read_csv(data_dir / "splits.tsv", sep="\t")
+    split_rows = splits[splits["seed"].astype(int) == int(args.split_seed)]
+    split_map = dict(
+        zip(
+            split_rows["accession_id_norm"].astype(str),
+            split_rows["split"].astype(str),
+        )
+    )
+    accessions = pd.read_csv(data_dir / "accessions.tsv", sep="\t")["accession_id_norm"].astype(str).to_numpy()
+    missing_split = [str(a) for a in accessions if str(a) not in split_map]
+    if missing_split:
+        preview = ", ".join(missing_split[:10])
+        raise ValueError(f"{len(missing_split)} accessions are missing split labels for seed {args.split_seed}: {preview}")
     split = np.array([split_map[str(a)] for a in accessions])
 
     n_samples, n_variants = genotype.shape
