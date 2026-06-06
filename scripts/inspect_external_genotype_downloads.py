@@ -164,6 +164,7 @@ def looks_like_auxiliary(path: Path) -> bool:
         "readme",
         "metadata",
         "manifest",
+        "key_inbreds",
     )
     return any(term in text for term in auxiliary_terms)
 

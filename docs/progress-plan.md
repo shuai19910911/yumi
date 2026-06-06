@@ -439,7 +439,7 @@ readme.txt
 10.25739/ragt-7213
 ```
 
-当前已经确认计算节点没有网络，所以真实下载只能在登录节点执行。登录节点访问 `data.cyverse.org` 时返回的是 CyVerse 的 IP verification 页面，不是真实数据文件。因此下载入口已经解决，但当前网络出口需要先完成 CyVerse 网页验证。
+当前已经确认计算节点没有网络，所以真实下载只能在登录节点执行。登录节点直连 `data.cyverse.org` 会返回 CyVerse IP verification 页面；后来使用用户提供的代理订阅，在本机临时启动 sing-box mixed 代理后，G2F 下载已经完成。
 
 已经新增自动解析和下载脚本：
 
@@ -454,13 +454,35 @@ q08 作业只保留为集群环境改变后的模板。真实下载命令是：
 mamba run -n yumi python scripts/fetch_g2f_genotype_resources.py --download
 ```
 
-当前登录节点会明确报：
+旧的直连下载会明确报：
 
 ```text
 blocked_by_cyverse_ip_verification
 ```
 
-脚本会把验证页自动改名为 `.blocked.html`，避免污染后续数据检查。这时不要继续训练模型，要先解决 G2F 文件下载。
+脚本会把验证页自动改名为 `.blocked.html`，避免污染后续数据检查。现在 G2F 已经通过代理重新下载成功。
+
+当前已下载并检查：
+
+```text
+VCF:  data/external/g2f/genotypic_2014_2023/inbreds_G2F_2014-2023_437k.vcf
+Size: 3,852,860,306 bytes
+Samples in VCF: 2,193
+Readme: 39 lines
+Key table: 2,208 lines
+```
+
+外部预训练准备状态已经从：
+
+```text
+blocked_until_external_genotypes_available
+```
+
+变成：
+
+```text
+ready_for_parser_implementation
+```
 
 2. 下载 Panzea HapMap/GBS genotype flat files。
 
@@ -495,7 +517,7 @@ jobs/2026-06-06_fetch_panzea_hapmap321_q08.sh
 mamba run -n yumi python scripts/fetch_panzea_hapmap321_agpv4.py --download
 ```
 
-当前登录节点同样会遇到 CyVerse IP verification，脚本会隔离验证页。
+当前登录节点直连同样会遇到 CyVerse IP verification，脚本会隔离验证页。Panzea 还没有下载；现在 G2F 已经足够进入下一步 parser/tensor 构建，Panzea 可以后续作为补充数据源。
 
 这个数据可以作为 G2F 的补充，或者在 G2F 暂时被 CyVerse IP 验证拦截时作为备用外部预训练来源。
 
@@ -532,9 +554,10 @@ No usable external genotype files found yet.
 
 这是预期结果，因为 G2F/Panzea genotype 还没有下载到 `data/external/`。
 
-4. 下载完成后运行 inventory 检查。
-5. 根据实际文件格式补全 VCF/HapMap/table parser。
-6. 扩大 masked-genotype pretraining。
+4. 根据 G2F VCF 实际格式补全 parser。
+5. 确认 G2F VCF 坐标是 B73 v5，并与 ZEAMAP SNP 坐标做交集或 liftover。
+6. 把 G2F genotype 编码成外部 masked-genotype pretraining tensor。
+7. 扩大 masked-genotype pretraining。
 7. 回到 ZEAMAP v0.1 做 fine-tuning/evaluation。
 8. 做多 seed、trait family、population/methylation 消融。
 9. 根据深度模型结果重写模型论文。

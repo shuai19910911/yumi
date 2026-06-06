@@ -83,7 +83,7 @@ hmp321_agpv4_chr10.vcf.gz
 登录节点访问 CyVerse data.cyverse.org 时返回 IP verification 页面。
 ```
 
-这不是代码 bug，而是 CyVerse 对当前网络出口的匿名下载拦截。
+这不是代码 bug，而是 CyVerse 对当前网络出口的匿名下载拦截。后来使用用户提供的代理订阅，在登录节点临时启动 sing-box 后，G2F VCF/key/readme 已经下载成功。
 
 已经处理：
 
@@ -146,7 +146,7 @@ but regularized linear models remain strong in small accession-level maize datas
 能与 ZEAMAP SNP 做交集或可解释的坐标转换。
 ```
 
-如果 G2F 和 Panzea 都被 CyVerse 拦截，则当前阶段不能继续训练新模型。
+G2F 已下载成功，因此现在可以继续进入 parser/tensor 构建。Panzea 仍可作为后续补充，但不再阻塞下一步。
 
 ## 投稿故事建议
 
@@ -167,7 +167,7 @@ but regularized linear models remain strong in small accession-level maize datas
 ## 当前判定
 
 ```text
-GO, but blocked by external genotype download.
+GO. G2F external genotype is available; proceed to parser implementation.
 ```
 
-现在不应该继续消耗 GPU 训练 ZEAMAP-only Transformer。应该先拿到 G2F/Panzea VCF，再做外部预训练。
+现在不应该继续消耗 GPU 训练 ZEAMAP-only Transformer。应该先把 G2F VCF 转成外部预训练 tensor，再做 masked-genotype pretraining。

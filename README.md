@@ -236,7 +236,21 @@ q08 作业模板：
 sbatch -p q08 -c 2 jobs/2026-06-06_fetch_g2f_genotypes_q08.sh
 ```
 
-注意：当前确认计算节点没有网络，真实下载只能在登录节点执行。登录节点访问 CyVerse 匿名下载链接时返回 IP verification 页面。脚本会把验证页自动改名为 `.blocked.html`，避免误当成 VCF/TXT。需要先在浏览器打开任一 `data.cyverse.org` 文件链接完成 CyVerse 验证后，再重新运行下载脚本。
+注意：当前确认计算节点没有网络，真实下载只能在登录节点执行。登录节点直连 CyVerse 匿名下载链接会返回 IP verification 页面。后来已使用本地临时 sing-box 代理完成 G2F 下载，代理订阅和生成的 sing-box 配置只保存在用户缓存目录，不进入仓库。
+
+当前 G2F 下载检查结果：
+
+```text
+inbreds_G2F_2014-2023_437k.vcf: 3,852,860,306 bytes, 2,193 samples
+key_inbreds_G2F_2014-2023.txt: 2,208 lines
+readme.txt: 39 lines
+```
+
+当前外部预训练准备状态：
+
+```text
+ready_for_parser_implementation
+```
 
 Panzea 备用/补充外部基因型源已经定位：
 
