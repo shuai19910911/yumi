@@ -424,6 +424,44 @@ bash jobs/gpu_run_windowformer_supervised.sh
 下一步任务按优先级：
 
 1. 下载 G2F 2014-2023 genotypic data。
+
+现在已经确认 G2F 2014-2023 不是一个模糊目录，而是 3 个明确文件：
+
+```text
+inbreds_G2F_2014-2023_437k.vcf
+key_inbreds_G2F_2014-2023.txt
+readme.txt
+```
+
+这 3 个文件来自 CyVerse Data Commons / G2F DOI：
+
+```text
+10.25739/ragt-7213
+```
+
+当前登录节点访问 `data.cyverse.org` 时返回的是 CyVerse 的 IP verification 页面，不是真实数据文件。因此下载入口已经解决，但当前网络出口需要先完成 CyVerse 网页验证，或者换一个没有被拦截的计算节点下载。
+
+已经新增自动解析和下载脚本：
+
+```text
+scripts/fetch_g2f_genotype_resources.py
+jobs/2026-06-06_fetch_g2f_genotypes_q08.sh
+```
+
+可以提交：
+
+```bash
+sbatch -p q08 -c 2 jobs/2026-06-06_fetch_g2f_genotypes_q08.sh
+```
+
+如果 q08 节点也被 CyVerse 验证页拦截，脚本会明确报：
+
+```text
+blocked_by_cyverse_ip_verification
+```
+
+这时不要继续训练模型，要先解决 G2F 文件下载。
+
 2. 下载 Panzea HapMap/GBS genotype flat files。
 3. 下载后运行外部 genotype 完整性检查：
 

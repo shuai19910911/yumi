@@ -210,6 +210,34 @@ docs/2026-06-06-windowformer-training-validation-and-next-data.md
 docs/2026-06-06-external-genotype-download-manifest.tsv
 ```
 
+G2F 2014-2023 外部基因型下载入口已经解析到具体文件：
+
+```text
+inbreds_G2F_2014-2023_437k.vcf
+key_inbreds_G2F_2014-2023.txt
+readme.txt
+```
+
+它们会下载到：
+
+```text
+data/external/g2f/genotypic_2014_2023/
+```
+
+自动解析/下载脚本：
+
+```bash
+python scripts/fetch_g2f_genotype_resources.py --download
+```
+
+q08 作业：
+
+```bash
+sbatch -p q08 -c 2 jobs/2026-06-06_fetch_g2f_genotypes_q08.sh
+```
+
+注意：当前登录节点访问 CyVerse 匿名下载链接时返回 IP verification 页面。如果 q08 也遇到这个问题，需要先在浏览器打开任一 `data.cyverse.org` 文件链接完成 CyVerse 验证，或者换一个未被拦截的节点下载。
+
 下载后检查命令：
 
 ```bash
