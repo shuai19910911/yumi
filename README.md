@@ -86,7 +86,7 @@ data/processed/v0_1/
 
 现在已经不只是设计方案，深度模型训练已经启动。
 
-当前训练任务：
+已经完成的第一轮监督训练：
 
 ```text
 模型：SNPWindowFormer
@@ -112,14 +112,38 @@ GPU：2 号 A100
 - 样本划分表改用 `pandas.read_csv` 读取，避免 accession/split 解析出错。
 - 66 个 trait 已经按训练集均值/标准差做目标归一化，避免大数值性状支配 loss。
 
-归一化后训练指标已经恢复正常：
+归一化后训练流程正常，最佳验证轮是 epoch 55：
 
 ```text
-epoch 1: val loss 约 1.00, median Pearson 约 0.13
-epoch 4: val loss 约 0.99, median Pearson 约 0.19
+val median Pearson = 0.410
+val median R2 = 0.137
+test median Pearson = 0.351
+test median R2 = 0.076
 ```
 
-下一步看完整训练结束后的 test metrics。如果深度模型不能超过 ridge/ElasticNet，就继续做 masked-genotype self-supervised pretraining，再 fine-tune 到 66 个 trait。
+这个结果低于 ridge 强基线：
+
+```text
+ridge median Pearson = 0.498
+ridge median R2 = 0.204
+```
+
+所以当前判断是：
+
+```text
+直接监督训练的深度模型还不够强。
+下一步必须先做 masked-genotype self-supervised pretraining，
+再把预训练权重 fine-tune 到 66 个 trait。
+```
+
+当前已经启动预训练：
+
+```text
+任务：masked-genotype pretraining
+GPU：2 号 A100
+结果目录：results/deep_model/windowformer_pretrain_v0_1/
+日志：logs/windowformer_pretrain_gpu2_20260606_153859.log
+```
 
 ### 1. 数据整理
 

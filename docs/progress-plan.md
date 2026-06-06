@@ -294,7 +294,7 @@ train/val/test = 323/69/69
 
 已经在 GPU 节点启动了第一个正式深度模型试验。
 
-当前训练：
+已经完成的监督训练：
 
 ```text
 模型：SNPWindowFormer
@@ -316,14 +316,37 @@ GPU：2 号 A100
 
 第一次监督训练能跑，但 loss 到了 1e13 量级，R2 很差。原因是不同性状单位不同、数值范围差异很大，模型会被大数值性状主导。现在改为只用训练集计算每个 trait 的均值和标准差，训练时预测标准化后的 trait，评估时再还原到原始单位计算 Pearson/R2。
 
-归一化后前几轮指标已经恢复到合理范围：
+归一化后训练流程正常，最佳验证轮为 epoch 55：
 
 ```text
-epoch 1: val loss 约 1.00, median Pearson 约 0.13
-epoch 4: val loss 约 0.99, median Pearson 约 0.19
+val median Pearson = 0.410
+val median R2 = 0.137
+test median Pearson = 0.351
+test median R2 = 0.076
 ```
 
-这说明训练流程已经正常。后面要看完整训练结束后的 test metrics，再决定是否继续做 self-supervised pretraining。
+这个结果低于当前 ridge 强基线：
+
+```text
+ridge test median Pearson = 0.498
+ridge test median R2 = 0.204
+```
+
+所以结论很明确：
+
+```text
+直接监督训练 SNPWindowFormer 还不够。
+下一步必须做 masked-genotype self-supervised pretraining，或者引入更多外部 genotype 数据扩大预训练。
+```
+
+已经启动的下一步：
+
+```text
+任务：masked-genotype pretraining
+GPU：2 号 A100
+输出目录：results/deep_model/windowformer_pretrain_v0_1/
+日志：logs/windowformer_pretrain_gpu2_20260606_153859.log
+```
 
 资源估算：
 
@@ -344,9 +367,9 @@ bash jobs/gpu_run_windowformer_supervised.sh
 
 下一步任务按优先级：
 
-1. 等当前 supervised SNPWindowFormer 跑完。
-2. 读取 `test_metrics.json`，和 ridge/ElasticNet/MLP 做同一口径比较。
-3. 如果 supervised SNPWindowFormer 明显弱于 ridge，立刻跑 masked-genotype pretraining + fine-tuning。
+1. 等当前 masked-genotype pretraining 跑完。
+2. 用 `results/deep_model/windowformer_pretrain_v0_1/best.pt` 做 fine-tuning。
+3. 比较 fine-tuned SNPWindowFormer 和 ridge/ElasticNet/MLP。
 4. 如果还是不够强，下载 G2F/Panzea 扩大 genotype 预训练数据。
 5. 做多 seed、trait family、population/methylation 消融。
 6. 根据深度模型结果重写模型论文。
