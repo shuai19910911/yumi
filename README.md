@@ -9,9 +9,276 @@ ZEAMAP 玉米 oil-trait prediction + GWAS 项目。
 -> oil traits GEMMA LMM GWAS -> lead loci / candidate genes / figures
 ```
 
+## 先看这里：这个项目到底做了什么
+
+这个项目可以理解成一条完整的玉米油脂性状论文路线。我们拿到的是 ZEAMAP 公共玉米数据，但这些数据一开始不是一张可以直接分析的大表，而是很多不同文件：有 genotype，有 population，有 phenotype/metabolome，有 methylation，还有一些 expression/reference 相关文件。第一件事不是建模型，而是先弄清楚哪些玉米材料能真正一一对应。
+
+最通俗的流程是：
+
+```text
+下载 ZEAMAP 数据
+-> 检查文件能不能读
+-> 统一玉米材料 accession 名字
+-> 构建 v0.1 分析数据集
+-> 用 genotype + population 预测各种性状
+-> 发现 oil / fatty-acid traits 最稳定、最有信号
+-> 对 10 个高优先级 oil traits 做 GEMMA mixed-model GWAS
+-> 找到候选 SNP、候选区间和候选基因
+-> 做区域图、综合图、流程图、模型结构图
+-> 写英文论文、中文版本和投稿材料
+```
+
+### 1. 为什么一开始不直接做大模型
+
+一开始项目方向看起来像“多组学预训练数据集评估”，但真正检查数据后发现：
+
+- 严格能配对的 accession 只有 461 个。
+- methylation 只有 236 个 accession 覆盖。
+- expression 文件不是这 461 个 accession 的表达矩阵，而更像 B73/SK/HZS/Mo17 这类 reference/tissue expression。
+- SNP 很多，有 199,856 个，但样本数不大。
+
+所以当前数据不适合直接训练复杂 transformer 或大规模多模态模型。那样很可能只是过拟合，论文也不好解释。我们选择了更稳妥的路线：先把数据整理干净，用正则化模型和 GEMMA GWAS 做出可靠、能投稿的油脂性状遗传分析。
+
+### 2. 数据整理做了什么
+
+ZEAMAP 里不同表的样本名字不一定完全一致。我们先做的是“对身份证”：
+
+- phenotype 表里有哪些 accession？
+- population 表里有哪些 accession？
+- VCF genotype 里有哪些 accession？
+- methylation 里有哪些 accession？
+- 这些 accession 名字能不能对应上？
+
+最终整理出一个统一样本索引表，并构建了 v0.1 processed dataset：
+
+```text
+461 个 accession：genotype + population + 至少一种 phenotype/metabolome
+199,856 个 SNP
+318 个数值 phenotype/metabolome traits
+236 个 accession 有 methylation coverage
+```
+
+这里的原则是：宁可少放一些数据，也不能把不对应的样本强行拼在一起。
+
+### 3. 预测 benchmark 在回答什么问题
+
+整理好数据后，我们先问：
+
+```text
+只用 genotype 和 population，能不能预测玉米性状？
+```
+
+输入是：
+
+```text
+SNP + population 信息
+```
+
+输出是：
+
+```text
+phenotype/metabolome trait
+```
+
+我们比较了 ridge、ElasticNet、population-only ridge 和 small MLP。结果显示，当前样本量下最稳的是：
+
+```text
+genotype_population_ridge
+```
+
+最重要的发现是：oil traits 是所有性状里预测效果最好的家族。
+
+```text
+66 个 robust traits
+oil traits median Pearson/R2 = 0.596 / 0.321
+```
+
+通俗解释：玉米油脂和脂肪酸性状里有比较强的遗传信号，值得继续做更正式的 GWAS。
+
+### 4. methylation 为什么没有放进主模型
+
+我们也测试了 methylation，结果是：
+
+- global methylation summary 基本没有整体增益。
+- gene-level methylation PCA 有一点辅助信号。
+- sparse methylation feature 在 236 个 accession 上不稳定。
+
+所以 methylation 目前只作为辅助分析和候选解释材料，不作为主模型输入。这样写论文更稳，不会过度声称“多组学模型已经成功”。
+
+### 5. 为什么要做 GEMMA GWAS
+
+预测告诉我们 oil traits 最有信号，于是我们对 10 个 high-priority oil traits 做 GWAS。
+
+一开始做过简单版 covariate-only GWAS，但结果 lambda GC 很高：
+
+```text
+lambda GC = 2.41 - 3.97
+```
+
+这说明结果膨胀，可能有很多假阳性。原因是玉米材料有群体结构和亲缘关系，只靠 population covariates 控制不够。
+
+所以我们改用 GEMMA mixed linear model。GEMMA 会加入 genotype-derived kinship，更好地控制亲缘关系。GEMMA 结果明显更可靠：
+
+```text
+lambda GC = 0.984 - 1.018
+median lambda GC = 0.998
+```
+
+通俗解释：GEMMA 把假阳性风险压下去了，所以它是当前论文的主 GWAS 结果。
+
+### 6. GWAS 后怎么找候选基因
+
+GEMMA 得到显著 SNP 后，我们没有直接说“这个 SNP 就是因果变异”。我们做的是更保守的候选区间整理：
+
+```text
+lead SNP
+-> 合并附近信号为 candidate locus
+-> 找 locus 附近的 B73 RefGen_v4 gene
+-> 加功能注释
+-> 看是否有 lipid/fatty-acid keyword
+-> 看是否和 prediction attribution 有交叉支持
+-> 给候选区间排序
+```
+
+当前结果：
+
+```text
+184 个 manuscript candidate loci
+147 个 candidate genes
+63 个 loci 有 ridge attribution 支持
+11 个 loci 有 lipid/fatty-acid 注释
+18 个 tier-1 main-text loci
+```
+
+### 7. 目前最重要的候选区间
+
+最强的是 chr6 区域：
+
+```text
+chr6 linoleic acid1-region
+Zm00001d036982
+```
+
+它强在：
+
+- 跨 7 个 oil traits 反复出现。
+- P 值非常显著。
+- 有 lipid/fatty-acid 注释。
+- 有 ridge prediction evidence 支持。
+- 和已有 maize oil/fatty-acid 文献方向一致。
+
+但当前仍然只能写成：
+
+```text
+strong candidate interval
+leading candidate gene
+```
+
+不能写成：
+
+```text
+已经验证的因果基因
+已经证明的因果 SNP
+```
+
+第二个重点是 chr9 区域：
+
+```text
+chr9 C16:0-associated interval
+Zm00001d045383 附近
+nearby Zm00001d045387 / acyl-ACP thioesterase
+```
+
+这里也要谨慎。lead gene 本身不是 FatB，但附近有 acyl-ACP thioesterase / palmitoyl-ACP thioesterase 注释，和 C16:0 饱和脂肪酸组成有生物学关系。所以它是一个高优先级 C16:0 candidate interval，但还不是已经确认的因果基因。
+
+### 8. 图表现在有哪些
+
+目前已经做了多类图表：
+
+```text
+Figure 1：数据整理 + prediction benchmark
+Figure 2：GEMMA GWAS calibration + candidate loci summary
+Figure 3：chr6 / chr9 重点区域图
+Figure 4：prediction + GWAS 综合证据图
+Figure 5：整体工作流程图
+Figure 6：模型/统计结构图
+```
+
+其中最适合快速看懂项目的是：
+
+```text
+results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures_stage5_36/figure5_overall_workflow_nature.png
+results/v0_1_baseline/gemma_lmm_v0_1/manuscript_figures_stage5_36/figure6_model_structure_nature.png
+```
+
+Figure 5 告诉你整个项目按什么顺序做。
+
+Figure 6 告诉你 genotype、population、trait 怎么进入 prediction，再怎么进入 GEMMA GWAS，最后怎么排序 candidate loci。
+
+### 9. 论文现在做到什么程度
+
+目前已经生成：
+
+- 英文修订稿。
+- 中文对应稿。
+- Word、PDF、Markdown、LaTeX 格式。
+- Word 字体优化版。
+- 图表审计。
+- 投稿包清单。
+- GitHub 同步记录。
+
+建议优先打开这两个 Word 文件：
+
+```text
+docs/2026-06-06-zeamap-v0-1-stage5-36-revised-submission-manuscript-en-font-optimized.docx
+docs/2026-06-06-zeamap-v0-1-stage5-36-revised-submission-manuscript-zh-font-optimized.docx
+```
+
+### 10. 这篇文章的核心故事
+
+最简单的论文故事是：
+
+```text
+我们把 ZEAMAP 玉米公共数据重新整理成一个严格配对的数据集。
+先用 genotype + population 预测所有性状，发现油脂/脂肪酸性状最有遗传信号。
+然后对这些油脂性状做 GEMMA mixed-model GWAS，控制群体结构和亲缘关系导致的假阳性。
+最后找到 chr6 linoleic acid1-region 和 chr9 C16:0/acyl-ACP thioesterase 相关区间等高优先级候选区域。
+这些结果为玉米油脂和脂肪酸组成的后续功能验证和育种提供候选区间。
+```
+
+### 11. 这篇文章不能过度声称什么
+
+当前不能说：
+
+- 已经找到了确定因果基因。
+- 已经证明某个 SNP 是因果变异。
+- 已经完成多组学大模型。
+- methylation 是主效应。
+
+当前应该说：
+
+- 我们优先排序了候选区间。
+- GEMMA 提供了校准后的 GWAS 证据。
+- chr6 和 chr9 是高优先级候选区域。
+- 后续还需要 fine mapping、表达证据和功能验证。
+
 ## 当前一句话结论
 
-我们已经完成 ZEAMAP v0.1 数据集、稳定 trait 筛选、小模型预测基准、methylation 消融、10 个 high-priority oil traits 的 GEMMA LMM GWAS、candidate loci 注释、top loci 优先级排序、区域图初版、论文主表/补充表、Results/Methods 草稿、Figure 1/3 主图初版、manuscript skeleton、Stage 5.9 投稿策略/citation audit、Stage 5.10 polished manuscript package、Stage 5.11 top loci external annotation hardening、Stage 5.12 final manuscript assembly、Stage 5.13 final submission gate、Stage 5.14 human metadata/release templates、Stage 5.15 preflight validation、Stage 5.16 metadata ingestion dry-run、Stage 5.17 single human-input package、Stage 5.18 reviewer-risk register、Stage 5.19 result-to-script reproducibility crosswalk、Stage 5.20 GWAS diagnostic appendix、Stage 5.21 targeted fatty-acid literature support、Stage 5.22 integrated manuscript/claim audit、Stage 5.23 final bibliography/gene-model verification、Stage 5.24 citation-integrated manuscript 和 Stage 5.25 target-journal reference-styled manuscript/submission gate、Stage 5.26 final figure technical QA、Stage 5.27 external gene-name confirmation、Stage 5.28 final submission package、Stage 5.29 DOCX/HTML export package、Stage 5.30 author metadata ingestion pipeline、Stage 5.31 figure/release readiness pipeline、Stage 5.32 single human action packet、Stage 5.33 submission artifact integrity manifest 和 Stage 5.34 placeholder multi-format exports 和 Stage 5.35 revised bilingual manuscript/figure enrichment 和 Stage 5.36 DOCX font optimization。
+我们已经把 ZEAMAP 玉米公共数据整理成一个可以写论文的油脂性状分析项目。现在已经完成了从数据清洗、样本配对、性状预测、油脂性状 GWAS、候选基因区间筛选，到论文初稿、中文稿、主图、流程图、模型结构图和 Word/PDF/LaTeX 导出的整套流程。
+
+更白话地说，当前已经做完这些事：
+
+- 把 ZEAMAP 里分散的 genotype、population、phenotype/metabolome 数据按 accession 对齐。
+- 构建了一个可靠的 v0.1 分析数据集：461 个 accession、199,856 个 SNP、318 个数值性状。
+- 先用 genotype + population 预测各种性状，发现油脂和脂肪酸性状最稳定、最有遗传信号。
+- 因为 oil traits 最强，所以专门挑 10 个高优先级 oil traits 做正式 GWAS。
+- 先做过简单 GWAS，发现假阳性风险高；后来改用 GEMMA mixed model，把群体结构和亲缘关系控制住。
+- 从 GEMMA 结果里整理出候选 SNP、候选区间和候选基因。
+- 重点发现两个最值得关注的区域：chr6 linoleic acid1 区域和 chr9 C16:0/acyl-ACP thioesterase 相关区域。
+- 已经生成论文需要的主图、区域图、综合证据图、整体流程图和模型结构图。
+- 已经写出英文论文稿和中文对应稿，并导出 Word、PDF、Markdown、LaTeX 格式。
+- Word 版已经做过字体优化，英文/数字用 Times New Roman，中文用宋体。
+- 剩下主要是人工信息：作者、单位、基金、致谢、利益冲突声明，以及最终投稿前人工确认。
 
 最可靠的主线是：
 
