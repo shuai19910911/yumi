@@ -439,7 +439,7 @@ readme.txt
 10.25739/ragt-7213
 ```
 
-当前登录节点访问 `data.cyverse.org` 时返回的是 CyVerse 的 IP verification 页面，不是真实数据文件。因此下载入口已经解决，但当前网络出口需要先完成 CyVerse 网页验证，或者换一个没有被拦截的计算节点下载。
+当前已经确认计算节点没有网络，所以真实下载只能在登录节点执行。登录节点访问 `data.cyverse.org` 时返回的是 CyVerse 的 IP verification 页面，不是真实数据文件。因此下载入口已经解决，但当前网络出口需要先完成 CyVerse 网页验证。
 
 已经新增自动解析和下载脚本：
 
@@ -448,19 +448,19 @@ scripts/fetch_g2f_genotype_resources.py
 jobs/2026-06-06_fetch_g2f_genotypes_q08.sh
 ```
 
-可以提交：
+q08 作业只保留为集群环境改变后的模板。真实下载命令是：
 
 ```bash
-sbatch -p q08 -c 2 jobs/2026-06-06_fetch_g2f_genotypes_q08.sh
+mamba run -n yumi python scripts/fetch_g2f_genotype_resources.py --download
 ```
 
-如果 q08 节点也被 CyVerse 验证页拦截，脚本会明确报：
+当前登录节点会明确报：
 
 ```text
 blocked_by_cyverse_ip_verification
 ```
 
-这时不要继续训练模型，要先解决 G2F 文件下载。
+脚本会把验证页自动改名为 `.blocked.html`，避免污染后续数据检查。这时不要继续训练模型，要先解决 G2F 文件下载。
 
 2. 下载 Panzea HapMap/GBS genotype flat files。
 
@@ -488,6 +488,14 @@ data/external/panzea/hapmap3/hmp321_agpv4/
 scripts/fetch_panzea_hapmap321_agpv4.py
 jobs/2026-06-06_fetch_panzea_hapmap321_q08.sh
 ```
+
+真实下载命令是：
+
+```bash
+mamba run -n yumi python scripts/fetch_panzea_hapmap321_agpv4.py --download
+```
+
+当前登录节点同样会遇到 CyVerse IP verification，脚本会隔离验证页。
 
 这个数据可以作为 G2F 的补充，或者在 G2F 暂时被 CyVerse IP 验证拦截时作为备用外部预训练来源。
 

@@ -148,6 +148,8 @@ def is_candidate(path: Path) -> bool:
     name = path.name.lower()
     if name.startswith("external_genotype_inventory"):
         return False
+    if name == "resource_manifest.tsv" or name.endswith(".blocked.html"):
+        return False
     return any(name.endswith(suffix) for suffix in GENOTYPE_SUFFIXES)
 
 
@@ -161,6 +163,7 @@ def looks_like_auxiliary(path: Path) -> bool:
         "b73v5_to_b73v4",
         "readme",
         "metadata",
+        "manifest",
     )
     return any(term in text for term in auxiliary_terms)
 

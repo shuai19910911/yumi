@@ -230,13 +230,13 @@ data/external/g2f/genotypic_2014_2023/
 python scripts/fetch_g2f_genotype_resources.py --download
 ```
 
-q08 作业：
+q08 作业模板：
 
 ```bash
 sbatch -p q08 -c 2 jobs/2026-06-06_fetch_g2f_genotypes_q08.sh
 ```
 
-注意：当前登录节点访问 CyVerse 匿名下载链接时返回 IP verification 页面。如果 q08 也遇到这个问题，需要先在浏览器打开任一 `data.cyverse.org` 文件链接完成 CyVerse 验证，或者换一个未被拦截的节点下载。
+注意：当前确认计算节点没有网络，真实下载只能在登录节点执行。登录节点访问 CyVerse 匿名下载链接时返回 IP verification 页面。脚本会把验证页自动改名为 `.blocked.html`，避免误当成 VCF/TXT。需要先在浏览器打开任一 `data.cyverse.org` 文件链接完成 CyVerse 验证后，再重新运行下载脚本。
 
 Panzea 备用/补充外部基因型源已经定位：
 
@@ -256,11 +256,13 @@ data/external/panzea/hapmap3/hmp321_agpv4/
 python scripts/fetch_panzea_hapmap321_agpv4.py --download
 ```
 
-q08 作业：
+q08 作业模板：
 
 ```bash
 sbatch -p q08 -c 2 jobs/2026-06-06_fetch_panzea_hapmap321_q08.sh
 ```
+
+注意：由于计算节点没有网络，Panzea 实际下载也应在登录节点直接运行脚本；q08 作业只保留为集群环境改变后的模板。
 
 下载后检查命令：
 

@@ -90,11 +90,18 @@ def download_resource(row: dict, out_dir: Path, timeout: int, chunk_size: int) -
                     handle.write(chunk)
         tmp_path.replace(out_path)
         blocked = looks_like_verification_page(out_path)
+        blocked_path = ""
+        size_bytes = out_path.stat().st_size
+        if blocked:
+            blocked_path = str(out_path.with_name(out_path.name + ".blocked.html"))
+            out_path.replace(blocked_path)
+            size_bytes = Path(blocked_path).stat().st_size
         return {
             "resource_name": row["resource_name"],
             "path": str(out_path),
-            "size_bytes": out_path.stat().st_size,
+            "size_bytes": size_bytes,
             "status": "blocked_by_cyverse_ip_verification" if blocked else "downloaded",
+            "blocked_page_path": blocked_path,
         }
     except urllib.error.HTTPError as exc:
         return {"resource_name": row["resource_name"], "path": str(out_path), "status": f"http_error_{exc.code}"}
