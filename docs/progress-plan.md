@@ -1160,3 +1160,25 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 - `docs/2026-06-06-zeamap-v0-1-stage5-35-revised-submission-manuscript-zh.md`
 - `docs/2026-06-06-zeamap-v0-1-stage5-35-ai-style-language-audit.tsv`
 - `docs/2026-06-06-zeamap-v0-1-stage5-35-ars-revision-review.md`
+
+
+## 阶段 5.36 DOCX font optimization
+
+状态：已完成。
+
+这一步解决的问题：
+
+- Word 文档打开后字体不稳定或中英文字体混乱。
+- 新生成一版字体优化 DOCX，不覆盖上一版，便于比较。
+
+主要产出：
+
+- `docs/2026-06-06-zeamap-v0-1-stage5-36-revised-submission-manuscript-en-font-optimized.docx`
+- `docs/2026-06-06-zeamap-v0-1-stage5-36-revised-submission-manuscript-zh-font-optimized.docx`
+- `docs/2026-06-06-zeamap-v0-1-stage5-36-docx-font-audit.tsv`
+- `docs/2026-06-06-zeamap-v0-1-stage5-36-workflow-model-figure-audit.tsv`
+
+字体设置：
+
+- 英文/数字：Times New Roman
+- 中文/东亚字符：宋体
