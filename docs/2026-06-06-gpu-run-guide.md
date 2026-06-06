@@ -80,6 +80,13 @@ bash jobs/gpu_run_windowformer_supervised.sh
 ```
 
 脚本会自动选择显存空闲大于 30GB 的 GPU。
+同时要求 GPU 利用率不高于 20%，避免占用别人正在跑任务的卡。
+
+建议训练前先检查：
+
+```bash
+bash jobs/gpu_check_available_cards.sh
+```
 
 如果只想用 1 张卡：
 

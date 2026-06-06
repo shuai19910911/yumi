@@ -8,6 +8,7 @@ cd /home/user/zhangzhishuai/myhermes/yumi
 mkdir -p results/deep_model/windowformer_pretrain_v0_1 logs
 
 MIN_FREE_MB="${MIN_FREE_MB:-30000}"
+MAX_UTIL="${MAX_UTIL:-20}"
 N_GPUS="${N_GPUS:-2}"
 BATCH_SIZE="${BATCH_SIZE:-32}"
 WINDOW_SIZE="${WINDOW_SIZE:-256}"
@@ -17,15 +18,15 @@ NHEAD="${NHEAD:-6}"
 EPOCHS="${EPOCHS:-500}"
 
 GPU_IDS="$(
-  nvidia-smi --query-gpu=index,memory.free --format=csv,noheader,nounits \
-  | awk -F, -v min_free="${MIN_FREE_MB}" '{gsub(/ /,"",$1); gsub(/ /,"",$2); if ($2 >= min_free) print $1}' \
+  nvidia-smi --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader,nounits \
+  | awk -F, -v min_free="${MIN_FREE_MB}" -v max_util="${MAX_UTIL}" '{gsub(/ /,"",$1); gsub(/ /,"",$2); gsub(/ /,"",$3); if ($2 >= min_free && $3 <= max_util) print $1}' \
   | head -n "${N_GPUS}" \
   | paste -sd, -
 )"
 
 FOUND="$(printf '%s' "${GPU_IDS}" | awk -F, '{print NF}')"
 if [[ -z "${GPU_IDS}" || "${FOUND}" -lt "${N_GPUS}" ]]; then
-  echo "Need ${N_GPUS} GPU(s) with >= ${MIN_FREE_MB} MB free memory, but found: ${GPU_IDS:-none}" >&2
+  echo "Need ${N_GPUS} GPU(s) with >= ${MIN_FREE_MB} MB free memory and <= ${MAX_UTIL}% utilization, but found: ${GPU_IDS:-none}" >&2
   nvidia-smi >&2
   exit 2
 fi

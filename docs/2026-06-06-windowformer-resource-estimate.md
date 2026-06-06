@@ -83,11 +83,24 @@ bash jobs/gpu_run_windowformer_supervised.sh
 ```
 
 脚本会自动选择显存空闲大于 30GB 的 GPU。
+同时要求 GPU 利用率不高于 20%，避免选择“显存还剩很多但别人正在跑”的卡。
+
+只检查卡状态、不启动训练：
+
+```bash
+bash jobs/gpu_check_available_cards.sh
+```
 
 如果要强制 1 张卡：
 
 ```bash
 N_GPUS=1 BATCH_SIZE=16 bash jobs/gpu_run_windowformer_supervised.sh
+```
+
+如果集群上卡比较紧张，可以提高空闲显存阈值：
+
+```bash
+MIN_FREE_MB=35000 MAX_UTIL=10 bash jobs/gpu_run_windowformer_supervised.sh
 ```
 
 如果监督训练结果不超过 ridge，再跑：
