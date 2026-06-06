@@ -267,27 +267,71 @@ results/v0_1_baseline/sparse_methylation_selection_metrics.tsv
 - `docs/2026-06-06-gpu-run-guide.md`
 - `docs/2026-06-06-windowformer-resource-estimate.md`
 
-已经提交 q08：
+已经完成 q08 输入准备：
 
 ```text
 job 8459940: prepare ZEAMAP deep learning input tensors
 ```
 
-这个 CPU 任务会生成：
+已经生成：
 
 ```text
 data/deep_model/v0_1/
 ```
 
-GPU 训练由用户执行，推荐命令在 `docs/2026-06-06-good-model-paper-design.md`。
+内容包括：
+
+```text
+461 个 accession
+199,856 个 SNP
+66 个 robust traits
+train/val/test = 323/69/69
+```
+
+也就是说，深度模型现在已经可以直接读取 numpy tensor 训练，不再需要每次重新解析 VCF 或大表。
+
+## 2026-06-06 GPU 训练进展
+
+已经在 GPU 节点启动了第一个正式深度模型试验。
+
+当前训练：
+
+```text
+模型：SNPWindowFormer
+输入：199,856 个 SNP，按 256 个 SNP 一个窗口切成 window token
+输出：66 个 robust traits
+训练方式：supervised multi-trait prediction
+GPU：2 号 A100
+输出目录：results/deep_model/windowformer_supervised_norm_v0_1/
+日志：logs/windowformer_supervised_norm_gpu2_20260606_152101.log
+```
+
+中间发现并修复了两个关键问题：
+
+1. `splits.tsv` 读取方式不稳。
+
+原来用 `np.genfromtxt` 读取样本划分表，GPU 训练时把空字符串也读进来了，导致脚本报错。现在改成 `pandas.read_csv`，并且增加了检查：如果某个 accession 没有 train/val/test 标签，会直接报出样本名。
+
+2. 不能直接用性状原始数值做 MSE。
+
+第一次监督训练能跑，但 loss 到了 1e13 量级，R2 很差。原因是不同性状单位不同、数值范围差异很大，模型会被大数值性状主导。现在改为只用训练集计算每个 trait 的均值和标准差，训练时预测标准化后的 trait，评估时再还原到原始单位计算 Pearson/R2。
+
+归一化后前几轮指标已经恢复到合理范围：
+
+```text
+epoch 1: val loss 约 1.00, median Pearson 约 0.13
+epoch 4: val loss 约 0.99, median Pearson 约 0.19
+```
+
+这说明训练流程已经正常。后面要看完整训练结束后的 test metrics，再决定是否继续做 self-supervised pretraining。
 
 资源估算：
 
 ```text
-推荐 2 x A100 40G
-batch size 32
+当前先用 1 x A100 40G
+batch size 16
 AMP on
-每张 GPU 预计使用约 12-17 GB，建议至少空闲 30 GB
+实际占用约 6.6 GB
 ```
 
 自动选卡脚本：
@@ -300,11 +344,11 @@ bash jobs/gpu_run_windowformer_supervised.sh
 
 下一步任务按优先级：
 
-1. 等 q08 生成 deep learning 输入包。
-2. 在 2 张 A100 上跑 supervised SNPWindowFormer。
-3. 如果 supervised 不超过 ridge，立刻跑 masked-genotype pretraining + fine-tuning。
-4. 下载 G2F/Panzea 扩大预训练数据。
-5. 做多 seed、多 trait family、population/methylation 消融。
+1. 等当前 supervised SNPWindowFormer 跑完。
+2. 读取 `test_metrics.json`，和 ridge/ElasticNet/MLP 做同一口径比较。
+3. 如果 supervised SNPWindowFormer 明显弱于 ridge，立刻跑 masked-genotype pretraining + fine-tuning。
+4. 如果还是不够强，下载 G2F/Panzea 扩大 genotype 预训练数据。
+5. 做多 seed、trait family、population/methylation 消融。
 6. 根据深度模型结果重写模型论文。
 
 ## 论文建议标题

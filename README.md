@@ -82,6 +82,45 @@ data/processed/v0_1/
 
 ## 已经完成的模型相关工作
 
+### 0. 当前正在做的深度模型训练
+
+现在已经不只是设计方案，深度模型训练已经启动。
+
+当前训练任务：
+
+```text
+模型：SNPWindowFormer
+输入：199,856 个 SNP
+做法：每 256 个 SNP 压成一个窗口 token
+输出：66 个稳定 traits
+训练方式：supervised multi-trait prediction
+GPU：2 号 A100
+结果目录：results/deep_model/windowformer_supervised_norm_v0_1/
+日志：logs/windowformer_supervised_norm_gpu2_20260606_152101.log
+```
+
+为什么要先做这个模型：
+
+```text
+普通模型直接看 SNP PCA；
+这个模型直接看接近 20 万个 SNP，但先把相邻 SNP 压成窗口。
+这样既保留局部遗传信息，又不会把 199,856 个 SNP 当成 199,856 个超长 token。
+```
+
+已经修复的训练问题：
+
+- 样本划分表改用 `pandas.read_csv` 读取，避免 accession/split 解析出错。
+- 66 个 trait 已经按训练集均值/标准差做目标归一化，避免大数值性状支配 loss。
+
+归一化后训练指标已经恢复正常：
+
+```text
+epoch 1: val loss 约 1.00, median Pearson 约 0.13
+epoch 4: val loss 约 0.99, median Pearson 约 0.19
+```
+
+下一步看完整训练结束后的 test metrics。如果深度模型不能超过 ridge/ElasticNet，就继续做 masked-genotype self-supervised pretraining，再 fine-tune 到 66 个 trait。
+
 ### 1. 数据整理
 
 已经完成：
