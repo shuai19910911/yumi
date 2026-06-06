@@ -175,7 +175,7 @@ test median R2 = 0.021
 但这个表征没有稳定转化为更好的 trait prediction。
 ```
 
-当前正在跑一个更小、更强正则化的模型：
+更小、更强正则化的模型已经完成：
 
 ```text
 任务：small regularized SNPWindowFormer
@@ -183,6 +183,30 @@ test median R2 = 0.021
 结果目录：results/deep_model/windowformer_small_regularized_v0_1/
 日志：logs/windowformer_small_regularized_gpu2_20260606_161401.log
 关键参数：d_model=96, layers=2, dropout=0.30, lr=5e-5, weight_decay=1e-3
+test median Pearson = 0.325
+test median R2 = 0.040
+```
+
+当前深度模型总评估：
+
+```text
+ridge baseline:                 Pearson 0.498 / R2 0.204
+supervised SNPWindowFormer:      Pearson 0.351 / R2 0.076
+pretrain + fine-tune:            Pearson 0.251 / R2 0.021
+small regularized WindowFormer:  Pearson 0.325 / R2 0.040
+```
+
+结论：
+
+```text
+只用 ZEAMAP 461 个 accession，Transformer 还不能超过 ridge。
+如果要写深度模型文章，下一步必须下载 G2F/Panzea 等外部 maize genotype 扩大预训练。
+```
+
+详细评估和下载清单：
+
+```text
+docs/2026-06-06-windowformer-training-validation-and-next-data.md
 ```
 
 ### 1. 数据整理

@@ -377,7 +377,7 @@ test median R2 = 0.021
 模型会很快记住训练集，但验证集和测试集提升不稳定。
 ```
 
-已经启动的改进试验：
+已经完成的改进试验：
 
 ```text
 任务：small regularized SNPWindowFormer
@@ -385,6 +385,22 @@ test median R2 = 0.021
 输出目录：results/deep_model/windowformer_small_regularized_v0_1/
 日志：logs/windowformer_small_regularized_gpu2_20260606_161401.log
 关键参数：d_model=96, layers=2, dropout=0.30, lr=5e-5, weight_decay=1e-3
+test median Pearson = 0.325
+test median R2 = 0.040
+```
+
+阶段评估文档：
+
+```text
+docs/2026-06-06-windowformer-training-validation-and-next-data.md
+```
+
+当前模型训练结论：
+
+```text
+ridge 仍然是当前最强模型；
+三个 WindowFormer 版本都没有超过 ridge；
+如果论文主打深度表征学习，必须引入外部 maize genotype 做更大规模预训练。
 ```
 
 资源估算：
@@ -406,10 +422,11 @@ bash jobs/gpu_run_windowformer_supervised.sh
 
 下一步任务按优先级：
 
-1. 等 small regularized SNPWindowFormer 跑完。
-2. 比较 small regularized、supervised、pretrained fine-tuned 和 ridge/ElasticNet/MLP。
-3. 如果 small 模型仍低于 ridge，转向外部 genotype 预训练数据。
-4. 下载 G2F/Panzea 或其他公开 maize genotype，扩大 genotype-only pretraining。
+1. 下载 G2F 2014-2023 genotypic data。
+2. 下载 Panzea HapMap/GBS genotype flat files。
+3. 写外部 genotype ingestion 脚本。
+4. 扩大 masked-genotype pretraining。
+5. 回到 ZEAMAP v0.1 做 fine-tuning/evaluation。
 5. 做多 seed、trait family、population/methylation 消融。
 6. 根据深度模型结果重写模型论文。
 
