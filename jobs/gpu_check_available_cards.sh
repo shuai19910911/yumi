@@ -23,7 +23,7 @@ nvidia-smi --query-gpu=index,name,memory.total,memory.used,memory.free,utilizati
     }
     {
       for (i=1; i<=NF; i++) gsub(/^ +| +$/, "", $i)
-      status = ($5 >= min_free && $6 <= max_util) ? "AVAILABLE" : "BUSY/SKIP"
+      status = (($5 + 0) >= (min_free + 0) && ($6 + 0) <= (max_util + 0)) ? "AVAILABLE" : "BUSY/SKIP"
       printf "%-6s %-24s %-10s %-10s %-10s %-8s %-12s\n", $1, $2, $3, $4, $5, $6, status
     }
   '
@@ -31,4 +31,3 @@ echo
 
 echo "Compute processes:"
 nvidia-smi --query-compute-apps=gpu_uuid,pid,process_name,used_memory --format=csv,noheader,nounits || true
-

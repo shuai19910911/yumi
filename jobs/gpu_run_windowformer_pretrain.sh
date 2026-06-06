@@ -19,7 +19,7 @@ EPOCHS="${EPOCHS:-500}"
 
 GPU_IDS="$(
   nvidia-smi --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader,nounits \
-  | awk -F, -v min_free="${MIN_FREE_MB}" -v max_util="${MAX_UTIL}" '{gsub(/ /,"",$1); gsub(/ /,"",$2); gsub(/ /,"",$3); if ($2 >= min_free && $3 <= max_util) print $1}' \
+  | awk -F, -v min_free="${MIN_FREE_MB}" -v max_util="${MAX_UTIL}" '{gsub(/ /,"",$1); gsub(/ /,"",$2); gsub(/ /,"",$3); if (($2 + 0) >= (min_free + 0) && ($3 + 0) <= (max_util + 0)) print $1}' \
   | head -n "${N_GPUS}" \
   | paste -sd, -
 )"
