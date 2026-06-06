@@ -108,6 +108,28 @@ def main() -> None:
         preview = ", ".join(missing_split[:10])
         raise ValueError(f"{len(missing_split)} accessions are missing split labels for seed {args.split_seed}: {preview}")
     split = np.array([split_map[str(a)] for a in accessions])
+    train_idx = np.where(split == "train")[0]
+    val_idx = np.where(split == "val")[0]
+    test_idx = np.where(split == "test")[0]
+
+    train_targets = np.where(target_mask[train_idx], targets[train_idx], np.nan)
+    target_mean = np.nanmean(train_targets, axis=0)
+    target_std = np.nanstd(train_targets, axis=0)
+    target_mean = np.where(np.isfinite(target_mean), target_mean, 0.0).astype(np.float32)
+    target_std = np.where(np.isfinite(target_std) & (target_std > 1e-6), target_std, 1.0).astype(np.float32)
+    targets_norm = ((targets - target_mean) / target_std).astype(np.float32)
+    targets_norm = np.where(target_mask, targets_norm, 0.0).astype(np.float32)
+    (out_dir / "target_scaler.json").write_text(
+        json.dumps(
+            {
+                "split_seed": int(args.split_seed),
+                "mean": target_mean.astype(float).tolist(),
+                "std": target_std.astype(float).tolist(),
+            },
+            indent=2,
+        )
+        + "\n"
+    )
 
     n_samples, n_variants = genotype.shape
     n_traits = targets.shape[1]
@@ -131,7 +153,8 @@ def main() -> None:
             return {
                 "x": torch.from_numpy(x),
                 "pop": torch.from_numpy(population[idx]),
-                "y": torch.from_numpy(targets[idx]),
+                "y": torch.from_numpy(targets_norm[idx]),
+                "y_raw": torch.from_numpy(targets[idx]),
                 "mask": torch.from_numpy(target_mask[idx].astype(np.float32)),
             }
 
@@ -198,9 +221,6 @@ def main() -> None:
         state = torch.load(args.pretrained_checkpoint, map_location="cpu")
         model.load_state_dict(state["model"], strict=False)
 
-    train_idx = np.where(split == "train")[0]
-    val_idx = np.where(split == "val")[0]
-    test_idx = np.where(split == "test")[0]
     loaders = {
         "train": DataLoader(ZeaDataset(train_idx), batch_size=args.batch_size, shuffle=True, num_workers=2),
         "val": DataLoader(ZeaDataset(val_idx), batch_size=args.batch_size, shuffle=False, num_workers=2),
@@ -224,6 +244,7 @@ def main() -> None:
             x = batch["x"].to(device)
             pop = batch["pop"].to(device)
             y = batch["y"].to(device)
+            y_raw = batch["y_raw"].to(device)
             mask = batch["mask"].to(device)
             with torch.set_grad_enabled(train):
                 autocast_enabled = bool(args.amp and device.type == "cuda")
@@ -244,7 +265,7 @@ def main() -> None:
                         pred = model(x, pop)
                         loss = (((pred - y) ** 2) * mask).sum() / mask.sum().clamp_min(1.0)
                         preds.append(pred.detach().cpu().numpy())
-                        obs.append(y.detach().cpu().numpy())
+                        obs.append(y_raw.detach().cpu().numpy())
                         masks.append(mask.detach().cpu().numpy())
                 if train:
                     optimizer.zero_grad()
@@ -258,6 +279,7 @@ def main() -> None:
         metrics = {"loss": total / max(n, 1)}
         if args.mode != "pretrain" and preds:
             pred = np.concatenate(preds, axis=0)
+            pred = pred * target_std.reshape(1, -1) + target_mean.reshape(1, -1)
             y = np.concatenate(obs, axis=0)
             m = np.concatenate(masks, axis=0).astype(bool)
             trait_r = []
@@ -280,7 +302,16 @@ def main() -> None:
         if score < best_val:
             best_val = score
             stale = 0
-            torch.save({"model": model.state_dict(), "args": vars(args), "epoch": epoch}, out_dir / "best.pt")
+            torch.save(
+                {
+                    "model": model.state_dict(),
+                    "args": vars(args),
+                    "epoch": epoch,
+                    "target_mean": target_mean,
+                    "target_std": target_std,
+                },
+                out_dir / "best.pt",
+            )
         else:
             stale += 1
         print(json.dumps(row), flush=True)
