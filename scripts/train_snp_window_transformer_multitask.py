@@ -43,6 +43,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--mask-window-frac", type=float, default=0.15)
     parser.add_argument("--patience", type=int, default=40)
+    parser.add_argument("--amp", action="store_true", help="Use CUDA automatic mixed precision.")
     return parser.parse_args()
 
 
@@ -197,6 +198,7 @@ def main() -> None:
     }
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    scaler = torch.cuda.amp.GradScaler(enabled=bool(args.amp and device.type == "cuda"))
     best_val = math.inf
     stale = 0
     history = []
@@ -214,29 +216,33 @@ def main() -> None:
             y = batch["y"].to(device)
             mask = batch["mask"].to(device)
             with torch.set_grad_enabled(train):
-                if args.mode == "pretrain":
-                    logits, win_mask = model.module.pretrain_forward(x, pop) if hasattr(model, "module") else model.pretrain_forward(x, pop)
-                    target = torch.clamp(x, 0, 2)
-                    loss_mat = torch.nn.functional.cross_entropy(
-                        logits.reshape(-1, 3),
-                        target.reshape(-1),
-                        reduction="none",
-                    ).reshape(x.shape[0], x.shape[1], x.shape[2])
-                    if win_mask is not None and win_mask.any():
-                        loss = loss_mat[win_mask].mean()
+                autocast_enabled = bool(args.amp and device.type == "cuda")
+                with torch.cuda.amp.autocast(enabled=autocast_enabled):
+                    if args.mode == "pretrain":
+                        logits, win_mask = model.module.pretrain_forward(x, pop) if hasattr(model, "module") else model.pretrain_forward(x, pop)
+                        target = torch.clamp(x, 0, 2)
+                        loss_mat = torch.nn.functional.cross_entropy(
+                            logits.reshape(-1, 3),
+                            target.reshape(-1),
+                            reduction="none",
+                        ).reshape(x.shape[0], x.shape[1], x.shape[2])
+                        if win_mask is not None and win_mask.any():
+                            loss = loss_mat[win_mask].mean()
+                        else:
+                            loss = loss_mat.mean()
                     else:
-                        loss = loss_mat.mean()
-                else:
-                    pred = model(x, pop)
-                    loss = (((pred - y) ** 2) * mask).sum() / mask.sum().clamp_min(1.0)
-                    preds.append(pred.detach().cpu().numpy())
-                    obs.append(y.detach().cpu().numpy())
-                    masks.append(mask.detach().cpu().numpy())
+                        pred = model(x, pop)
+                        loss = (((pred - y) ** 2) * mask).sum() / mask.sum().clamp_min(1.0)
+                        preds.append(pred.detach().cpu().numpy())
+                        obs.append(y.detach().cpu().numpy())
+                        masks.append(mask.detach().cpu().numpy())
                 if train:
                     optimizer.zero_grad()
-                    loss.backward()
+                    scaler.scale(loss).backward()
+                    scaler.unscale_(optimizer)
                     torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-                    optimizer.step()
+                    scaler.step(optimizer)
+                    scaler.update()
             total += float(loss.detach().cpu()) * len(x)
             n += len(x)
         metrics = {"loss": total / max(n, 1)}

@@ -260,7 +260,12 @@ results/v0_1_baseline/sparse_methylation_selection_metrics.tsv
 - `scripts/prepare_zeamap_deep_learning_inputs.py`
 - `scripts/train_snp_window_transformer_multitask.py`
 - `jobs/2026-06-06_prepare_deep_inputs_q08.sh`
+- `jobs/gpu_run_windowformer_supervised.sh`
+- `jobs/gpu_run_windowformer_pretrain.sh`
+- `jobs/gpu_run_windowformer_finetune.sh`
 - `docs/2026-06-06-good-model-paper-design.md`
+- `docs/2026-06-06-gpu-run-guide.md`
+- `docs/2026-06-06-windowformer-resource-estimate.md`
 
 已经提交 q08：
 
@@ -275,6 +280,21 @@ data/deep_model/v0_1/
 ```
 
 GPU 训练由用户执行，推荐命令在 `docs/2026-06-06-good-model-paper-design.md`。
+
+资源估算：
+
+```text
+推荐 2 x A100 40G
+batch size 32
+AMP on
+每张 GPU 预计使用约 12-17 GB，建议至少空闲 30 GB
+```
+
+自动选卡脚本：
+
+```bash
+bash jobs/gpu_run_windowformer_supervised.sh
+```
 
 ## 后续只做这条主线
 

@@ -70,7 +70,24 @@ splits.tsv                              5 seeds
 manifest.json
 ```
 
-## 第一条 GPU 任务：监督训练
+## 自动选卡运行
+
+登录 GPU 节点后推荐直接运行：
+
+```bash
+cd /home/user/zhangzhishuai/myhermes/yumi
+bash jobs/gpu_run_windowformer_supervised.sh
+```
+
+脚本会自动选择显存空闲大于 30GB 的 GPU。
+
+如果只想用 1 张卡：
+
+```bash
+N_GPUS=1 BATCH_SIZE=16 bash jobs/gpu_run_windowformer_supervised.sh
+```
+
+## 手动 GPU 任务：监督训练
 
 先跑这个，确认深度模型能不能接近或超过 ridge：
 
@@ -84,7 +101,8 @@ CUDA_VISIBLE_DEVICES=1,2 mamba run -n yumi python scripts/train_snp_window_trans
   --window-size 256 \
   --d-model 192 \
   --layers 6 \
-  --nhead 6
+  --nhead 6 \
+  --amp
 ```
 
 输出：
@@ -109,7 +127,8 @@ CUDA_VISIBLE_DEVICES=1,2 mamba run -n yumi python scripts/train_snp_window_trans
   --window-size 256 \
   --d-model 192 \
   --layers 6 \
-  --nhead 6
+  --nhead 6 \
+  --amp
 ```
 
 ## 第三条 GPU 任务：预训练后微调
@@ -125,7 +144,8 @@ CUDA_VISIBLE_DEVICES=1,2 mamba run -n yumi python scripts/train_snp_window_trans
   --window-size 256 \
   --d-model 192 \
   --layers 6 \
-  --nhead 6
+  --nhead 6 \
+  --amp
 ```
 
 ## 训练结果怎么判断
