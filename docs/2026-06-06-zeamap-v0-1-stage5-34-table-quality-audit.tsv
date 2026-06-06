@@ -1,0 +1,6 @@
+table	role	placement	path	exists	rows	columns	quality_status	assessment
+Table 1	Top regional candidate loci	main	results/v0_1_baseline/gemma_lmm_v0_1/manuscript_tables/top_regional_loci_evidence.tsv	yes	8	27	pass	Main-text table count is appropriate; eight rows are readable and support the top-locus narrative.
+Supplementary Table 1	Manuscript candidate loci	supplementary	results/v0_1_baseline/gemma_lmm_v0_1/manuscript_tables/supplementary_manuscript_candidate_loci.tsv	yes	184	24	pass	Appropriate as supplementary table because the full locus set is too large for the main text.
+Supplementary Table 2	Tier-1 candidate loci	supplementary	results/v0_1_baseline/gemma_lmm_v0_1/manuscript_tables/main_tier1_locus_table.tsv	yes	18	21	pass	Appropriate as supplementary table because the full locus set is too large for the main text.
+Supplementary Table 3	External annotation hardening	supplementary	results/v0_1_baseline/gemma_lmm_v0_1/manuscript_tables/top_regional_loci_external_annotation.tsv	yes	8	34	pass	Appropriate supplementary support for annotation and prioritization claims.
+Supplementary Table 4	Supplementary column dictionary	supplementary	results/v0_1_baseline/gemma_lmm_v0_1/manuscript_tables/supplementary_table_column_dictionary.tsv	yes	152	5	pass	Required for reproducibility and reviewer interpretation of supplementary columns.

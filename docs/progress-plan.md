@@ -1117,3 +1117,27 @@ chr6 可以作为 strongest recurrent fatty-acid candidate interval；chr9 可�
 - 基金、致谢、利益冲突声明。
 - Figure 1-3 的人工视觉确认。
 - 最终 GitHub release、tag 和 Zenodo/Figshare DOI/PID。
+
+
+## 阶段 5.34 placeholder multi-format exports
+
+状态：已完成。
+
+这一步做了什么：
+
+- 按用户要求，把作者姓名、单位、ORCID/email、作者确认、基金、致谢和利益冲突声明先统一写成 `×××`。
+- 同时生成 Markdown、DOCX、LaTeX 和 PDF 四种论文格式。
+- 单独评估主图、补充区域图、主表和补充表的数量与质量。
+
+主要产出：
+
+- `docs/2026-06-06-zeamap-v0-1-stage5-34-placeholder-submission-manuscript.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-34-placeholder-submission-manuscript.docx`
+- `docs/2026-06-06-zeamap-v0-1-stage5-34-placeholder-submission-manuscript.tex`
+- `docs/2026-06-06-zeamap-v0-1-stage5-34-placeholder-submission-manuscript.pdf`
+- `docs/2026-06-06-zeamap-v0-1-stage5-34-figure-table-quality-review.md`
+- `docs/2026-06-06-zeamap-v0-1-stage5-34-format-conversion-audit.tsv`
+
+通俗解释：
+
+现在已经有一套能直接打开检查的论文文件。`×××` 只是临时占位符，方便先看格式、图表和整体稿件，不代表可以直接投稿。真正投稿前仍要把这些位置换成真实作者和基金/COI 信息。
