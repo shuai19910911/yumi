@@ -4,21 +4,22 @@
 
 ## 当前模型定位
 
-当前模型不是大语言模型式的预训练模型，也不是复杂 transformer。
+当前模型不再停留在 ridge benchmark。新的目标是训练一个可以作为论文核心的 SNP window deep model。
 
 当前最合适的模型定位是：
 
 ```text
-ZEAMAP 玉米 accession-level 多性状预测 benchmark
+SNP window representation learning for maize multi-trait prediction
 ```
 
 通俗理解：
 
 ```text
 把每个玉米材料看成一个样本。
-输入是它的基因型、群体结构和可选甲基化特征。
-输出是它的表型或代谢性状。
-比较不同模型能不能预测准。
+输入是它的 199,856 个 SNP、群体结构和可选甲基化特征。
+先把连续 SNP 切成 window tokens。
+模型学习每个 accession 的遗传表示。
+输出是多个 phenotype/metabolome traits。
 ```
 
 ## 为什么不用复杂大模型
@@ -63,21 +64,26 @@ sample = {
 
 ## 当前主模型
 
-当前主模型是：
+当前深度模型候选是：
 
 ```text
-genotype_population_ridge
+SNPWindowFormer
 ```
 
 输入：
 
-- genotype PCA features
+- SNP window tokens
 - population covariates
 
 输出：
 
-- 每个 trait 单独做 regression
-- 最终聚焦 66 个 robust traits
+- 66 个 robust traits 的 multi-task regression
+
+强基线仍然是：
+
+```text
+genotype_population_ridge
+```
 
 当前整体表现：
 
@@ -92,7 +98,7 @@ oil traits 表现最好：
 oil median Pearson/R2 = 0.596 / 0.321
 ```
 
-## 为什么 ridge 是主模型
+## 为什么 ridge 仍然必须保留为强基线
 
 ridge 的优点：
 
@@ -112,9 +118,10 @@ small MLP                      median Pearson/R2 = 0.351 / -0.191
 结论：
 
 ```text
-ridge 是 v0.1 主模型。
+ridge 是当前必须击败的强基线。
 ElasticNet 是重要对照。
-small MLP 说明当前样本量还不适合更复杂模型。
+small MLP 说明普通浅层神经网络不够。
+新模型必须证明 SNP window tokenizer + Transformer 表征学习确实带来增益。
 ```
 
 ## 模型比较应该怎么组织

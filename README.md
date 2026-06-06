@@ -4,15 +4,16 @@ ZEAMAP 玉米多性状预测模型项目。
 
 ## 当前重新定位
 
-这个项目的目标需要改回来：不是写一篇以 GWAS 候选基因为主的文章，而是写一篇**模型方向文章**。
+这个项目的目标需要改回来：不是写一篇以 GWAS 候选基因为主的文章，也不是只整理现有 benchmark，而是训练一个真正可以作为论文核心的**玉米基因型预测模型**。
 
 更准确地说，我们要做的是：
 
 ```text
-用 ZEAMAP 玉米公共数据，构建一个 accession-level 多性状预测数据集，
-比较不同模型和不同数据模态对玉米 phenotype/metabolome 的预测能力，
-分析哪些性状最可预测、哪些模态有用、模型为什么有效，
-最后形成一篇以 genotype-to-phenotype prediction / multi-trait modelling 为主线的论文。
+用 ZEAMAP 玉米公共数据构建 accession-level 多性状预测任务，
+把 199,856 个 SNP 转成窗口 token，
+训练 SNP window representation model，
+再预测 phenotype/metabolome traits，
+并与 ridge、ElasticNet、MLP 等强基线公平比较。
 ```
 
 GWAS 和候选基因不是主线，只能作为模型结果的辅助解释。例如：如果模型发现 oil traits 最可预测，可以用 GWAS 或候选区间解释“为什么 oil traits 有强遗传信号”。但文章不能再写成“我们发现了 chr6/chr9 候选基因”的 GWAS 论文。
@@ -23,13 +24,14 @@ GWAS 和候选基因不是主线，只能作为模型结果的辅助解释。例
 
 ```text
 ZEAMAP 数据整理
--> 构建 v0.1 模型数据集
--> 设计 genotype/population/methylation 等输入模态
--> 比较 ridge、ElasticNet、MLP 等模型
--> 做多随机种子稳健性评估
--> 分析哪些性状、哪些模态、哪些模型最有效
--> 用可解释性和少量 GWAS 结果辅助说明模型学到了什么
--> 写成模型方法/模型应用文章
+-> SNP window tokenizer
+-> supervised SNPWindowFormer
+-> masked-genotype self-supervised pretraining
+-> multi-trait fine-tuning
+-> ridge/ElasticNet/MLP 强基线比较
+-> G2F/Panzea 外部数据扩展
+-> trait family 和 ablation 分析
+-> 写成真正的模型文章
 ```
 
 ## 为什么要改方向
@@ -42,8 +44,15 @@ ZEAMAP 数据整理
 - 已经完成了多性状 prediction benchmark。
 - 已经比较了 ridge、ElasticNet、小 MLP、population-only 等模型。
 - 已经做了 methylation 消融和多随机种子稳健性。
-- 当前样本量不适合大模型预训练，但适合做一个严谨的小样本多性状预测模型研究。
+- 当前 ZEAMAP 样本量不适合单独训练大模型，但适合作为深度模型 fine-tuning/evaluation 数据。
+- 2 张 A100 40G 可以支持 SNP window transformer，但需要窗口化 token，而不是直接把 199,856 个 SNP 当 199,856 个 token。
 - GWAS 可以作为解释模型信号的辅助分析，而不是论文主线。
+
+新的详细模型方案：
+
+```text
+docs/2026-06-06-good-model-paper-design.md
+```
 
 ## 当前可用数据
 
@@ -248,23 +257,23 @@ results/v0_1_baseline/gemma_lmm_v0_1/
 建议新文章方向：
 
 ```text
-A conservative accession-level genotype-to-phenotype prediction benchmark for maize traits using ZEAMAP
+Self-supervised SNP window representation learning improves maize multi-trait prediction from public genotype resources
 ```
 
 中文理解：
 
 ```text
-基于 ZEAMAP 的玉米 accession 水平多性状预测基准研究
+基于自监督 SNP 窗口表征学习的玉米多性状预测模型
 ```
 
 文章核心问题：
 
-1. ZEAMAP 公共数据能不能整理成可靠的 accession-level 模型数据集？
-2. genotype + population 能不能预测 phenotype/metabolome？
-3. 哪些性状最容易被预测？
-4. ridge、ElasticNet、小 MLP 谁更适合当前样本量？
-5. methylation 在当前配对样本不足的情况下有没有增益？
-6. 模型预测最好的 oil traits 是否能通过遗传信号得到辅助解释？
+1. 199,856 个 SNP 能不能通过 window tokenizer 压缩成可训练的遗传表示？
+2. SNPWindowFormer 能不能超过 ridge/ElasticNet/MLP 强基线？
+3. masked-genotype 自监督预训练能不能提高 ZEAMAP 多性状预测？
+4. 多性状学习是否比单性状训练更适合 oil/metabolome traits？
+5. population 和 methylation 在深度模型中到底提供多少增益？
+6. 外部 G2F/Panzea genotype 数据能否提升预训练和迁移验证？
 
 ## 新文章结构
 
@@ -277,12 +286,12 @@ Introduction
   为什么小样本下要先做稳健 benchmark
 
 Results
-  1. ZEAMAP v0.1 accession-level dataset
-  2. Genotype + population prediction benchmark
-  3. Trait family predictability differences
-  4. Model comparison: ridge / ElasticNet / MLP
-  5. Methylation ablation under partial coverage
-  6. Model interpretation: oil traits and genetic signal
+  1. ZEAMAP v0.1 accession-level dataset and deep-learning tensor package
+  2. SNP window tokenizer and SNPWindowFormer architecture
+  3. Supervised deep model versus ridge / ElasticNet / MLP
+  4. Masked-genotype pretraining and fine-tuning
+  5. Trait-family performance and multi-trait learning
+  6. Population/methylation ablation and model interpretation
 
 Discussion
   当前模型路线适合什么

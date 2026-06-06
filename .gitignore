@@ -1,8 +1,10 @@
 __pycache__/
 *.py[cod]
 data/processed/
+data/deep_model/
 data/external/
 logs/
+results/deep_model/
 results/v0_1_baseline/gwas_v0_1/per_trait/
 data/processed/v0_1/gemma_gwas_v0_1/
 results/v0_1_baseline/gemma_v0_1/

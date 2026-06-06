@@ -7,15 +7,16 @@
 这个项目现在只做一件事：
 
 ```text
-用 ZEAMAP 玉米数据，做一个 accession 水平的多性状预测模型文章。
+训练一个能发表的玉米基因型到多性状预测模型。
 ```
 
 通俗理解：
 
 ```text
-给每个玉米材料一套基因型、群体结构、部分甲基化信息，
-让模型预测它的表型和代谢性状，
-然后系统比较哪些模型好、哪些性状好预测、哪些数据模态有帮助。
+先把 SNP 变成模型能学习的窗口 token，
+训练 SNP 表征模型，
+再预测 ZEAMAP 的 phenotype/metabolome traits，
+并和 ridge/ElasticNet/MLP 做公平比较。
 ```
 
 ## 已经纠正的方向
@@ -32,11 +33,13 @@
 
 ```text
 数据整理
--> 多性状预测模型
--> 模型比较
+-> SNP window tokenizer
+-> self-supervised genotype representation learning
+-> multi-trait fine-tuning
+-> ridge/ElasticNet/MLP 强基线比较
 -> trait family 可预测性分析
--> methylation 消融
--> 稳健性评估
+-> population/methylation 消融
+-> 外部 G2F/Panzea 数据扩展
 -> 少量生物学解释
 -> 模型方向论文
 ```
@@ -61,7 +64,20 @@ data/processed/v0_1/
 66 个 robust traits 进入最终 benchmark
 ```
 
-这些数据足够做严谨的小样本模型 benchmark，但不适合现在直接做大模型预训练或复杂 transformer。
+这些数据足够做严谨的小样本模型微调和评估，但不适合单独训练大型深度模型。
+
+因此当前新策略是：
+
+```text
+ZEAMAP 用于 fine-tuning/evaluation；
+G2F/Panzea 用于扩大 genotype 预训练和外部验证。
+```
+
+详细模型方案见：
+
+```text
+docs/2026-06-06-good-model-paper-design.md
+```
 
 ## 当前已经完成的模型工作
 
@@ -237,29 +253,52 @@ results/v0_1_baseline/sparse_methylation_selection_metrics.tsv
 
 清理后，仓库入口不再围绕“GWAS 投稿包”，而是围绕“模型文章”。
 
+## 当前新增的深度模型任务
+
+已经新增：
+
+- `scripts/prepare_zeamap_deep_learning_inputs.py`
+- `scripts/train_snp_window_transformer_multitask.py`
+- `jobs/2026-06-06_prepare_deep_inputs_q08.sh`
+- `docs/2026-06-06-good-model-paper-design.md`
+
+已经提交 q08：
+
+```text
+job 8459940: prepare ZEAMAP deep learning input tensors
+```
+
+这个 CPU 任务会生成：
+
+```text
+data/deep_model/v0_1/
+```
+
+GPU 训练由用户执行，推荐命令在 `docs/2026-06-06-good-model-paper-design.md`。
+
 ## 后续只做这条主线
 
 下一步任务按优先级：
 
-1. 重新生成模型方向主图。
-2. 写模型论文初稿。
-3. 补充模型结果表。
-4. 把 methylation 消融和 robustness 画成清楚的图。
-5. 把 GWAS/candidate loci 缩成一个辅助解释小节。
-6. 生成新的中文和英文模型文章版本。
+1. 等 q08 生成 deep learning 输入包。
+2. 在 2 张 A100 上跑 supervised SNPWindowFormer。
+3. 如果 supervised 不超过 ridge，立刻跑 masked-genotype pretraining + fine-tuning。
+4. 下载 G2F/Panzea 扩大预训练数据。
+5. 做多 seed、多 trait family、population/methylation 消融。
+6. 根据深度模型结果重写模型论文。
 
 ## 论文建议标题
 
 暂定英文标题：
 
 ```text
-A conservative accession-level benchmark for maize multi-trait prediction using ZEAMAP
+Self-supervised SNP window representation learning improves maize multi-trait prediction from public genotype resources
 ```
 
 中文理解：
 
 ```text
-基于 ZEAMAP 的玉米 accession 水平多性状预测模型基准研究
+基于自监督 SNP 窗口表征学习的玉米多性状预测模型
 ```
 
 ## 当前判断
