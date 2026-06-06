@@ -358,7 +358,7 @@ best checkpoint = results/deep_model/windowformer_pretrain_v0_1/best.pt
 这一步不使用 trait 标签，目的是先学习玉米 genotype 的结构。
 ```
 
-当前已经启动 fine-tuning：
+已经完成 fine-tuning：
 
 ```text
 任务：pretrained SNPWindowFormer fine-tuning
@@ -366,6 +366,25 @@ best checkpoint = results/deep_model/windowformer_pretrain_v0_1/best.pt
 GPU：2 号 A100
 输出目录：results/deep_model/windowformer_finetune_v0_1/
 日志：logs/windowformer_finetune_gpu2_20260606_155644.log
+test median Pearson = 0.251
+test median R2 = 0.021
+```
+
+这个结果比直接监督训练还低，也明显低于 ridge。当前判断：
+
+```text
+只用 ZEAMAP 461 个样本做 Transformer 预训练和 fine-tuning 不够。
+模型会很快记住训练集，但验证集和测试集提升不稳定。
+```
+
+已经启动的改进试验：
+
+```text
+任务：small regularized SNPWindowFormer
+目的：减少参数、增加 dropout、降低学习率，先控制过拟合
+输出目录：results/deep_model/windowformer_small_regularized_v0_1/
+日志：logs/windowformer_small_regularized_gpu2_20260606_161401.log
+关键参数：d_model=96, layers=2, dropout=0.30, lr=5e-5, weight_decay=1e-3
 ```
 
 资源估算：
@@ -387,10 +406,10 @@ bash jobs/gpu_run_windowformer_supervised.sh
 
 下一步任务按优先级：
 
-1. 等当前 fine-tuning 跑完。
-2. 比较 fine-tuned SNPWindowFormer 和 ridge/ElasticNet/MLP。
-3. 判断预训练是否提升了 test median Pearson/R2。
-4. 如果还是不够强，下载 G2F/Panzea 扩大 genotype 预训练数据。
+1. 等 small regularized SNPWindowFormer 跑完。
+2. 比较 small regularized、supervised、pretrained fine-tuned 和 ridge/ElasticNet/MLP。
+3. 如果 small 模型仍低于 ridge，转向外部 genotype 预训练数据。
+4. 下载 G2F/Panzea 或其他公开 maize genotype，扩大 genotype-only pretraining。
 5. 做多 seed、trait family、population/methylation 消融。
 6. 根据深度模型结果重写模型论文。
 

@@ -155,7 +155,7 @@ best checkpoint = results/deep_model/windowformer_pretrain_v0_1/best.pt
 它不使用 trait 标签，目的是先学会玉米基因型结构。
 ```
 
-当前已经启动 fine-tuning：
+预训练后 fine-tuning 已经完成：
 
 ```text
 任务：pretrained SNPWindowFormer fine-tuning
@@ -163,6 +163,26 @@ best checkpoint = results/deep_model/windowformer_pretrain_v0_1/best.pt
 GPU：2 号 A100
 结果目录：results/deep_model/windowformer_finetune_v0_1/
 日志：logs/windowformer_finetune_gpu2_20260606_155644.log
+test median Pearson = 0.251
+test median R2 = 0.021
+```
+
+这个结果比直接监督训练还低，说明：
+
+```text
+只用 ZEAMAP 461 个样本做 Transformer 预训练不够。
+模型可以学到 genotype reconstruction，
+但这个表征没有稳定转化为更好的 trait prediction。
+```
+
+当前正在跑一个更小、更强正则化的模型：
+
+```text
+任务：small regularized SNPWindowFormer
+目的：减少过拟合
+结果目录：results/deep_model/windowformer_small_regularized_v0_1/
+日志：logs/windowformer_small_regularized_gpu2_20260606_161401.log
+关键参数：d_model=96, layers=2, dropout=0.30, lr=5e-5, weight_decay=1e-3
 ```
 
 ### 1. 数据整理
