@@ -238,6 +238,30 @@ sbatch -p q08 -c 2 jobs/2026-06-06_fetch_g2f_genotypes_q08.sh
 
 注意：当前登录节点访问 CyVerse 匿名下载链接时返回 IP verification 页面。如果 q08 也遇到这个问题，需要先在浏览器打开任一 `data.cyverse.org` 文件链接完成 CyVerse 验证，或者换一个未被拦截的节点下载。
 
+Panzea 备用/补充外部基因型源已经定位：
+
+```text
+/iplant/home/shared/panzea/hapmap3/hmp321/unimputed/uplifted_APGv4
+```
+
+需要下载 `hmp321_agpv4_chr1.vcf.gz` 到 `hmp321_agpv4_chr10.vcf.gz`：
+
+```text
+data/external/panzea/hapmap3/hmp321_agpv4/
+```
+
+自动下载脚本：
+
+```bash
+python scripts/fetch_panzea_hapmap321_agpv4.py --download
+```
+
+q08 作业：
+
+```bash
+sbatch -p q08 -c 2 jobs/2026-06-06_fetch_panzea_hapmap321_q08.sh
+```
+
 下载后检查命令：
 
 ```bash

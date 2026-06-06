@@ -463,6 +463,34 @@ blocked_by_cyverse_ip_verification
 这时不要继续训练模型，要先解决 G2F 文件下载。
 
 2. 下载 Panzea HapMap/GBS genotype flat files。
+
+Panzea 也已经定位到一个可执行的 VCF 目录：
+
+```text
+CyVerse path:
+/iplant/home/shared/panzea/hapmap3/hmp321/unimputed/uplifted_APGv4
+
+Files:
+hmp321_agpv4_chr1.vcf.gz
+...
+hmp321_agpv4_chr10.vcf.gz
+```
+
+目标下载目录：
+
+```text
+data/external/panzea/hapmap3/hmp321_agpv4/
+```
+
+已经新增自动下载脚本：
+
+```text
+scripts/fetch_panzea_hapmap321_agpv4.py
+jobs/2026-06-06_fetch_panzea_hapmap321_q08.sh
+```
+
+这个数据可以作为 G2F 的补充，或者在 G2F 暂时被 CyVerse IP 验证拦截时作为备用外部预训练来源。
+
 3. 下载后运行外部 genotype 完整性检查：
 
 ```bash
