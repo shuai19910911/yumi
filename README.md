@@ -136,13 +136,33 @@ ridge median R2 = 0.204
 再把预训练权重 fine-tune 到 66 个 trait。
 ```
 
-当前已经启动预训练：
+预训练已经完成：
 
 ```text
 任务：masked-genotype pretraining
 GPU：2 号 A100
 结果目录：results/deep_model/windowformer_pretrain_v0_1/
 日志：logs/windowformer_pretrain_gpu2_20260606_153859.log
+test reconstruction loss = 0.621
+best checkpoint = results/deep_model/windowformer_pretrain_v0_1/best.pt
+```
+
+这个预训练任务的意思是：
+
+```text
+随机遮住一部分 SNP 窗口，
+让模型根据周围 SNP 信息猜回被遮住的 genotype。
+它不使用 trait 标签，目的是先学会玉米基因型结构。
+```
+
+当前已经启动 fine-tuning：
+
+```text
+任务：pretrained SNPWindowFormer fine-tuning
+初始化权重：results/deep_model/windowformer_pretrain_v0_1/best.pt
+GPU：2 号 A100
+结果目录：results/deep_model/windowformer_finetune_v0_1/
+日志：logs/windowformer_finetune_gpu2_20260606_155644.log
 ```
 
 ### 1. 数据整理
