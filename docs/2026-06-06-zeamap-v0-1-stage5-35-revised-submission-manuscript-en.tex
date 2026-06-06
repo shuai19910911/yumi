@@ -1,0 +1,623 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{Prediction-guided mixed-model GWAS refines maize oil-trait
+candidate intervals in
+ZEAMAP}\label{prediction-guided-mixed-model-gwas-refines-maize-oil-trait-candidate-intervals-in-zeamap}
+
+\subsection{Title Page}\label{title-page}
+
+Title: Prediction-guided mixed-model GWAS refines maize oil-trait
+candidate intervals in ZEAMAP
+
+Running title: ZEAMAP oil-trait prediction and GWAS
+
+Authors: ×××
+
+Affiliations: ×××
+
+Corresponding author: ×××
+
+ORCID/email: ×××
+
+Author confirmation: ×××
+
+\subsection{Core Ideas}\label{core-ideas}
+
+\begin{itemize}
+\tightlist
+\item
+  ZEAMAP processed data were harmonized into a conservative
+  accession-level analysis set.
+\item
+  Oil and fatty-acid traits were more predictable than other trait
+  families under regularized genotype-based models.
+\item
+  Mixed-model GWAS was essential: covariate-only testing was inflated,
+  whereas GEMMA controlled genomic inflation.
+\item
+  Recurrent chr6 and chr9 intervals provide the clearest fatty-acid
+  candidate signals.
+\item
+  The study prioritizes candidate intervals for follow-up and does not
+  claim causal variants or experimentally validated genes.
+\end{itemize}
+
+\subsection{Abstract}\label{abstract}
+
+Maize kernel oil content and fatty-acid composition are important
+seed-quality traits, but association analyses in diverse maize panels
+must distinguish true local signals from population structure and
+relatedness. We harmonized public ZEAMAP processed data into a
+conservative accession-level analysis set containing 461 accessions,
+199,856 filtered SNPs and 318 numeric phenotype or metabolite traits.
+Repeated genotype-to-phenotype benchmarking identified 66 robustly
+predictable traits; oil traits formed the strongest family, with a
+genotype plus population ridge model reaching median Pearson/R2 of
+0.597/0.338 across robust oil traits. This prediction result motivated
+focused GWAS for 10 high-priority oil traits. A covariate-only scan was
+strongly inflated, whereas GEMMA mixed linear models with
+genotype-derived kinship controlled lambda GC to 0.984-1.018 (median
+0.998). We annotated and ranked 184 candidate loci and 147 candidate
+genes after excluding nominal-only signals. The strongest evidence
+converged on a recurrent chromosome 6 linoleic acid1-region interval and
+a chromosome 9 C16:0-associated interval containing nearby acyl-ACP
+thioesterase annotation. These results provide a reproducible framework
+for moving from public maize processed data to calibrated oil-trait
+candidate intervals while keeping causal claims appropriately bounded.
+
+\subsection{Keywords}\label{keywords}
+
+maize; ZEAMAP; kernel oil; fatty-acid composition; genomic prediction;
+mixed-model GWAS; GEMMA; candidate interval
+
+\subsection{Introduction}\label{introduction}
+
+Kernel oil concentration and fatty-acid composition influence maize
+grain quality, nutritional value and industrial use. The traits are also
+biologically informative because they connect quantitative genetic
+variation with fatty-acid metabolism, seed development and carbon
+allocation. Previous maize studies have identified oil-content and
+fatty-acid loci, including signals related to linoleic-acid composition
+and DGAT-mediated oil accumulation (Alrefai et al., 1995; Zheng et al.,
+2008; Li et al., 2013; Zhang et al., 2023). Yet public diversity-panel
+data still require careful handling before these biological signals can
+be interpreted.
+
+ZEAMAP provides a broad public resource for maize multi-omics and trait
+data (Gui et al., 2020). The practical challenge is that processed
+tables do not automatically form a single analysis matrix. Accessions,
+modalities and biological units must be reconciled before modelling. In
+particular, reference or tissue-level expression resources cannot be
+treated as accession-level expression measurements, and partially paired
+methylation data should not be used as if they covered the full panel.
+We therefore built a restrained accession-level analysis set in which
+genotype, population information and phenotype/metabolite traits were
+aligned before modelling.
+
+The second challenge is statistical. A panel of 461 accessions and
+nearly 200,000 SNPs is large enough for genome-wide association and
+regularized prediction, but not large enough to justify unconstrained
+high-capacity prediction models. A model can appear sophisticated while
+learning population structure or noise. We therefore used regularized
+models and repeated evaluation to identify trait families with stable
+predictive signal, then used that result to prioritize a focused GWAS
+layer.
+
+The third challenge is association calibration. Diversity-panel GWAS is
+vulnerable to residual structure. A candidate-gene story built on
+inflated tests is weak even when the gene annotation is appealing. For
+this reason we explicitly treated covariate-only GWAS as a diagnostic
+layer and used GEMMA mixed linear models as the manuscript-level
+association test (Zhou \& Stephens, 2012; Zhou \& Stephens, 2014). Lead
+loci were then interpreted through a conservative evidence hierarchy
+combining statistical support, recurrence across oil traits,
+prediction-overlap information and local gene annotation from B73
+reference resources (Jiao et al., 2017; Yates et al., 2022).
+
+\subsection{Results}\label{results}
+
+\subsubsection{Accession harmonization produced a restrained ZEAMAP
+analysis
+set}\label{accession-harmonization-produced-a-restrained-zeamap-analysis-set}
+
+After harmonizing processed ZEAMAP genotype, population and
+phenotype/metabolite tables, the analysis set retained 461 accessions
+with the required paired information, 199,856 filtered biallelic SNPs
+and 318 numeric traits. Methylation coverage was available for 236
+accessions and was tracked as a partially paired modality rather than
+merged into the primary model. Expression resources available in the
+working data were not accession-matched to the diversity panel and were
+therefore excluded from genotype-to-phenotype prediction.
+
+This filtering reduced the apparent size of the resource but increased
+interpretability. Every primary prediction and GWAS result was based on
+the same accession-level unit. This matters because oil-trait signals in
+a structured maize panel can be confounded if sample identity or
+modality pairing is loose.
+
+\subsubsection{Oil traits showed the strongest and most stable
+prediction
+signal}\label{oil-traits-showed-the-strongest-and-most-stable-prediction-signal}
+
+Repeated prediction benchmarking showed that oil traits were the
+clearest target family. Across selected trait families, oil traits had
+the highest median Pearson correlation (0.597) and median R2 (0.338),
+with the best oil trait reaching Pearson/R2 of 0.924/0.827. Among the
+robust final traits, 29 were oil-related. The best-performing traits
+included total oil content and major fatty-acid components, indicating
+that the genotype and population features captured biologically
+meaningful variation rather than only broad agronomic structure.
+
+Model comparison also supported a conservative modelling choice. Ridge
+and ElasticNet were more stable than a small multilayer perceptron under
+the available sample size. The result is not a claim against neural
+networks in maize genetics; it shows that, for this data scale and
+pairing structure, regularized models provide a stronger basis for trait
+prioritization and biological follow-up.
+
+\subsubsection{Methylation was informative only as an auxiliary
+layer}\label{methylation-was-informative-only-as-an-auxiliary-layer}
+
+Methylation was evaluated in three forms: global accession summaries,
+gene/promoter/cis-window principal components and sparse gene-window
+features. The global features showed little broad improvement,
+gene-level components provided limited auxiliary signal and sparse
+methylation features were unstable in the smaller 236-accession subset.
+We therefore did not include methylation in the primary prediction
+model. This decision prevents a weak multi-omics claim and keeps the
+main analysis anchored in the fully paired genotype and trait data.
+
+\subsubsection{GEMMA controlled inflation that persisted in
+covariate-only
+GWAS}\label{gemma-controlled-inflation-that-persisted-in-covariate-only-gwas}
+
+Prediction results directed the association analysis toward 10
+high-priority oil traits. The covariate-only scan was useful as a
+warning: genomic inflation remained high despite population covariates.
+In contrast, GEMMA mixed linear models using genotype-derived kinship
+controlled lambda GC to 0.984-1.018, with a median of 0.998. This
+calibration is central to the study because it supports interpretation
+of local peaks as candidate intervals rather than artifacts of residual
+relatedness.
+
+Across the 10 oil traits, GEMMA tested 440 non-missing accessions and
+199,856 SNPs per trait. Bonferroni-significant hits ranged from 1 to 21
+per trait, with 126 Bonferroni-level hits and 338 FDR-level hits in
+total. The strongest signals occurred for very-long-chain fatty-acid
+composition, C18 fatty-acid traits and C16:0. Trait-level Manhattan and
+QQ plots were retained as diagnostic figures, while the main text
+focuses on calibrated summary statistics and prioritized intervals.
+
+\subsubsection{Candidate-locus ranking separated direct lipid candidates
+from broader regulatory
+regions}\label{candidate-locus-ranking-separated-direct-lipid-candidates-from-broader-regulatory-regions}
+
+GEMMA lead signals were merged into physical candidate intervals and
+annotated with B73 RefGen\_v4 gene models. After removing nominal-only
+signals, the candidate set contained 184 loci and 147 candidate genes.
+Of these loci, 63 also overlapped ridge-attribution evidence and 11
+carried fatty-acid or lipid-related annotation. This layered ranking
+separated two types of evidence: direct lipid-metabolism candidates and
+recurrent but functionally broader regions.
+
+The strongest interval was R01\_Zm00001d036982 on chromosome 6. It was
+recurrent across seven oil traits, reached best P = 2.35e-25 and
+contained the B73 RefGen\_v4 gene Zm00001d036982, which maps to the
+current B73 v5 gene Zm00001eb277490. Local annotation and external xrefs
+support lipid acyltransferase/DGAT-like or linoleic-acid biology. This
+region therefore has the strongest combination of recurrence,
+statistical support, prediction overlap and prior fatty-acid evidence.
+
+The chr9 C16:0 interval provides a different but biologically important
+signal. The lead interval around Zm00001d045383 reached best P =
+7.76e-17 for C16:0. The lead gene maps to a DXS/isoprenoid-related
+annotation, while the nearby Zm00001d045387/Zm00001eb377350 gene carries
+acyl-ACP hydrolase, palmitoyl-ACP thioesterase and fatty-acid
+biosynthesis evidence. This makes the region a high-priority saturated
+fatty-acid candidate interval, but not yet a fine-mapped FatB causal
+gene.
+
+Other tier-1 intervals on chromosomes 1, 4 and 8 were recurrent and
+ridge-supported but had broader annotations, including MYB-domain,
+protein-transport and tetratricopeptide-repeat genes. These regions are
+valuable because recurrence across oil traits suggests reproducible
+association structure. However, their current annotations support
+candidate-interval reporting rather than direct oil-biosynthetic claims.
+
+\subsubsection{Expanded figure and table package clarifies the evidence
+hierarchy}\label{expanded-figure-and-table-package-clarifies-the-evidence-hierarchy}
+
+The revised figure set contains four main figures. Figure 1 summarizes
+data harmonization and prediction benchmarking. Figure 2 presents the
+mixed-model GWAS calibration and candidate-locus summary. Figure 3 shows
+the chr6 and chr9 regional intervals. Figure 4 integrates trait-family
+predictability, GEMMA calibration, top-region association strength and
+evidence classes across prioritized loci. The table set contains one
+main evidence table for the eight top regional loci and four
+supplementary tables covering the full candidate-locus set, tier-1 loci,
+external annotation hardening and column definitions. This structure
+keeps the main text readable while giving reviewers enough information
+to inspect the full locus-ranking logic.
+
+\subsection{Discussion}\label{discussion}
+
+This study provides a calibrated route from public ZEAMAP processed data
+to maize oil-trait candidate intervals. The most important result is not
+simply that several oil-trait associations were detected. Rather, the
+analysis shows why these associations are interpretable: the input
+accessions were harmonized, oil traits were prioritized by repeated
+prediction, covariate-only GWAS was shown to be inflated and GEMMA mixed
+models brought genomic inflation close to one.
+
+The prediction results help explain why the GWAS focus on oil traits is
+justified. Oil and fatty-acid traits were not chosen only because they
+are biologically attractive. They were the most consistently predictable
+trait family in the analysis set, with strong performance for total oil
+and major fatty-acid components. This suggests that the available SNP
+features capture a meaningful part of the genetic architecture for these
+traits. In practical breeding terms, the result supports oil traits as a
+near-term target for regularized genomic prediction in this
+ZEAMAP-derived panel, while more weakly predictable metabolite or
+amino-acid traits may require larger sample sizes, better environmental
+metadata or different feature representations.
+
+The contrast between covariate-only and mixed-model GWAS is equally
+important. In a structured maize panel, population covariates alone were
+not sufficient. Without the kinship term, the association scan produced
+inflation severe enough to undermine candidate interpretation. GEMMA did
+not merely improve a technical diagnostic; it changed the credibility of
+the biological conclusions. The near-one lambda values across all 10 oil
+traits indicate that the final candidate intervals are less likely to be
+dominated by residual relatedness.
+
+The chr6 interval is the main biological anchor of the manuscript. Its
+strength comes from convergence: multiple oil traits point to the same
+region, the association is highly significant, ridge-derived evidence
+supports the region and local annotation connects it to linoleic-acid or
+lipid-acyltransferase biology. Previous maize oil and fatty-acid studies
+provide a plausible context for this signal (Alrefai et al., 1995; Zheng
+et al., 2008; Li et al., 2013; Zhang et al., 2023). The appropriate
+claim is therefore strong but bounded: this is the leading recurrent
+fatty-acid candidate interval in the present analysis, not a validated
+causal gene.
+
+The chr9 C16:0 interval is more trait-specific and illustrates why
+gene-level interpretation must be careful. The lead gene itself is not
+annotated as FatB. The stronger fatty-acid interpretation comes from a
+nearby acyl-ACP thioesterase candidate, a pathway class directly related
+to saturated fatty-acid composition. This supports follow-up of the
+interval, especially for C16:0, but the result should not be overstated
+as a confirmed causal FatB allele.
+
+The broader set of recurrent loci may be useful for breeding and
+functional prioritization. Some intervals contain regulatory or
+transport-related candidates rather than canonical oil-pathway genes.
+Such genes could still affect seed composition through developmental
+timing, transport, organelle function or resource allocation. However,
+these hypotheses need external expression evidence, fine mapping or
+functional assays. The revised evidence hierarchy makes this distinction
+explicit: lipid-annotated intervals are discussed as stronger
+candidates, while broader recurrent regions are retained as
+hypothesis-generating intervals.
+
+Several limitations define the next experiments. First, the analysis set
+remains modest for high-dimensional prediction, so complex models should
+wait for larger paired datasets. Second, methylation was only partially
+paired and cannot yet support a strong multi-omics mechanism. Third, the
+GWAS resolution is limited by LD, marker density and accession sample
+size. Fourth, candidate genes were not experimentally validated.
+Stronger follow-up would include independent panels, seed-specific
+expression evidence, haplotype analysis around chr6 and chr9, and
+functional tests for the leading lipid-related genes.
+
+Overall, the study is best positioned as a plant genomics resource and
+candidate-prioritization paper. It contributes a reproducible
+accession-level analysis, a statistically calibrated oil-trait GWAS
+layer and a ranked set of candidate intervals for maize oil and
+fatty-acid composition. The claims are intentionally conservative, which
+should make the manuscript more defensible in review.
+
+\subsection{Materials and Methods}\label{materials-and-methods}
+
+\subsubsection{ZEAMAP data and accession
+matching}\label{zeamap-data-and-accession-matching}
+
+Processed ZEAMAP public data were obtained from CNGBdb project
+CNP0001565 (Gui et al., 2020). Genotype, population, phenotype and
+metabolome tables were matched at accession level. Accessions were
+retained when genotype, population information and at least one
+phenotype or metabolome measurement were present. SNPs were filtered to
+common biallelic markers with sufficient sample coverage, yielding
+199,856 variants for modelling and association analysis.
+
+\subsubsection{Prediction analysis}\label{prediction-analysis}
+
+Genotype-to-phenotype prediction was evaluated using repeated
+train/validation/test splits. Candidate models included genotype plus
+population ridge regression, genotype plus population ElasticNet,
+population-only ridge regression and a small multilayer perceptron.
+Traits were retained for final reporting only when performance was
+positive and stable across seeds. Pearson correlation and R2 on held-out
+samples were used as the main performance metrics.
+
+\subsubsection{Methylation assessment}\label{methylation-assessment}
+
+Methylation information was evaluated as an auxiliary modality in the
+subset of accessions with coverage. We tested global methylation
+summaries, gene/promoter/cis-window components and sparse gene-window
+features. Because the methylation subset was substantially smaller than
+the full analysis set and sparse features were unstable, methylation was
+not used in the primary prediction model.
+
+\subsubsection{Mixed-model GWAS}\label{mixed-model-gwas}
+
+Ten high-priority oil traits were selected from the robust prediction
+results. Covariate-only GWAS was used as a diagnostic comparison. The
+primary association analysis used GEMMA mixed linear models with
+genotype-derived kinship and population covariates (Zhou \& Stephens,
+2012; Zhou \& Stephens, 2014). Likelihood-ratio p-values were used for
+locus ranking. The Bonferroni threshold was 0.05 divided by 199,856
+tested variants; FDR summaries were used for candidate triage rather
+than causal claims (Benjamini \& Hochberg, 1995).
+
+\subsubsection{Candidate-locus annotation and
+ranking}\label{candidate-locus-annotation-and-ranking}
+
+Lead SNPs were merged into physical intervals and annotated with B73
+RefGen\_v4 gene models (Jiao et al., 2017). Candidate intervals were
+ranked by association strength, recurrence across oil traits, overlap
+with prediction-derived evidence, local gene annotation and external
+gene-model support from plant genome resources (Yates et al., 2022).
+Intervals were classified as direct lipid candidates, indirect
+regulatory/transport candidates or unresolved recurrent candidates.
+Candidate genes were treated as hypotheses unless supported by
+independent functional evidence.
+
+\subsubsection{Software and
+reproducibility}\label{software-and-reproducibility}
+
+Analyses used Python scientific-computing libraries and GEMMA for
+mixed-model association (Pedregosa et al., 2011; Harris et al., 2020;
+Virtanen et al., 2020; McKinney, 2010; Hunter, 2007; Zhou \& Stephens,
+2012). The repository includes the scripts and summary tables needed to
+reproduce the accession harmonization, prediction benchmark, GWAS
+summaries, candidate-locus ranking and manuscript figures.
+
+\subsection{Data Availability
+Statement}\label{data-availability-statement}
+
+The study reanalyzes public ZEAMAP processed data from CNGBdb project
+CNP0001565. The project repository contains analysis scripts, summary
+tables, candidate-locus annotations and generated figures. Large public
+raw inputs and large intermediate matrices are not included in the
+repository; their source and regeneration paths are documented with the
+analysis files.
+
+\subsection{Code Availability
+Statement}\label{code-availability-statement}
+
+Code used for dataset construction, prediction benchmarking, methylation
+assessment, GWAS summarization, candidate-locus annotation and figure
+preparation is available in the project repository under
+\texttt{scripts/}.
+
+\subsection{Author Contributions}\label{author-contributions}
+
+×××
+
+\subsection{Funding}\label{funding}
+
+×××
+
+\subsection{Acknowledgements}\label{acknowledgements}
+
+×××
+
+\subsection{Competing Interests}\label{competing-interests}
+
+×××
+
+\subsection{Ethics Statement}\label{ethics-statement}
+
+No human participants or animal subjects were used. The study reanalyzes
+public plant genomics data.
+
+\subsection{Figure Legends}\label{figure-legends}
+
+Figure 1. ZEAMAP accession harmonization and prediction benchmark. The
+figure summarizes accession matching, retained data scale, model
+comparison and trait-family prediction performance.
+
+Figure 2. GEMMA mixed-model GWAS calibration and candidate-locus
+summary. The figure shows that GEMMA controlled genomic inflation and
+summarizes the filtered candidate-locus set.
+
+Figure 3. Regional evidence for chr6 and chr9 oil-trait candidate
+intervals. Panels highlight the recurrent chr6 linoleic acid1-region
+interval and the chr9 C16:0-associated acyl-ACP thioesterase candidate
+interval.
+
+Figure 4. Integrated prediction and GWAS evidence. Panels summarize
+trait-family predictability, GEMMA calibration across oil traits,
+association strength of top regional loci and evidence classes across
+prioritized regions.
+
+\subsection{Table Legends}\label{table-legends}
+
+Table 1. Prioritized regional candidate loci for maize oil traits. Eight
+top loci are summarized by recurrence, association strength, prediction
+overlap, functional annotation and claim boundary.
+
+Supplementary Table 1. Manuscript candidate loci from oil-trait GEMMA
+mixed-model GWAS.
+
+Supplementary Table 2. Tier-1 candidate loci used for main-text
+interpretation.
+
+Supplementary Table 3. External annotation review for top regional loci.
+
+Supplementary Table 4. Column dictionary for supplementary tables.
+
+\subsection{References}\label{references}
+
+Alrefai, R., Berke, T. G., \& Rocheford, T. R. (1995). Quantitative
+trait locus analysis of fatty acid concentrations in maize.
+\emph{Genome}, \emph{38}, 894-901. https://doi.org/10.1139/g95-118
+
+Benjamini, Y., \& Hochberg, Y. (1995). Controlling the false discovery
+rate: A practical and powerful approach to multiple testing.
+\emph{Journal of the Royal Statistical Society: Series B}, \emph{57},
+289-300. https://doi.org/10.1111/j.2517-6161.1995.tb02031.x
+
+Bonaventure, G., Salas, J. J., Pollard, M. R., \& Ohlrogge, J. B.
+(2003). Disruption of the FATB gene in Arabidopsis demonstrates an
+essential role of saturated fatty acids in plant growth. \emph{The Plant
+Cell}, \emph{15}, 1020-1033. https://doi.org/10.1105/tpc.008946
+
+Cook, J. P., McMullen, M. D., Holland, J. B., Tian, F., Bradbury, P.,
+Ross-Ibarra, J., Buckler, E. S., \& Flint-Garcia, S. A. (2012). Genetic
+architecture of maize kernel composition in the nested association
+mapping and inbred association panels. \emph{Plant Physiology},
+\emph{158}, 824-834. https://doi.org/10.1104/pp.111.185033
+
+Gui, S., Yang, L., Li, J., Luo, J., Xu, X., Yuan, J., Chen, L., Li, W.,
+Yang, X., \& Wang, J. (2020). ZEAMAP, a comprehensive database adapted
+to the maize multi-omics era. \emph{iScience}, \emph{23}, 101241.
+https://doi.org/10.1016/j.isci.2020.101241
+
+Harris, C. R., Millman, K. J., van der Walt, S. J., Gommers, R.,
+Virtanen, P., Cournapeau, D., Wieser, E., Taylor, J., Berg, S., Smith,
+N. J., Kern, R., Picus, M., Hoyer, S., van Kerkwijk, M. H., Brett, M.,
+Haldane, A., Del Rio, J. F., Wiebe, M., Peterson, P., \ldots{} Oliphant,
+T. E. (2020). Array programming with NumPy. \emph{Nature}, \emph{585},
+357-362. https://doi.org/10.1038/s41586-020-2649-2
+
+Hunter, J. D. (2007). Matplotlib: A 2D graphics environment.
+\emph{Computing in Science \& Engineering}, \emph{9}, 90-95.
+https://doi.org/10.1109/MCSE.2007.55
+
+Jiao, Y., Peluso, P., Shi, J., Liang, T., Stitzer, M. C., Wang, B.,
+Campbell, M. S., Stein, J. C., Wei, X., Chin, C. S., Guill, K.,
+Regulski, M., Kumari, S., Olson, A., Gent, J., Schneider, K. L.,
+Wolfgruber, T. K., May, M. R., Springer, N. M., \ldots{} Ware, D.
+(2017). Improved maize reference genome with single-molecule
+technologies. \emph{Nature}, \emph{546}, 524-527.
+https://doi.org/10.1038/nature22971
+
+Katral, A., Ahirwar, R. N., Gazala, P., Jaiswal, S. K., Sachan, M.,
+Barupal, T., Hossain, F., Muthusamy, V., Saripalli, G., Mishra, S. J.,
+Gupta, H. S., \& Chhabra, R. (2022). Allelic variation in Zmfatb gene
+defines variability for fatty acids composition among diverse maize
+genotypes. \emph{Frontiers in Nutrition}, \emph{9}, 845255.
+https://doi.org/10.3389/fnut.2022.845255
+
+Li, H., Peng, Z., Yang, X., Wang, W., Fu, J., Wang, J., Han, Y., Chai,
+Y., Guo, T., Yang, N., Liu, J., Warburton, M. L., Cheng, Y., Hao, X.,
+Zhang, P., Zhao, J., Liu, Y., Wang, G., Li, J., \& Yan, J. (2013).
+Genome-wide association study dissects the genetic architecture of oil
+biosynthesis in maize kernels. \emph{Nature Genetics}, \emph{45}, 43-50.
+https://doi.org/10.1038/ng.2484
+
+McKinney, W. (2010). Data structures for statistical computing in
+Python. In \emph{Proceedings of the 9th Python in Science Conference}
+(pp.~56-61). https://doi.org/10.25080/Majora-92bf1922-00a
+
+Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B.,
+Grisel, O., Blondel, M., Prettenhofer, P., Weiss, R., Dubourg, V.,
+Vanderplas, J., Passos, A., Cournapeau, D., Brucher, M., Perrot, M., \&
+Duchesnay, E. (2011). Scikit-learn: Machine learning in Python.
+\emph{Journal of Machine Learning Research}, \emph{12}, 2825-2830.
+https://jmlr.org/papers/v12/pedregosa11a.html
+
+Virtanen, P., Gommers, R., Oliphant, T. E., Haberland, M., Reddy, T.,
+Cournapeau, D., Burovski, E., Peterson, P., Weckesser, W., Bright, J.,
+van der Walt, S. J., Brett, M., Wilson, J., Millman, K. J., Mayorov, N.,
+Nelson, A. R. J., Jones, E., Kern, R., Larson, E., \ldots{} van
+Mulbregt, P. (2020). SciPy 1.0: Fundamental algorithms for scientific
+computing in Python. \emph{Nature Methods}, \emph{17}, 261-272.
+https://doi.org/10.1038/s41592-019-0686-2
+
+Yates, A. D., Allen, J., Amode, R. M., Azov, A. G., Barba, M., Becerra,
+A., Bhai, J., Campbell, L. I., Carbajo Martinez, M., Chakiachvili, M.,
+Chougule, K., Christensen, M., Contreras-Moreira, B., Cuzick, A., Da Rin
+Fioretto, L., Davis, P., De Silva, N., Diamantakis, S., Dyer, S. C.,
+\ldots{} Flicek, P. (2022). Ensembl Genomes 2022: An expanding genome
+resource for non-vertebrates. \emph{Nucleic Acids Research}, \emph{50},
+D996-D1003. https://doi.org/10.1093/nar/gkab1007
+
+Zhang, C., Wang, J., Wang, L., Zhang, W., Liu, J., Li, H., Zhang, Y.,
+Zhang, J., Yang, X., \& Yan, J. (2023). Genetic dissection of QTLs for
+oil content in four maize DH populations. \emph{Frontiers in Plant
+Science}, \emph{14}, 1174985. https://doi.org/10.3389/fpls.2023.1174985
+
+Zheng, P., Allen, W. B., Roesler, K., Williams, M. E., Zhang, S., Li,
+J., Glassman, K., Ranch, J., Nubel, D., Solawetz, W., Bhattramakki, D.,
+Llaca, V., Deschamps, S., Zhong, G. Y., Tarczynski, M. C., \& Shen, B.
+(2008). A phenylalanine in DGAT is a key determinant of oil content and
+composition in maize. \emph{Nature Genetics}, \emph{40}, 367-372.
+https://doi.org/10.1038/ng.85
+
+Zhou, X., \& Stephens, M. (2012). Genome-wide efficient mixed-model
+analysis for association studies. \emph{Nature Genetics}, \emph{44},
+821-824. https://doi.org/10.1038/ng.2310
+
+Zhou, X., \& Stephens, M. (2014). Efficient multivariate linear mixed
+model algorithms for genome-wide association studies. \emph{Nature
+Methods}, \emph{11}, 407-409. https://doi.org/10.1038/nmeth.2848
+
+\end{document}
