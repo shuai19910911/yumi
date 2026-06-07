@@ -151,6 +151,58 @@ jobs/gpu_run_windowformer_g2f_native_pretrain.sh
 jobs/gpu_run_windowformer_g2f_native_finetune.sh
 ```
 
+### 2026-06-07 GPU 预训练已启动
+
+已登录 GPU 节点并启动 G2F native masked-genotype pretraining：
+
+```text
+GPU node: gpu10
+launcher PID: 60098
+launcher log: logs/windowformer_g2f_native_pretrain_launcher_20260607_122354.log
+training log: logs/windowformer_g2f_native_pretrain_20260607_122357.log
+output: results/deep_model/windowformer_g2f_native_pretrain_v0/
+```
+
+启动前显存检查：
+
+```text
+GPU 2: about 40 GB free
+GPU 5: about 38 GB free
+GPU 6: about 40 GB free
+```
+
+脚本按空闲显存选择了：
+
+```text
+CUDA_VISIBLE_DEVICES=2,5
+```
+
+当前实际显存主要在 GPU 2：
+
+```text
+GPU 2 used: about 13.7 GB
+GPU 5 did not show obvious extra allocation
+```
+
+训练已经正常进入 epoch，早期 loss：
+
+```text
+epoch 1: train_loss 0.7243 / val_loss 0.6068
+epoch 2: train_loss 0.6075 / val_loss 0.5962
+epoch 3: train_loss 0.5946 / val_loss 0.5857
+epoch 4: train_loss 0.5824 / val_loss 0.5788
+epoch 5: train_loss 0.5755 / val_loss 0.5715
+epoch 6: train_loss 0.5715 / val_loss 0.5672
+epoch 7: train_loss 0.5658 / val_loss 0.5597
+```
+
+判断：
+
+```text
+训练正在有效下降，G2F 外部预训练已经真正跑起来。
+下一步等预训练结束后，自动进入 ZEAMAP fine-tuning。
+```
+
 任务完成后下一步：
 
 ```text

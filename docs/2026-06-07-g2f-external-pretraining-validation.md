@@ -217,3 +217,36 @@ G2F native tensor 已完成。
 下一步进入 G2F masked-genotype pretraining。
 预训练完成后再做 ZEAMAP fine-tuning 和基线比较。
 ```
+
+## 2026-06-07 GPU Pretraining Launch
+
+G2F masked-genotype pretraining has been launched on the GPU node:
+
+```text
+node: gpu10
+launcher PID: 60098
+launcher log: logs/windowformer_g2f_native_pretrain_launcher_20260607_122354.log
+training log: logs/windowformer_g2f_native_pretrain_20260607_122357.log
+output directory: results/deep_model/windowformer_g2f_native_pretrain_v0/
+```
+
+Initial GPU selection:
+
+```text
+CUDA_VISIBLE_DEVICES=2,5
+selection rule: free memory only, >=30 GB free
+```
+
+Observed early training:
+
+```text
+epoch 1: train_loss 0.7243 / val_loss 0.6068
+epoch 7: train_loss 0.5658 / val_loss 0.5597
+```
+
+Interpretation:
+
+```text
+The external genotype pretraining job is running and the reconstruction loss is decreasing.
+Final assessment should wait for completion, test loss, and subsequent ZEAMAP fine-tuning.
+```
