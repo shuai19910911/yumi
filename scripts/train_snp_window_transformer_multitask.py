@@ -81,6 +81,61 @@ def r2_np(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     return float(1.0 - np.sum((y_true - y_pred) ** 2) / denom)
 
 
+def strip_module_prefix(state: dict) -> dict:
+    if not state:
+        return state
+    if all(str(k).startswith("module.") for k in state):
+        return {str(k)[7:]: v for k, v in state.items()}
+    return state
+
+
+def add_module_prefix(state: dict) -> dict:
+    return {f"module.{k}": v for k, v in state.items()}
+
+
+def load_compatible_checkpoint(model, checkpoint_path: Path, out_dir: Path) -> dict[str, object]:
+    """Load only keys that exist in the current model and have the same shape."""
+    import torch
+
+    checkpoint = torch.load(checkpoint_path, map_location="cpu")
+    pretrained = checkpoint["model"] if isinstance(checkpoint, dict) and "model" in checkpoint else checkpoint
+    current = model.state_dict()
+    candidates = strip_module_prefix(pretrained)
+    if any(str(k).startswith("module.") for k in current):
+        candidates = add_module_prefix(candidates)
+
+    compatible = {}
+    skipped = []
+    for key, value in candidates.items():
+        if key not in current:
+            skipped.append({"key": key, "reason": "missing_in_current_model"})
+            continue
+        if tuple(current[key].shape) != tuple(value.shape):
+            skipped.append(
+                {
+                    "key": key,
+                    "reason": "shape_mismatch",
+                    "checkpoint_shape": list(value.shape),
+                    "current_shape": list(current[key].shape),
+                }
+            )
+            continue
+        compatible[key] = value
+
+    missing, unexpected = model.load_state_dict(compatible, strict=False)
+    report = {
+        "checkpoint": str(checkpoint_path),
+        "n_checkpoint_keys": len(pretrained),
+        "n_loaded_keys": len(compatible),
+        "n_skipped_keys": len(skipped),
+        "skipped_keys": skipped,
+        "missing_after_partial_load": list(missing),
+        "unexpected_after_partial_load": list(unexpected),
+    }
+    (out_dir / "checkpoint_load_report.json").write_text(json.dumps(report, indent=2) + "\n")
+    return report
+
+
 def main() -> None:
     args = parse_args()
     torch, nn, DataLoader, Dataset = require_torch()
@@ -218,8 +273,8 @@ def main() -> None:
         model = nn.DataParallel(model)
 
     if args.pretrained_checkpoint:
-        state = torch.load(args.pretrained_checkpoint, map_location="cpu")
-        model.load_state_dict(state["model"], strict=False)
+        report = load_compatible_checkpoint(model, Path(args.pretrained_checkpoint), out_dir)
+        print(json.dumps({"checkpoint_load": report}, indent=2), flush=True)
 
     loaders = {
         "train": DataLoader(ZeaDataset(train_idx), batch_size=args.batch_size, shuffle=True, num_workers=2),

@@ -1,3 +1,60 @@
+## 2026-06-07 最新进展：G2F 外部预训练路线
+
+G2F 2014-2023 外部基因型已经下载完成，并且已经检查过：
+
+```text
+VCF: data/external/g2f/genotypic_2014_2023/inbreds_G2F_2014-2023_437k.vcf
+样本数：2,193 个 maize inbred lines
+SNP 数：437,214 个
+文件大小：约 3.85 GB
+```
+
+但是 G2F 不能和 ZEAMAP 直接合并成同一个 SNP 表。原因是：
+
+```text
+ZEAMAP: AGPv4 / B73 RefGen_v4
+G2F: B73 v5 / G2F PHG marker space
+```
+
+直接按 `chrom + pos + ref + alt` 检查后：
+
+```text
+ZEAMAP SNP: 199,856
+G2F SNP: 437,214
+可直接共用的 SNP: 9
+```
+
+所以现在采用更合理的模型方案：
+
+```text
+G2F 保持自己的 B73 v5 SNP 顺序，用来做 genotype-only 自监督预训练；
+ZEAMAP 保持自己的 AGPv4 SNP 顺序，用来做 trait prediction 微调和最终评估；
+迁移时只迁移 SNP embedding、window projection、Transformer encoder 等能复用的权重；
+不迁移位置嵌入、trait head、population projection 这些形状或任务不一致的权重。
+```
+
+通俗理解：
+
+```text
+G2F 用来教模型“玉米基因型大概长什么样”；
+ZEAMAP 用来教模型“这些基因型怎么对应到性状”。
+```
+
+当前新增脚本：
+
+```text
+scripts/analyze_g2f_zeamap_variant_overlap.py
+scripts/prepare_g2f_native_pretrain_inputs.py
+jobs/2026-06-07_prepare_g2f_native_pretrain_q08.sh
+```
+
+当前正在排队/运行的 CPU 任务：
+
+```text
+job 8460577: g2f_native_pretrain
+输出目录：data/deep_model/external_pretrain_v0/g2f_native_b73v5/
+```
+
 # yumi
 
 ZEAMAP 玉米多性状预测模型项目。

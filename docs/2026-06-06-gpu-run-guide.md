@@ -1,5 +1,63 @@
 # 2026-06-06 GPU run guide
 
+## 2026-06-07 推荐主任务：G2F 外部预训练
+
+G2F 2014-2023 genotypic data 已经下载完成。因为 G2F 是 B73 v5 坐标，ZEAMAP 是 AGPv4 坐标，二者不能直接合并 SNP 列。
+
+现在推荐的做法是：
+
+```text
+G2F 原生 SNP 空间做 masked-genotype pretraining
+ZEAMAP 原生 SNP 空间做 trait fine-tuning
+只迁移形状一致的 encoder 权重
+```
+
+先等待 CPU 任务完成：
+
+```text
+job 8460577: g2f_native_pretrain
+输出目录：data/deep_model/external_pretrain_v0/g2f_native_b73v5/
+```
+
+完成后在 GPU 节点运行 G2F 外部预训练：
+
+```bash
+CUDA_VISIBLE_DEVICES=1,2 mamba run -n yumi python scripts/train_snp_window_transformer_multitask.py \
+  --data-dir data/deep_model/external_pretrain_v0/g2f_native_b73v5 \
+  --out-dir results/deep_model/windowformer_g2f_native_pretrain_v0 \
+  --mode pretrain \
+  --epochs 120 \
+  --batch-size 16 \
+  --window-size 256 \
+  --d-model 192 \
+  --layers 6 \
+  --nhead 6 \
+  --amp
+```
+
+然后迁移到 ZEAMAP 微调：
+
+```bash
+CUDA_VISIBLE_DEVICES=1,2 mamba run -n yumi python scripts/train_snp_window_transformer_multitask.py \
+  --data-dir data/deep_model/v0_1 \
+  --out-dir results/deep_model/windowformer_g2f_native_finetune_v0_1 \
+  --mode finetune \
+  --pretrained-checkpoint results/deep_model/windowformer_g2f_native_pretrain_v0/best.pt \
+  --epochs 300 \
+  --batch-size 32 \
+  --window-size 256 \
+  --d-model 192 \
+  --layers 6 \
+  --nhead 6 \
+  --amp
+```
+
+训练脚本会自动跳过形状不一致的权重，并在输出目录写：
+
+```text
+checkpoint_load_report.json
+```
+
 ## 当前环境状态
 
 `yumi` 环境已经安装 GPU 训练需要的核心包：

@@ -2,6 +2,114 @@
 
 更新日期：2026-06-06
 
+## 2026-06-07 最新状态：外部 G2F 预训练数据正在构建
+
+当前最重要的变化：
+
+```text
+G2F 2014-2023 genotypic data 已经下载完成。
+现在不是继续下载，而是把它转换成深度模型可读取的 genotype matrix。
+```
+
+G2F 数据检查结果：
+
+```text
+VCF: data/external/g2f/genotypic_2014_2023/inbreds_G2F_2014-2023_437k.vcf
+样本数：2,193
+SNP 数：437,214
+文件大小：约 3.85 GB
+```
+
+已经做了 G2F 和 ZEAMAP 的 SNP 重叠检查：
+
+```text
+ZEAMAP SNP 总数：199,856
+G2F SNP 总数：437,214
+坐标有重叠的 G2F 行：39
+等位基因完全一致：4
+等位基因正反可翻转：5
+最终可直接共用 SNP：9
+```
+
+这说明：
+
+```text
+G2F 和 ZEAMAP 不是同一套 SNP 坐标表。
+G2F 是 B73 v5 / G2F PHG marker space。
+ZEAMAP 是 AGPv4 / B73 RefGen_v4。
+不能把两个数据集硬拼成一个共同 SNP 矩阵。
+```
+
+因此当前路线调整为：
+
+```text
+1. G2F 原生 SNP 空间做 masked-genotype self-supervised pretraining。
+2. ZEAMAP 原生 SNP 空间做 phenotype/metabolome fine-tuning。
+3. 只迁移形状一致的模型权重。
+```
+
+能迁移：
+
+```text
+SNP genotype embedding
+window projection
+Transformer encoder
+```
+
+不能直接迁移：
+
+```text
+position embedding
+trait prediction head
+population projection
+```
+
+原因：
+
+```text
+G2F 有 437,214 个 SNP，256 SNP/window 后约 1,708 个窗口。
+ZEAMAP 有 199,856 个 SNP，256 SNP/window 后约 781 个窗口。
+窗口数量不同，位置嵌入不能直接复用。
+```
+
+已新增脚本：
+
+```text
+scripts/analyze_g2f_zeamap_variant_overlap.py
+scripts/prepare_g2f_native_pretrain_inputs.py
+jobs/2026-06-07_prepare_g2f_native_pretrain_q08.sh
+```
+
+训练脚本已更新：
+
+```text
+scripts/train_snp_window_transformer_multitask.py
+```
+
+更新点：
+
+```text
+加载预训练 checkpoint 时，只加载当前模型中存在且 shape 一致的权重。
+跳过的权重会记录到 checkpoint_load_report.json。
+```
+
+当前任务：
+
+```text
+job 8460577: g2f_native_pretrain
+partition: q08
+用途：把 G2F VCF 转成深度模型输入包
+输出目录：data/deep_model/external_pretrain_v0/g2f_native_b73v5/
+```
+
+任务完成后下一步：
+
+```text
+G2F masked-genotype pretraining
+-> ZEAMAP fine-tuning
+-> 和 ridge / ElasticNet / MLP / ZEAMAP-only WindowFormer 比较
+```
+
 ## 当前项目一句话
 
 这个项目现在只做一件事：
