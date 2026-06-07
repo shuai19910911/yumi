@@ -102,6 +102,55 @@ partition: q08
 输出目录：data/deep_model/external_pretrain_v0/g2f_native_b73v5/
 ```
 
+### 2026-06-07 补充更新：已切换到 q07 并完成
+
+q08 长时间没有资源后，已按要求切换到 q07：
+
+```text
+旧任务：8460577 on q08，已取消
+新任务：8460638 on q07，COMPLETED
+运行节点：cu17
+运行时间：00:09:39
+最大内存：约 1.25 GB
+```
+
+G2F native pretraining 数据包已经生成并检查通过：
+
+```text
+输出目录：data/deep_model/external_pretrain_v0/g2f_native_b73v5/
+genotype matrix: 2,193 x 437,214 int8
+variant metadata: 437,214 rows
+accessions: 2,193 rows
+split: train 1,754 / val 219 / test 220
+dummy target: 2,193 x 1
+dummy population: 2,193 x 1
+no .tmp remained
+```
+
+G2F genotype call counts：
+
+```text
+0 homozygous reference:   690,571,658
+1 heterozygous:             3,936,274
+2 homozygous alternate:   254,887,220
+3 missing/unsupported:      9,415,150
+```
+
+G2F 和 ZEAMAP 精确 accession 名重叠：
+
+```text
+6 accessions: B110, B111, B73, CML228, CML69, MO17
+```
+
+因为 G2F 只用于 genotype-only pretraining，不使用 ZEAMAP trait 标签，所以这不是直接标签泄漏；后续论文需要报告，并可做去重敏感性分析。
+
+新增 GPU 入口脚本：
+
+```text
+jobs/gpu_run_windowformer_g2f_native_pretrain.sh
+jobs/gpu_run_windowformer_g2f_native_finetune.sh
+```
+
 任务完成后下一步：
 
 ```text

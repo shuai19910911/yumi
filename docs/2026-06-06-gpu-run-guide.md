@@ -12,14 +12,30 @@ ZEAMAP 原生 SNP 空间做 trait fine-tuning
 只迁移形状一致的 encoder 权重
 ```
 
-先等待 CPU 任务完成：
+CPU 转换任务已经完成：
 
 ```text
-job 8460577: g2f_native_pretrain
+job 8460638: g2f_native_pretrain
+partition: q07
+state: COMPLETED
 输出目录：data/deep_model/external_pretrain_v0/g2f_native_b73v5/
 ```
 
-完成后在 GPU 节点运行 G2F 外部预训练：
+在 GPU 节点推荐直接运行：
+
+```bash
+bash jobs/gpu_run_windowformer_g2f_native_pretrain.sh
+```
+
+这个脚本只按空闲显存选卡，默认要求 2 张卡各有至少 30GB 空闲显存。
+
+G2F 预训练完成后运行 ZEAMAP 微调：
+
+```bash
+bash jobs/gpu_run_windowformer_g2f_native_finetune.sh
+```
+
+等价的手动 G2F 外部预训练命令：
 
 ```bash
 CUDA_VISIBLE_DEVICES=1,2 mamba run -n yumi python scripts/train_snp_window_transformer_multitask.py \

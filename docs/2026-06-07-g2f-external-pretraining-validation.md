@@ -166,3 +166,54 @@ oil traits 和部分 agronomic traits 有稳定提升
 当前还没有最终模型结果，不能写最终论文结论。
 最关键的下一步是完成 G2F native tensor，然后跑 G2F pretrain + ZEAMAP fine-tune。
 ```
+
+## 2026-06-07 完成更新
+
+q08 长时间没有资源后，G2F native tensor 构建任务已切换到 q07 并完成：
+
+```text
+old job: 8460577 on q08, cancelled
+new job: 8460638 on q07, completed
+elapsed: 00:09:39
+max memory: about 1.25 GB
+output: data/deep_model/external_pretrain_v0/g2f_native_b73v5/
+```
+
+完整性检查结果：
+
+```text
+genotype matrix: (2193, 437214) int8
+target matrix: (2193, 1) float32
+target mask: (2193, 1) bool, observed count 0
+population covariate: (2193, 1) float32
+accessions: 2193
+variants: 437214
+split counts: train 1754 / val 219 / test 220
+manifest samples/variants matched matrix shape
+```
+
+登录节点 CPU smoke test 也完成：
+
+```text
+test package: 2,193 x 20
+mode: pretrain
+epochs: 1
+test reconstruction loss: 0.354
+```
+
+这说明训练脚本可以读取 G2F 风格数据包。正式训练应在 GPU 节点运行。
+
+新增 GPU 脚本：
+
+```text
+jobs/gpu_run_windowformer_g2f_native_pretrain.sh
+jobs/gpu_run_windowformer_g2f_native_finetune.sh
+```
+
+更新后的审查结论：
+
+```text
+G2F native tensor 已完成。
+下一步进入 G2F masked-genotype pretraining。
+预训练完成后再做 ZEAMAP fine-tuning 和基线比较。
+```
