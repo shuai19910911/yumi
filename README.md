@@ -1,646 +1,109 @@
-## 2026-06-07 最新进展：G2F 外部预训练路线
+# yumi
 
-G2F 2014-2023 外部基因型已经下载完成，并且已经检查过：
+玉米基因型到多性状预测模型项目。
+
+## 现在到底在做什么
+
+这个项目不是单纯做 GWAS，也不是只整理数据。当前主线是：
 
 ```text
-VCF: data/external/g2f/genotypic_2014_2023/inbreds_G2F_2014-2023_437k.vcf
-样本数：2,193 个 maize inbred lines
-SNP 数：437,214 个
-文件大小：约 3.85 GB
+给定一个玉米材料的 SNP 基因型，
+预测它的多个表型和代谢性状。
 ```
 
-但是 G2F 不能和 ZEAMAP 直接合并成同一个 SNP 表。原因是：
+通俗地说，就是想训练一个模型，让它看到玉米的 DNA 变异模式后，尽量准确地判断这个材料在油脂、脂肪酸、农艺性状等指标上会是什么表现。
+
+## 当前数据
+
+主数据来自 ZEAMAP：
+
+```text
+461 个玉米材料
+199,856 个 SNP
+318 个数值型 phenotype/metabolome traits
+66 个通过稳定性筛选的核心 traits
+```
+
+外部预训练数据来自 G2F：
+
+```text
+2,193 个玉米自交系
+437,214 个 SNP
+只用于 genotype-only 自监督预训练
+```
+
+G2F 和 ZEAMAP 不是同一套基因组坐标：
 
 ```text
 ZEAMAP: AGPv4 / B73 RefGen_v4
 G2F: B73 v5 / G2F PHG marker space
 ```
 
-直接按 `chrom + pos + ref + alt` 检查后：
+两者直接可共用的 SNP 只有 9 个，所以不能硬拼成一个大 SNP 表。现在的做法是：G2F 保持自己的 SNP 顺序预训练模型，ZEAMAP 保持自己的 SNP 顺序做性状预测，只迁移模型中形状一致的通用权重。
+
+## 已经完成什么
+
+1. 整理出 ZEAMAP v0.1 processed dataset。
+2. 建立 accession-level 样本索引和 trait 矩阵。
+3. 筛选出 66 个更稳定、更适合建模的 traits。
+4. 完成 ridge、ElasticNet、MLP、population-only 等传统基线。
+5. 完成 ZEAMAP-only SNPWindowFormer 监督训练。
+6. 完成 ZEAMAP-only masked-genotype 预训练和微调。
+7. 完成 G2F native genotype matrix 构建。
+8. 完成 G2F genotype-only masked pretraining。
+9. 完成两轮 G2F 预训练权重迁移到 ZEAMAP 的 fine-tuning。
+
+## 当前最重要结果
+
+目前最强、最稳的还是传统线性模型：
 
 ```text
-ZEAMAP SNP: 199,856
-G2F SNP: 437,214
-可直接共用的 SNP: 9
+ridge / ElasticNet robust benchmark:
+median Pearson 约 0.498
+median R2 约 0.204
 ```
 
-所以现在采用更合理的模型方案：
+深度模型结果如下：
 
 ```text
-G2F 保持自己的 B73 v5 SNP 顺序，用来做 genotype-only 自监督预训练；
-ZEAMAP 保持自己的 AGPv4 SNP 顺序，用来做 trait prediction 微调和最终评估；
-迁移时只迁移 SNP embedding、window projection、Transformer encoder 等能复用的权重；
-不迁移位置嵌入、trait head、population projection 这些形状或任务不一致的权重。
+ZEAMAP-only SNPWindowFormer:
+median Pearson = 0.351
+median R2 = 0.076
+
+G2F pretrained -> ZEAMAP fine-tune:
+median Pearson = 0.277
+median R2 = 0.041
+
+G2F pretrained -> ZEAMAP fine-tune, lower LR / stronger regularization:
+median Pearson = 0.227
+median R2 = 0.020
 ```
 
-通俗理解：
+结论很直接：
 
 ```text
-G2F 用来教模型“玉米基因型大概长什么样”；
-ZEAMAP 用来教模型“这些基因型怎么对应到性状”。
+G2F 预训练成功学到了基因型重构任务，
+但目前没有提升 ZEAMAP 性状预测。
+深度模型还没有超过 ridge / ElasticNet 强基线。
 ```
 
-当前新增脚本：
+## 这说明什么
+
+当前 461 个带标签的 ZEAMAP 样本，对训练大深度模型太少。模型能跑通，但很容易过拟合，预测效果不如传统线性模型稳定。
+
+这不是代码没跑完的问题，而是当前数据规模和任务设计限制。要把文章写成“深度模型明显优于传统方法”，还需要更多同类标签数据，或者重新设计成更适合小样本的模型。
+
+## 下一步方向
+
+优先做两件事：
+
+1. 把论文目标改成诚实的模型基准文章：系统比较线性模型、浅层模型、深度模型、预训练迁移，说明在小样本玉米多性状预测中什么有效、什么无效。
+2. 如果仍然要冲“深度模型优于基线”，需要补充更多带 phenotype/metabolome 标签的外部材料，或者拿到与 ZEAMAP 同坐标体系的外部 genotype 数据。
+
+详细进展见：
 
 ```text
-scripts/analyze_g2f_zeamap_variant_overlap.py
-scripts/prepare_g2f_native_pretrain_inputs.py
-jobs/2026-06-07_prepare_g2f_native_pretrain_q08.sh
+docs/progress-plan.md
+docs/2026-06-07-g2f-pretrain-finetune-monitoring-report.md
+docs/model-architecture.md
 ```
-
-当前正在排队/运行的 CPU 任务：
-
-```text
-job 8460577: g2f_native_pretrain
-输出目录：data/deep_model/external_pretrain_v0/g2f_native_b73v5/
-```
-
-# yumi
-
-ZEAMAP 玉米多性状预测模型项目。
-
-## 当前重新定位
-
-这个项目的目标需要改回来：不是写一篇以 GWAS 候选基因为主的文章，也不是只整理现有 benchmark，而是训练一个真正可以作为论文核心的**玉米基因型预测模型**。
-
-更准确地说，我们要做的是：
-
-```text
-用 ZEAMAP 玉米公共数据构建 accession-level 多性状预测任务，
-把 199,856 个 SNP 转成窗口 token，
-训练 SNP window representation model，
-再预测 phenotype/metabolome traits，
-并与 ridge、ElasticNet、MLP 等强基线公平比较。
-```
-
-GWAS 和候选基因不是主线，只能作为模型结果的辅助解释。例如：如果模型发现 oil traits 最可预测，可以用 GWAS 或候选区间解释“为什么 oil traits 有强遗传信号”。但文章不能再写成“我们发现了 chr6/chr9 候选基因”的 GWAS 论文。
-
-## 一句话说明
-
-我们现在要做的是：
-
-```text
-ZEAMAP 数据整理
--> SNP window tokenizer
--> supervised SNPWindowFormer
--> masked-genotype self-supervised pretraining
--> multi-trait fine-tuning
--> ridge/ElasticNet/MLP 强基线比较
--> G2F/Panzea 外部数据扩展
--> trait family 和 ablation 分析
--> 写成真正的模型文章
-```
-
-## 为什么要改方向
-
-之前工作走偏到了“油脂性状 GWAS + 候选基因投稿包”。这条路线不是完全没价值，但它不是当前项目最核心的目标。
-
-现在重新判断后，模型文章更合适，原因是：
-
-- 我们已经构建了一个干净的 ZEAMAP v0.1 accession-level 数据集。
-- 已经完成了多性状 prediction benchmark。
-- 已经比较了 ridge、ElasticNet、小 MLP、population-only 等模型。
-- 已经做了 methylation 消融和多随机种子稳健性。
-- 当前 ZEAMAP 样本量不适合单独训练大模型，但适合作为深度模型 fine-tuning/evaluation 数据。
-- 2 张 A100 40G 可以支持 SNP window transformer，但需要窗口化 token，而不是直接把 199,856 个 SNP 当 199,856 个 token。
-- GWAS 可以作为解释模型信号的辅助分析，而不是论文主线。
-
-新的详细模型方案：
-
-```text
-docs/2026-06-06-good-model-paper-design.md
-```
-
-## 当前可用数据
-
-核心数据集：
-
-```text
-data/processed/v0_1/
-```
-
-当前规模：
-
-```text
-461 accessions
-199,856 SNPs
-318 numeric phenotype/metabolome traits
-236 accessions with methylation coverage
-```
-
-数据模态判断：
-
-- `genotype`：主输入，当前最重要。
-- `population`：重要协变量/基线特征。
-- `phenotype/metabolome`：预测目标。
-- `methylation`：辅助模态，只能在 236 个 accession 子集中评估。
-- `expression`：当前不是 AMP accession-level expression，暂不作为主模型输入。
-- `GWAS/candidate loci`：只作为模型解释和生物学解释的辅助模块。
-
-## 已经完成的模型相关工作
-
-### 0. 当前正在做的深度模型训练
-
-现在已经不只是设计方案，深度模型训练已经启动。
-
-已经完成的第一轮监督训练：
-
-```text
-模型：SNPWindowFormer
-输入：199,856 个 SNP
-做法：每 256 个 SNP 压成一个窗口 token
-输出：66 个稳定 traits
-训练方式：supervised multi-trait prediction
-GPU：2 号 A100
-结果目录：results/deep_model/windowformer_supervised_norm_v0_1/
-日志：logs/windowformer_supervised_norm_gpu2_20260606_152101.log
-```
-
-为什么要先做这个模型：
-
-```text
-普通模型直接看 SNP PCA；
-这个模型直接看接近 20 万个 SNP，但先把相邻 SNP 压成窗口。
-这样既保留局部遗传信息，又不会把 199,856 个 SNP 当成 199,856 个超长 token。
-```
-
-已经修复的训练问题：
-
-- 样本划分表改用 `pandas.read_csv` 读取，避免 accession/split 解析出错。
-- 66 个 trait 已经按训练集均值/标准差做目标归一化，避免大数值性状支配 loss。
-
-归一化后训练流程正常，最佳验证轮是 epoch 55：
-
-```text
-val median Pearson = 0.410
-val median R2 = 0.137
-test median Pearson = 0.351
-test median R2 = 0.076
-```
-
-这个结果低于 ridge 强基线：
-
-```text
-ridge median Pearson = 0.498
-ridge median R2 = 0.204
-```
-
-所以当前判断是：
-
-```text
-直接监督训练的深度模型还不够强。
-下一步必须先做 masked-genotype self-supervised pretraining，
-再把预训练权重 fine-tune 到 66 个 trait。
-```
-
-预训练已经完成：
-
-```text
-任务：masked-genotype pretraining
-GPU：2 号 A100
-结果目录：results/deep_model/windowformer_pretrain_v0_1/
-日志：logs/windowformer_pretrain_gpu2_20260606_153859.log
-test reconstruction loss = 0.621
-best checkpoint = results/deep_model/windowformer_pretrain_v0_1/best.pt
-```
-
-这个预训练任务的意思是：
-
-```text
-随机遮住一部分 SNP 窗口，
-让模型根据周围 SNP 信息猜回被遮住的 genotype。
-它不使用 trait 标签，目的是先学会玉米基因型结构。
-```
-
-预训练后 fine-tuning 已经完成：
-
-```text
-任务：pretrained SNPWindowFormer fine-tuning
-初始化权重：results/deep_model/windowformer_pretrain_v0_1/best.pt
-GPU：2 号 A100
-结果目录：results/deep_model/windowformer_finetune_v0_1/
-日志：logs/windowformer_finetune_gpu2_20260606_155644.log
-test median Pearson = 0.251
-test median R2 = 0.021
-```
-
-这个结果比直接监督训练还低，说明：
-
-```text
-只用 ZEAMAP 461 个样本做 Transformer 预训练不够。
-模型可以学到 genotype reconstruction，
-但这个表征没有稳定转化为更好的 trait prediction。
-```
-
-更小、更强正则化的模型已经完成：
-
-```text
-任务：small regularized SNPWindowFormer
-目的：减少过拟合
-结果目录：results/deep_model/windowformer_small_regularized_v0_1/
-日志：logs/windowformer_small_regularized_gpu2_20260606_161401.log
-关键参数：d_model=96, layers=2, dropout=0.30, lr=5e-5, weight_decay=1e-3
-test median Pearson = 0.325
-test median R2 = 0.040
-```
-
-当前深度模型总评估：
-
-```text
-ridge baseline:                 Pearson 0.498 / R2 0.204
-supervised SNPWindowFormer:      Pearson 0.351 / R2 0.076
-pretrain + fine-tune:            Pearson 0.251 / R2 0.021
-small regularized WindowFormer:  Pearson 0.325 / R2 0.040
-```
-
-结论：
-
-```text
-只用 ZEAMAP 461 个 accession，Transformer 还不能超过 ridge。
-如果要写深度模型文章，下一步必须下载 G2F/Panzea 等外部 maize genotype 扩大预训练。
-```
-
-详细评估和下载清单：
-
-```text
-docs/2026-06-06-windowformer-training-validation-and-next-data.md
-docs/2026-06-06-external-genotype-download-manifest.tsv
-```
-
-G2F 2014-2023 外部基因型下载入口已经解析到具体文件：
-
-```text
-inbreds_G2F_2014-2023_437k.vcf
-key_inbreds_G2F_2014-2023.txt
-readme.txt
-```
-
-它们会下载到：
-
-```text
-data/external/g2f/genotypic_2014_2023/
-```
-
-自动解析/下载脚本：
-
-```bash
-python scripts/fetch_g2f_genotype_resources.py --download
-```
-
-q08 作业模板：
-
-```bash
-sbatch -p q08 -c 2 jobs/2026-06-06_fetch_g2f_genotypes_q08.sh
-```
-
-注意：当前确认计算节点没有网络，真实下载只能在登录节点执行。登录节点直连 CyVerse 匿名下载链接会返回 IP verification 页面。后来已使用本地临时 sing-box 代理完成 G2F 下载，代理订阅和生成的 sing-box 配置只保存在用户缓存目录，不进入仓库。
-
-当前 G2F 下载检查结果：
-
-```text
-inbreds_G2F_2014-2023_437k.vcf: 3,852,860,306 bytes, 2,193 samples
-key_inbreds_G2F_2014-2023.txt: 2,208 lines
-readme.txt: 39 lines
-```
-
-当前外部预训练准备状态：
-
-```text
-ready_for_parser_implementation
-```
-
-Panzea 备用/补充外部基因型源已经定位：
-
-```text
-/iplant/home/shared/panzea/hapmap3/hmp321/unimputed/uplifted_APGv4
-```
-
-需要下载 `hmp321_agpv4_chr1.vcf.gz` 到 `hmp321_agpv4_chr10.vcf.gz`：
-
-```text
-data/external/panzea/hapmap3/hmp321_agpv4/
-```
-
-自动下载脚本：
-
-```bash
-python scripts/fetch_panzea_hapmap321_agpv4.py --download
-```
-
-q08 作业模板：
-
-```bash
-sbatch -p q08 -c 2 jobs/2026-06-06_fetch_panzea_hapmap321_q08.sh
-```
-
-注意：由于计算节点没有网络，Panzea 实际下载也应在登录节点直接运行脚本；q08 作业只保留为集群环境改变后的模板。
-
-下载后检查命令：
-
-```bash
-python scripts/inspect_external_genotype_downloads.py --root data/external
-```
-
-如果在登录节点不想直接跑，也可以提交 q08：
-
-```bash
-sbatch -p q08 -c 2 jobs/2026-06-06_inspect_external_genotypes_q08.sh
-```
-
-下载完成后，外部预训练输入准备脚本是：
-
-```bash
-python scripts/prepare_external_genotype_pretrain_inputs.py
-```
-
-当前这个脚本已经能检查 inventory 和 ZEAMAP SNP 参考表；因为 G2F/Panzea genotype 还没下载，所以目前会明确提示：
-
-```text
-No usable external genotype files found yet.
-```
-
-### 1. 数据整理
-
-已经完成：
-
-- 检查 ZEAMAP 下载文件是否可读。
-- 统一 phenotype、population、VCF、methylation 等表的 accession 命名。
-- 构建统一样本索引。
-- 构建 v0.1 processed dataset。
-
-主要产出：
-
-```text
-data/metadata/zeamap_accession_index.tsv
-data/processed/v0_1/
-docs/2026-06-04-zeamap-v0-1-build-report.md
-```
-
-### 2. 基础预测模型
-
-已经比较过：
-
-- mean baseline
-- population-only ridge
-- genotype PCA ridge
-- genotype PCA + population ridge
-
-核心结论：
-
-```text
-genotype + population 的 ridge 模型最稳。
-```
-
-当前整体结果：
-
-```text
-66 robust traits
-median Pearson = 0.498
-median R2 = 0.204
-positive R2 fraction = 0.979
-```
-
-主要结果文件：
-
-```text
-results/v0_1_baseline/model_comparison.tsv
-results/v0_1_baseline/trait_metrics.tsv
-results/v0_1_baseline/final_v0_1_trait_benchmark.tsv
-```
-
-### 3. 性状家族分析
-
-已经发现：
-
-```text
-oil traits 是最容易预测的性状家族。
-```
-
-trait family 结果：
-
-```text
-oil        median Pearson/R2 = 0.596 / 0.321
-agronomic  median Pearson/R2 = 0.498 / 0.190
-metabolite median Pearson/R2 = 0.389 / 0.116
-amino acid median Pearson/R2 = 0.367 / 0.131
-```
-
-这在模型文章里很重要，因为它说明：
-
-```text
-不同类型性状的可预测性不同，模型对 oil/fatty-acid traits 最有效。
-```
-
-主要结果文件：
-
-```text
-results/v0_1_baseline/selected_trait_family_summary.tsv
-results/v0_1_baseline/robustness_trait_summary.tsv
-results/v0_1_baseline/top_predictable_traits.tsv
-```
-
-### 4. 多随机种子稳健性
-
-已经做了 repeated seed evaluation。
-
-目的：
-
-```text
-不是只看一次 train/test split，而是看模型表现是否稳定。
-```
-
-这对模型文章很关键，因为审稿人会关心结果是不是偶然划分造成的。
-
-主要结果文件：
-
-```text
-results/v0_1_baseline/robustness_metrics.tsv
-results/v0_1_baseline/robustness_model_summary.tsv
-results/v0_1_baseline/robust_selected_traits.tsv
-```
-
-### 5. 轻量模型比较
-
-已经比较过 ridge、ElasticNet 和 small MLP。
-
-当前结论：
-
-```text
-在 461 个 accession 的样本量下，ridge/ElasticNet 比 small MLP 更稳。
-```
-
-这不是说神经网络没用，而是说明：
-
-```text
-当前数据规模更适合正则化线性模型。
-复杂模型需要更多 accession、更完整的多模态配对数据。
-```
-
-主要结果文件：
-
-```text
-results/v0_1_baseline/lightweight_model_metrics.tsv
-results/v0_1_baseline/lightweight_model_summary.tsv
-```
-
-### 6. methylation 消融
-
-已经评估过 methylation 的几种用法：
-
-- global methylation summary
-- gene/promoter/cis-window methylation PCA
-- sparse gene-window methylation selection
-
-当前结论：
-
-```text
-methylation 在当前数据里只能作为辅助模态。
-236 个 accession 的覆盖不足以支撑强多模态主模型。
-```
-
-主要结果文件：
-
-```text
-results/v0_1_baseline/methylation_subset_metrics.tsv
-results/v0_1_baseline/gene_methylation_pca_metrics.tsv
-results/v0_1_baseline/sparse_methylation_selection_metrics.tsv
-```
-
-### 7. 可解释性与生物学辅助分析
-
-已经做过：
-
-- genotype attribution
-- oil traits GEMMA LMM GWAS
-- candidate loci annotation
-
-这些不再作为主线，而是作为模型文章中的解释模块：
-
-```text
-模型发现 oil traits 最可预测。
-GWAS/候选区间可以辅助说明这些性状确实有强遗传信号。
-```
-
-保留但降级的结果：
-
-```text
-results/v0_1_baseline/genotype_attribution_gene_summary.tsv
-results/v0_1_baseline/genotype_attribution_snp_summary.tsv
-results/v0_1_baseline/gemma_lmm_v0_1/
-```
-
-## 新论文目标
-
-建议新文章方向：
-
-```text
-Self-supervised SNP window representation learning improves maize multi-trait prediction from public genotype resources
-```
-
-中文理解：
-
-```text
-基于自监督 SNP 窗口表征学习的玉米多性状预测模型
-```
-
-文章核心问题：
-
-1. 199,856 个 SNP 能不能通过 window tokenizer 压缩成可训练的遗传表示？
-2. SNPWindowFormer 能不能超过 ridge/ElasticNet/MLP 强基线？
-3. masked-genotype 自监督预训练能不能提高 ZEAMAP 多性状预测？
-4. 多性状学习是否比单性状训练更适合 oil/metabolome traits？
-5. population 和 methylation 在深度模型中到底提供多少增益？
-6. 外部 G2F/Panzea genotype 数据能否提升预训练和迁移验证？
-
-## 新文章结构
-
-建议主线：
-
-```text
-Introduction
-  为什么公共多组学数据不能直接拿来建模
-  为什么需要 accession-level harmonization
-  为什么小样本下要先做稳健 benchmark
-
-Results
-  1. ZEAMAP v0.1 accession-level dataset and deep-learning tensor package
-  2. SNP window tokenizer and SNPWindowFormer architecture
-  3. Supervised deep model versus ridge / ElasticNet / MLP
-  4. Masked-genotype pretraining and fine-tuning
-  5. Trait-family performance and multi-trait learning
-  6. Population/methylation ablation and model interpretation
-
-Discussion
-  当前模型路线适合什么
-  为什么不是大模型
-  为什么 oil traits 最强
-  methylation 为什么暂时不能作为主模态
-  后续如何扩展到更大 accession、多模态和预训练模型
-```
-
-## 需要保留的核心文件
-
-这些是模型文章主线需要保留的：
-
-```text
-data/metadata/
-data/processed/v0_1/
-results/v0_1_baseline/model_comparison.tsv
-results/v0_1_baseline/trait_metrics.tsv
-results/v0_1_baseline/final_v0_1_trait_benchmark.tsv
-results/v0_1_baseline/selected_trait_family_summary.tsv
-results/v0_1_baseline/robustness_metrics.tsv
-results/v0_1_baseline/robustness_trait_summary.tsv
-results/v0_1_baseline/lightweight_model_metrics.tsv
-results/v0_1_baseline/methylation_subset_metrics.tsv
-results/v0_1_baseline/gene_methylation_pca_metrics.tsv
-results/v0_1_baseline/sparse_methylation_selection_metrics.tsv
-scripts/build_zeamap_sample_index.py
-scripts/build_zeamap_v0_1_dataset.py
-scripts/run_zeamap_v0_1_baseline.py
-scripts/run_zeamap_v0_1_robustness.py
-scripts/run_zeamap_v0_1_lightweight_models.py
-scripts/run_zeamap_v0_1_methylation_subset.py
-scripts/run_zeamap_v0_1_gene_methylation_pca.py
-scripts/run_zeamap_v0_1_sparse_methylation_selection.py
-```
-
-## 已经清理或降级的信息
-
-下面这些内容已经从主线中清理或降级：
-
-- 大量 `Stage 5.x` 投稿包文件。
-- cover letter、journal route、reviewer suggestion、Zenodo release draft。
-- 以 chr6/chr9 候选基因为主的论文版本。
-- 最终投稿 gate、人类作者信息模板、release checklist。
-- 把 GEMMA GWAS 写成主结果的图表和段落。
-
-当前保留少量 GWAS 结果，只用于解释模型为什么对 oil traits 更有效。
-
-## 下一步计划
-
-下一步应该做三件事：
-
-1. 重画模型方向图表
-
-重点画清楚：数据怎么进入模型、模型怎么比较、robust traits 怎么筛出来、methylation 怎么做消融。
-
-2. 重写模型论文稿
-
-围绕 prediction benchmark、model comparison、trait family predictability、methylation ablation 和 interpretation 写新稿。
-
-3. 补模型结果表
-
-把 final benchmark、trait family、model comparison、methylation ablation、robustness 组织成模型文章主表和补充表。
-
-## 当前注意事项
-
-当前最重要的是不要再继续往“GWAS 候选基因投稿包”方向扩展。
-
-正确方向是：
-
-```text
-模型数据集 + 多性状预测 + 模型比较 + 模态消融 + 稳健性 + 可解释性
-```
-
-GWAS 只作为解释模型结果的一小部分。
